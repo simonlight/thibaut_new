@@ -27,9 +27,9 @@ public class LSVM_console {
 	private static int numWords = 2048;
 
 	public static void main(String[] args) {
-		List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listTrain = BagReader.readBagImageLatent("/local/wangxin/Data/ferrari_gaze/example_files/50/horse_train_scale_50_matconvnet_m_2048_layer_20.txt", numWords, true, true, null, true, 0);
+		List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listTrain = BagReader.readBagImageLatent("/local/wangxin/Data/ferrari_gaze/example_files/60/horse_train_scale_60_matconvnet_m_2048_layer_20.txt", numWords, true, true, null, true, 0);
 //		List<TrainingSample<BagImage, Integer>> listTrain = BagReader.readBagImage("/local/wangxin/Data/ferrari_gaze/example_files/90/horse_train_scale_90_matconvnet_m_2048_layer_20.txt", numWords, true, true, null, true, 0);
-		List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listTest = BagReader.readBagImageLatent("/local/wangxin/Data/ferrari_gaze/example_files/50/horse_valval_scale_50_matconvnet_m_2048_layer_20.txt", numWords, true, true, null, true, 0);
+		List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listTest = BagReader.readBagImageLatent("/local/wangxin/Data/ferrari_gaze/example_files/60/horse_valval_scale_60_matconvnet_m_2048_layer_20.txt", numWords, true, true, null, true, 0);
 		
 		List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleTrain = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
 		for(int i=0; i<listTrain.size(); i++) {

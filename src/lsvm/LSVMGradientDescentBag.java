@@ -64,7 +64,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
         	// calcul score(x,y,h,w) = argmax_{y,h} <w, \psi(x,y,h)>
 
         	double score = valueOf(l.get(i).sample.x,l.get(i).sample.h); // socre
-        	System.out.println(l.get(i).label+" "+score);
+//        	System.out.println(l.get(i).label+" "+score);
         	// label is changed to -1 1.
         	eval.add(new Pair<Integer,Double>((l.get(i).label), score)); //
         }

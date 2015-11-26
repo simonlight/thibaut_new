@@ -18,6 +18,7 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 
 	protected int optim = 2	;
 	protected int maxCCCPIter = 100;
+	
 	protected int maxEpochs = 100;
 	protected boolean semiConvexity = true;
 	protected boolean stochastic = false;
@@ -143,6 +144,8 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 	 * 
 	 * @param l
 	 */
+	
+	
 	protected void learnSGD(List<TrainingSample<LatentRepresentation<X,H>>> l) {
 
 		// Shift t in order to have a
@@ -152,9 +155,15 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 		double typw = Math.sqrt(maxw);
 		double eta0 = typw;
 		t = (long) (1 / (eta0 * lambda));
+		double oldPrimal_Objectif = 0;
+		double epsilon = 10;
+		int iter = 0;
+		int minCCCPIter = 2;
+
 		
-		for(int iter=0; iter<maxCCCPIter; iter++) {
-			iter+=1;
+		do {
+			iter +=1;
+			oldPrimal_Objectif = getPrimalObjective(l);
 //			oldprimal = getPrimalObjective(l);
 			if(verbose >= 1) {
 				System.out.print((iter+1) + "/" + maxCCCPIter + "\t");
@@ -163,10 +172,11 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 				System.out.print(".");
 			}
 			
-			
 			for(int e=0; e<maxEpochs; e++) {
 				trainOnceEpochsSGD(l);
 			}
+			System.out.println(iter);
+			System.out.println(getPrimalObjective(l));
 			
 //			System.out.println(iter);
 //			System.out.println(oldprimal);
@@ -178,11 +188,45 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 			else {
 				optimizeAllLatent(l);
 			}
-		}
+		}while((oldPrimal_Objectif - getPrimalObjective(l)> epsilon || iter < minCCCPIter) && (iter < maxCCCPIter));
 		if(verbose == 0) {
 			System.out.println("*");
 		}
 	}
+
+		
+//		for(int iter=0; iter<maxCCCPIter; iter++) {
+//			iter+=1;
+////			oldprimal = getPrimalObjective(l);
+//			if(verbose >= 1) {
+//				System.out.print((iter+1) + "/" + maxCCCPIter + "\t");
+//			}
+//			else {
+//				System.out.print(".");
+//			}
+//			
+//			
+//			for(int e=0; e<maxEpochs; e++) {
+//				trainOnceEpochsSGD(l);
+//				System.out.println(e);
+//			}
+//			System.out.println(getPrimalObjective(l));
+//			
+////			System.out.println(iter);
+////			System.out.println(oldprimal);
+////			System.out.println(getPrimalObjective(l));
+//			// update latent variables
+//			if(semiConvexity) {
+//				optimizeLatentPos(l);
+//			}
+//			else {
+//				optimizeAllLatent(l);
+//			}
+//		}
+//		if(verbose == 0) {
+//			System.out.println("*");
+//		}
+//	}
 	
 	/**
 	 * Update the separating hyperplane by learning one epoch on given training list
@@ -221,7 +265,7 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 			if (z < 1) {
 				eta *= y;
 				for(int d=0; d<w.length; d++) {
-					w[d] += x[d] * eta;
+					w[d] += x[d] * eta * imax;
 				}
 			}
 			t += 1;
