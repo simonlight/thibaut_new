@@ -1,0 +1,168 @@
+package jstruct.data.uiuc.mac;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import fr.durandt.jstruct.data.io.BagReader;
+import fr.durandt.jstruct.latent.LatentRepresentation;
+import fr.durandt.jstruct.latent.lssvm.multiclass.LatentML3PegasosBagImage;
+import fr.durandt.jstruct.struct.STrainingSample;
+import fr.durandt.jstruct.variable.BagImage;
+
+/**
+ * Tests of LatentML3 on UIUC Sports with deep features
+ * @author Thibaut Durand <durand.tibo@gmail.com>
+ *
+ */
+public class LatentML3Test {
+
+	public static String simDir = "/Volumes/Eclipse/LIP6/simulation/UIUCSports/";
+
+	public static void main(String[] args) {
+
+		int numWords = 4096;
+
+		double[] lambdaCV = {1e-3,1e-4};
+		double[] pCV = {1.5};
+		//double[] pCV = {1., 1.4, 1.5, 1.6, 2, 10};
+		Integer[] mCV = {1,5,10};
+		Integer[] scaleCV = {100,90,80,70,60,50};
+		int[] splitCV = {1,2,3,4,5};
+		//int[] splitCV = {1};
+		int maxCCCPIter = 30;
+
+		System.out.println("lambda " + Arrays.toString(lambdaCV));
+		System.out.println("p " + Arrays.toString(pCV));
+		System.out.println("m " + Arrays.toString(mCV));
+		System.out.println("scale " + Arrays.toString(scaleCV));
+		System.out.println("split " + Arrays.toString(splitCV) + "\n");
+
+		boolean recompute = false;
+		String features = "hybrid";
+
+		for(int scale : scaleCV) {
+			for(int split : splitCV) {
+
+				String cls = String.valueOf(split);
+
+				String classifierDir = simDir + "classifier/latentML3/" + features + "_caffe_6_relu/";
+				String inputDir = simDir + "Split_" + cls + "/files/";
+
+				System.out.println("classifierDir: " + classifierDir + "\n");
+				System.err.println("split " + split + "\t cls " + cls);
+
+				boolean compute = false;
+				for(double p : pCV) {
+					for(int m : mCV) {
+						for(double lambda : lambdaCV) {
+
+							LatentML3PegasosBagImage classifier = new LatentML3PegasosBagImage(); 
+							classifier.setLambda(lambda);
+							classifier.setP(p);
+							classifier.setM(m);
+							classifier.setMaxCCCPIter(maxCCCPIter);
+							classifier.setVerbose(1);
+
+							String suffix = "_" + classifier.toString();
+							File fileClassifier = testPresenceFile(classifierDir + "/" + cls + "/", cls + "_" + scale + suffix);
+							if(fileClassifier == null) {
+								compute = true;
+							}
+						}
+					}
+				}
+
+				if(compute || recompute) {
+					List<STrainingSample<BagImage, Integer>> listTrain = BagReader.readBagImage(inputDir + "/multiclass_" + features + "_train_scale_" + scale + ".txt", numWords, true, true, null, true, 0);
+					List<STrainingSample<LatentRepresentation<BagImage, Integer>,Integer>> exampleTrain = new ArrayList<STrainingSample<LatentRepresentation<BagImage, Integer>,Integer>>();
+					for(int i=0; i<listTrain.size(); i++) {
+						exampleTrain.add(new STrainingSample<LatentRepresentation<BagImage, Integer>,Integer>(new LatentRepresentation<BagImage, Integer>(listTrain.get(i).input,0), listTrain.get(i).output));
+					}
+
+					List<STrainingSample<BagImage, Integer>> listTest = BagReader.readBagImage(inputDir + "/multiclass_" + features + "_test_scale_" + scale + ".txt", numWords, true, true, null, true, 0);
+					List<STrainingSample<LatentRepresentation<BagImage, Integer>,Integer>> exampleTest = new ArrayList<STrainingSample<LatentRepresentation<BagImage, Integer>,Integer>>();
+					for(int i=0; i<listTest.size(); i++) {
+						exampleTest.add(new STrainingSample<LatentRepresentation<BagImage, Integer>,Integer>(new LatentRepresentation<BagImage, Integer>(listTest.get(i).input,0), listTest.get(i).output));
+					}
+
+					for(double p : pCV) {
+						for(int m : mCV) {
+							for(double lambda : lambdaCV) {
+
+								LatentML3PegasosBagImage classifier = new LatentML3PegasosBagImage(); 
+								classifier.setLambda(lambda);
+								classifier.setP(p);
+								classifier.setM(m);
+								classifier.setMaxCCCPIter(maxCCCPIter);
+								classifier.setVerbose(1);
+
+								String suffix = "_" + classifier.toString();
+								File fileClassifier = testPresenceFile(classifierDir + "/" + cls + "/", cls + "_" + scale + suffix);
+								if(recompute || compute && fileClassifier == null) {
+									classifier.train(exampleTrain);
+									double acc = classifier.evaluation(exampleTrain);
+									System.err.println("train - " + cls + "\tscale= " + scale + "\tacc= " + acc + "\tlambda= " + lambda + "\tp= " + p + "\tm= " + m);
+
+									acc = classifier.evaluation(exampleTest);
+									System.err.println("test - " + cls + "\tscale= " + scale + "\tacc= " + acc + "\tlambda= " + lambda + "\tp= " + p + "\tm= " + m);
+									System.out.println("\n");
+
+									fileClassifier = new File(classifierDir + "/" + cls + "/" + cls + "_" + scale + suffix + "_acc_" + acc + ".ser");
+									fileClassifier.getAbsoluteFile().getParentFile().mkdirs();
+									System.out.println("save classifier " + fileClassifier.getAbsolutePath());
+									// save classifier
+									ObjectOutputStream oos = null;
+									try {
+										oos = new ObjectOutputStream(new FileOutputStream(fileClassifier.getAbsolutePath()));
+										oos.writeObject(classifier);
+									} 
+									catch (FileNotFoundException e) {
+										e.printStackTrace();
+									} 
+									catch (IOException e) {
+										e.printStackTrace();
+									}
+									finally {
+										try {
+											if(oos != null) {
+												oos.flush();
+												oos.close();
+											}
+										} catch (IOException e) {
+											e.printStackTrace();
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public static File testPresenceFile(String dir, String test) {
+		boolean testPresence = false;
+		File classifierDir = new File(dir);
+		File file = null;
+		if(classifierDir.exists()) {
+			String[] f = classifierDir.list();
+			//System.out.println(Arrays.toString(f));
+
+			for(String s : f) {
+				if(s.contains(test)) {
+					testPresence = true;
+					file = new File(dir + "/" + s);
+				}
+			}
+		}
+		System.out.println("presence " + testPresence + "\t" + dir + "\t" + test + "\tfile " + (file == null ? null : file.getAbsolutePath()));
+		return file;
+	}
+}
