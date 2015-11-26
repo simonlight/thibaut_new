@@ -17,8 +17,8 @@ import fr.lip6.jkernelmachines.util.algebra.VectorOperations;
 public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 
 	protected int optim = 2	;
-	protected int maxCCCPIter = 50;
-	protected int maxEpochs = 1000;
+	protected int maxCCCPIter = 100;
+	protected int maxEpochs = 100;
 	protected boolean semiConvexity = true;
 	protected boolean stochastic = false;
 	private long t=0;
@@ -154,7 +154,8 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 		t = (long) (1 / (eta0 * lambda));
 		
 		for(int iter=0; iter<maxCCCPIter; iter++) {
-			
+			iter+=1;
+//			oldprimal = getPrimalObjective(l);
 			if(verbose >= 1) {
 				System.out.print((iter+1) + "/" + maxCCCPIter + "\t");
 			}
@@ -162,11 +163,14 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 				System.out.print(".");
 			}
 			
+			
 			for(int e=0; e<maxEpochs; e++) {
 				trainOnceEpochsSGD(l);
 			}
 			
-	
+//			System.out.println(iter);
+//			System.out.println(oldprimal);
+//			System.out.println(getPrimalObjective(l));
 			// update latent variables
 			if(semiConvexity) {
 				optimizeLatentPos(l);
@@ -196,8 +200,10 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 		
 		for(int i=0; i<imax; i++) {
 			
-			double eta = 1.0 / (lambda * t);
-			double s = 1 - eta * lambda;
+			double eta = 1.0 / (lambda * t);// learning rate
+			
+			double s = 1 - eta * lambda; // shrink
+			//shrink w
 			for(int d=0; d<w.length; d++) {
 				w[d] *= s;
 			}
@@ -206,9 +212,9 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 			if(semiConvexity && ts.label == -1) {
 				ts.sample.h = optimizeH(ts.sample.x);
 			}
-			
+
+			//important: not the same as felsenswalb, note the objectif is without the number of examples n
 			double[] x = psi(ts.sample.x, ts.sample.h);
-			
 			double y = ts.label;
 			double z = y * linear.valueOf(w, x);
 

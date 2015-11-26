@@ -3,11 +3,15 @@
  */
 package lsvm;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import fr.durandt.jstruct.latent.LatentRepresentation;
 import fr.durandt.jstruct.variable.BagImage;
+import fr.durandt.jstruct.latent.LatentRepresentation;
+import fr.durandt.jstruct.util.Pair;
+import fr.durandt.jstruct.util.AveragePrecision;
 import fr.lip6.jkernelmachines.classifier.Classifier;
+import fr.lip6.jkernelmachines.evaluation.Evaluation;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 
 /**
@@ -51,6 +55,21 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 			}
 		}
 		return hp;
+	}
+	
+	public double testAP(List<TrainingSample<LatentRepresentation<BagImage,Integer>>> l) {
+		
+		List<Pair<Integer,Double>> eval = new ArrayList<Pair<Integer,Double>>();
+		for(int i=0; i<l.size(); i++) {
+        	// calcul score(x,y,h,w) = argmax_{y,h} <w, \psi(x,y,h)>
+
+        	double score = valueOf(l.get(i).sample.x,l.get(i).sample.h); // socre
+        	System.out.println(l.get(i).label+" "+score);
+        	// label is changed to -1 1.
+        	eval.add(new Pair<Integer,Double>((l.get(i).label), score)); //
+        }
+        double ap = AveragePrecision.getAP(eval);
+        return ap;
 	}
 
 }
