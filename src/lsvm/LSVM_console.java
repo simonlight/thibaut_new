@@ -4,6 +4,10 @@
 package lsvm;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,11 +25,16 @@ import fr.durandt.jstruct.util.AveragePrecision;;
  *
  */
 public class LSVM_console {
-
+	
+	
+	
 	public static String simDir = "/Volumes/Eclipse/LIP6/simulation/VOC2011_Action/cvpr_2013_tutoriel/";
 
 	private static int numWords = 2048;
-
+	private static boolean saveClassifier = true;
+	
+	
+	
 	public static void main(String[] args) {
 		List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listTrain = BagReader.readBagImageLatent("/local/wangxin/Data/ferrari_gaze/example_files/60/horse_train_scale_60_matconvnet_m_2048_layer_20.txt", numWords, true, true, null, true, 0);
 //		List<TrainingSample<BagImage, Integer>> listTrain = BagReader.readBagImage("/local/wangxin/Data/ferrari_gaze/example_files/90/horse_train_scale_90_matconvnet_m_2048_layer_20.txt", numWords, true, true, null, true, 0);
@@ -50,6 +59,33 @@ public class LSVM_console {
 		classifier.setVerbose(0);
 
 		classifier.train(exampleTrain);
+		
+//		if (saveClassifier){
+//			// save classifier
+//			
+//			ObjectOutputStream oos = null;
+//			try {
+//				oos = new ObjectOutputStream(new FileOutputStream(fileClassifier.getAbsolutePath()));
+//				oos.writeObject(classifier);
+//			} 
+//			catch (FileNotFoundException e) {
+//				e.printStackTrace();
+//			} 
+//			catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//			finally {
+//				try {
+//					if(oos != null) {
+//						oos.flush();
+//						oos.close();
+//					}
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//			System.out.println("wrote classifier successfully!");
+//		}
 		
 		double ap_train = classifier.testAP(exampleTrain);
 		System.err.println("train - ap= " + ap_train);

@@ -3,7 +3,12 @@
  */
 package lsvm;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import fr.durandt.jstruct.latent.LatentRepresentation;
@@ -17,12 +22,27 @@ import fr.lip6.jkernelmachines.util.algebra.VectorOperations;
 public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 
 	protected int optim = 2	;
-	protected int maxCCCPIter = 100;
 	
-	protected int maxEpochs = 100;
+
+	protected int maxCCCPIter = 100;
+	protected double epsilon = 1e-4;
+	protected int minCCCPIter = 2;
+	
+	protected int maxEpochs = 50;
+	
 	protected boolean semiConvexity = true;
 	protected boolean stochastic = false;
+	
+	protected double tradeoff;
+	protected String gazeType;
+	protected boolean hnorm;
+	protected String className;
+	
+	protected HashMap<String , Double> lossMap = new HashMap<String , Double>(); 
+	
+	
 	private long t=0;
+	
 
 	@Override
 	protected void learn(List<TrainingSample<LatentRepresentation<X,H>>> l) {
@@ -156,9 +176,8 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 		double eta0 = typw;
 		t = (long) (1 / (eta0 * lambda));
 		double oldPrimal_Objectif = 0;
-		double epsilon = 10;
 		int iter = 0;
-		int minCCCPIter = 2;
+
 
 		
 		do {
@@ -265,7 +284,7 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 			if (z < 1) {
 				eta *= y;
 				for(int d=0; d<w.length; d++) {
-					w[d] += x[d] * eta * imax;
+					w[d] += x[d] * eta;
 				}
 			}
 			t += 1;
@@ -352,6 +371,68 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 		this.stochastic = stochastic;
 	}
 
+	public double getEpsilon() {
+		return epsilon;
+	}
 
+	public void setEpsilon(double epsilon) {
+		this.epsilon = epsilon;
+	}
+
+	public int getMinCCCPIter() {
+		return minCCCPIter;
+	}
+
+	public void setMinCCCPIter(int minCCCPIter) {
+		this.minCCCPIter = minCCCPIter;
+	}
+	
+	public String getGazeType() {
+		return gazeType;
+	}
+	public void setGazeType(String gazeType) {
+		this.gazeType = gazeType;
+	}
+	public void setHnorm(boolean hnorm) {
+		this.hnorm = hnorm;
+	}
+	public boolean getHnorm() {
+		return hnorm;
+	}
+
+	public void setTradeOff(double tradeoff){
+		this.tradeoff = tradeoff;
+	}
+	public double getTradeOff(){
+		return tradeoff;
+	}
+	
+	public void setCurrentClass(String className){
+		this.className = className;
+	}
+	public String getCurrentClass(){
+		return className;
+	}
+	
+	
+	public void setLossDict(String lossPath){
+		
+		try {
+			ObjectInputStream is;
+			is = new ObjectInputStream(new FileInputStream(lossPath));
+			this.lossMap = (HashMap<String, Double> ) is.readObject();// 从流中读取User的数据  
+			is.close();}
+		catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  
+		
+	}
 
 }
