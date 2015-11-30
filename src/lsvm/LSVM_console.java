@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import fr.durandt.jstruct.data.io.BagReader;
@@ -36,9 +37,9 @@ public class LSVM_console {
 	
 	
 	public static void main(String[] args) {
-		List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listTrain = BagReader.readBagImageLatent("/local/wangxin/Data/ferrari_gaze/example_files/60/horse_train_scale_60_matconvnet_m_2048_layer_20.txt", numWords, true, true, null, true, 0);
+		List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listTrain = BagReader.readBagImageLatent("/local/wangxin/Data/full_stefan_gaze/example_files/60/walking_train_scale_60_matconvnet_m_2048_layer_20.txt", numWords, true, true, null, true, 0);
 //		List<TrainingSample<BagImage, Integer>> listTrain = BagReader.readBagImage("/local/wangxin/Data/ferrari_gaze/example_files/90/horse_train_scale_90_matconvnet_m_2048_layer_20.txt", numWords, true, true, null, true, 0);
-		List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listTest = BagReader.readBagImageLatent("/local/wangxin/Data/ferrari_gaze/example_files/60/horse_valval_scale_60_matconvnet_m_2048_layer_20.txt", numWords, true, true, null, true, 0);
+		List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listTest = BagReader.readBagImageLatent("/local/wangxin/Data/full_stefan_gaze/example_files/60/walking_valval_scale_60_matconvnet_m_2048_layer_20.txt", numWords, true, true, null, true, 0);
 		
 		List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleTrain = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
 		for(int i=0; i<listTrain.size(); i++) {
@@ -57,7 +58,19 @@ public class LSVM_console {
 		
 		classifier.setLambda(1e-4);
 		classifier.setVerbose(0);
-
+//		protected double tradeoff;
+//		protected String gazeType;
+//		protected boolean hnorm;
+//		protected String className;
+//		
+//		protected HashMap<String , Double> lossMap = new HashMap<String , Double>(); 
+		classifier.setTradeOff(0.1);
+		System.out.println(0.1);
+		classifier.setEpsilon(0);
+		classifier.setGazeType("stefan");
+		classifier.setHnorm(false);
+		classifier.setCurrentClass("walking");
+		classifier.setLossDict("/local/wangxin/Data/full_stefan_gaze/ETLoss_dict/ETLOSS+_60.loss");
 		classifier.train(exampleTrain);
 		
 //		if (saveClassifier){
@@ -90,6 +103,7 @@ public class LSVM_console {
 		double ap_train = classifier.testAP(exampleTrain);
 		System.err.println("train - ap= " + ap_train);
 
+		classifier.optimizeAllLatent(exampleTest);
 		double ap_test = classifier.testAP(exampleTest);
 		System.err.println("test - ap= " + ap_test );
 		System.out.println("\n");

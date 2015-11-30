@@ -194,8 +194,6 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 			for(int e=0; e<maxEpochs; e++) {
 				trainOnceEpochsSGD(l);
 			}
-			System.out.println(iter);
-			System.out.println(getPrimalObjective(l));
 			
 //			System.out.println(iter);
 //			System.out.println(oldprimal);

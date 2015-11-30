@@ -58,16 +58,16 @@ public class LSVM_console_stefan {
 	String classifierFolder = resultFolder + "classifier/";
 	String scoreFolder = resultFolder + "score/";
 
-//	String[] classes = {args[0]};
-//	int[] scaleCV = {Integer.valueOf(args[1])};
-	String[] classes = {"walking"};
-	int[] scaleCV = {90};
+	String[] classes = {args[0]};
+	int[] scaleCV = {Integer.valueOf(args[1])};
+//	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
+//	int[] scaleCV = {90,80,70};
 	
     double[] lambdaCV = {1e-4};
-    double[] epsilonCV = {1e-4};
+    double[] epsilonCV = {0};
 
-//    double[] tradeoffCV = {0, 0.1,0.2, 0.3, 0.4, 0.5, 0.6,0.7,0.8,0.9,1.0};
-    double[] tradeoffCV = {0.1,1};
+    double[] tradeoffCV = {0, 0.1,0.2, 0.3, 0.4, 0.5, 0.6,0.7,0.8,0.9,1.0};
+//    double[] tradeoffCV = {0.1,1};
 		    	
 	int maxCCCPIter = 100;
 	int minCCCPIter = 2;
@@ -107,9 +107,7 @@ public class LSVM_console_stefan {
 	    for(int scale : scaleCV) {
 			String listTrainPath =  sourceDir+"example_files/"+scale+"/"+className+"_train_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
 
-	    	List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listTrain = BagReader.readBagImageLatent("/local/wangxin/Data/ferrari_gaze/example_files/60/horse_train_scale_60_matconvnet_m_2048_layer_20.txt", numWords, true, true, null, true, 0);
-//	    		List<TrainingSample<BagImage, Integer>> listTrain = BagReader.readBagImage("/local/wangxin/Data/ferrari_gaze/example_files/90/horse_train_scale_90_matconvnet_m_2048_layer_20.txt", numWords, true, true, null, true, 0);
-	    	List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listTest = BagReader.readBagImageLatent("/local/wangxin/Data/ferrari_gaze/example_files/60/horse_valval_scale_60_matconvnet_m_2048_layer_20.txt", numWords, true, true, null, true, 0);
+	    	List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listTrain = BagReader.readBagImageLatent(listTrainPath, numWords, true, true, null, true, 0);
 			for(double epsilon : epsilonCV) {
 		    	for(double lambda : lambdaCV) {
 		    		for(double tradeoff : tradeoffCV){    		    			
@@ -119,21 +117,12 @@ public class LSVM_console_stefan {
 							exampleTrain.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTrain.get(i).sample.x,0), listTrain.get(i).label));
 						}
 
-		
-						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleTest = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
-						for(int i=0; i<listTest.size(); i++) {
-							exampleTest.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTest.get(i).sample.x,0), listTest.get(i).label));
-						}
-
 						LSVMGradientDescentBag classifier = new LSVMGradientDescentBag(); 
-		
-
-		
-						////
+				
 						File fileClassifier = new File(classifierFolder + "/" + className + "/"+ 
 								className + "_" + scale + "_"+epsilon+"_"+lambda + 
 								"_"+tradeoff+"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+
-								"_"+optim+"_"+numWords+".lssvm");
+								"_"+optim+"_"+numWords+".lsvm");
 						fileClassifier.getAbsoluteFile().getParentFile().mkdirs();
 						if (loadClassifier && fileClassifier.exists()){
 							ObjectInputStream ois;
@@ -208,10 +197,6 @@ public class LSVM_console_stefan {
 						double ap_train = classifier.testAP(exampleTrain);
 						System.err.println("train - ap= " + ap_train);
 				
-						double ap_test = classifier.testAP(exampleTest);
-						System.err.println("test - ap= " + ap_test );
-						System.out.println("\n");
-
 		//System.out.println(Arrays.toString())
 
 //		for(STrainingSample<LatentRepresentation<BagImage, Integer>,Integer> ex : exampleTrain) {

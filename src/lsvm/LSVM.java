@@ -3,6 +3,7 @@
  */
 package lsvm;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,7 +17,12 @@ import fr.lip6.jkernelmachines.util.algebra.VectorOperations;
  * @author Thibaut Durand - durand.tibo@gmail.com
  *
  */
-public abstract class LSVM<X,H> implements Classifier<LatentRepresentation<X, H>> {
+public abstract class LSVM<X,H> implements Classifier<LatentRepresentation<X, H>> , Serializable  {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1668592777976093022L;
 
 	protected double lambda = 1e-4;
 
@@ -40,6 +46,9 @@ public abstract class LSVM<X,H> implements Classifier<LatentRepresentation<X, H>
 	protected abstract void init(List<TrainingSample<LatentRepresentation<X,H>>> l);
 	protected abstract void learn(List<TrainingSample<LatentRepresentation<X,H>>> l);
 	protected abstract H optimizeH(X x);
+	protected abstract H optimizePositiveH(X x);
+	protected abstract double loss(TrainingSample<LatentRepresentation<X,H>> ts);
+
 
 
 	@Override
@@ -104,7 +113,7 @@ public abstract class LSVM<X,H> implements Classifier<LatentRepresentation<X, H>
 	protected void optimizeLatentPos(List<TrainingSample<LatentRepresentation<X,H>>> l){
 		for(TrainingSample<LatentRepresentation<X,H>> ts : l){
 			if(ts.label == 1){
-				ts.sample.h = optimizeH(ts.sample.x);
+				ts.sample.h = optimizePositiveH(ts.sample.x);
 			}
 		}
 	}
@@ -120,7 +129,8 @@ public abstract class LSVM<X,H> implements Classifier<LatentRepresentation<X, H>
 	protected void optimizeAllLatent(List<TrainingSample<LatentRepresentation<X,H>>> l){
 		for(TrainingSample<LatentRepresentation<X,H>> ts : l){
 			ts.sample.h = optimizeH(ts.sample.x);
-		}
+//			ts.sample.h = optimizePositiveH(ts.sample.x);
+			}
 	}
 
 	protected double accuracy(List<TrainingSample<LatentRepresentation<X,H>>> l){
@@ -156,10 +166,9 @@ public abstract class LSVM<X,H> implements Classifier<LatentRepresentation<X, H>
 	 * @param ts
 	 * @return
 	 */
-	public double loss(TrainingSample<LatentRepresentation<X,H>> ts) {
-		double v = valueOf(ts.sample.x, ts.sample.h);
-		return Math.max(0, 1 - ts.label * v);
-	}
+
+	
+	
 
 	/** 
 	 * Compute the primal objective
