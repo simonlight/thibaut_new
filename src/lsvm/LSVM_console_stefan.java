@@ -32,7 +32,13 @@ public class LSVM_console_stefan {
 	
 	String dataSource= "big";//local or other things
 	String gazeType = "stefan";
+	
+	String taskName = "lsvm_posneg_loss/";
+	double[] lambdaCV = {1e-4};
+    double[] epsilonCV = {0};
 
+    double[] tradeoffCV = {0,0.1, 0.5, 1.0, 1.5, 2, 5, 10,100,1000};
+    
 	String sourceDir = new String();
 	String resDir = new String();
 
@@ -49,8 +55,6 @@ public class LSVM_console_stefan {
 	String initializedType = ".";//+0,+-,or other things
 	boolean hnorm = false;
 	
-	String taskName = "lsvm_basic_loss/";
-	
 	String resultFolder = resDir+taskName;
 	
 	String resultFilePath = resultFolder + "ap_summary.txt";
@@ -63,10 +67,7 @@ public class LSVM_console_stefan {
 //	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
 //	int[] scaleCV = {90,80,70};
 	
-    double[] lambdaCV = {1e-4};
-    double[] epsilonCV = {0};
-
-    double[] tradeoffCV = {0,0.1, 0.5, 1.0, 1.5, 2, 5, 10,100,1000};
+    
 //    double[] tradeoffCV = {0.1,1};
 		    	
 	int maxCCCPIter = 100;

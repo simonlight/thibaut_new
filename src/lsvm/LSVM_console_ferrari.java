@@ -32,8 +32,12 @@ public class LSVM_console_ferrari {
 	
 	String dataSource= "big";//local or other things
 	String gazeType = "ferrari";
-
-	String sourceDir = new String();
+	String taskName = "lsvm_posneg_loss/";
+	double[] lambdaCV = {1e-4};
+    double[] epsilonCV = {0};
+    double[] tradeoffCV = {0,0.1, 0.5, 1.0, 1.5, 2, 5, 10,100,1000};
+	
+    String sourceDir = new String();
 	String resDir = new String();
 
 	if (dataSource=="local"){
@@ -48,8 +52,6 @@ public class LSVM_console_ferrari {
 	String initializedType = ".";//+0,+-,or other things
 	boolean hnorm = false;
 	
-	String taskName = "lsvm_posneg_loss/";
-	
 	String resultFolder = resDir+taskName;
 	
 	String resultFilePath = resultFolder + "ap_summary.txt";
@@ -62,10 +64,7 @@ public class LSVM_console_ferrari {
 //	String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
 //	int[] scaleCV = {60};
 //	String[] classes = {"sofa"};
-    double[] lambdaCV = {1e-4};
-    double[] epsilonCV = {0};
-
-    double[] tradeoffCV = {0,0.1, 0.5, 1.0, 1.5, 2, 5, 10,100,1000};
+    
 //    double[] tradeoffCV = {0.8,0.9};
 		    	
 	int maxCCCPIter = 100;
