@@ -178,8 +178,8 @@ public class BagReader {
 		return readBagLabel(new File(file), dim, bias, norm2, verbose);
 	}
 	
-	public static List<TrainingSample<LatentRepresentation<BagImage,Integer>>> readBagImageLatent(String file, int dim, boolean norm2, boolean bias, PrincipalComponentAnalysis pca, boolean withFeatures, int verbose) {
-		return readBagImageLatent(new File(file), dim, norm2, bias, pca, withFeatures, verbose);
+	public static List<TrainingSample<LatentRepresentation<BagImage,Integer>>> readBagImageLatent(String file, int dim, boolean norm2, boolean bias, PrincipalComponentAnalysis pca, boolean withFeatures, int verbose, String dataSource) {
+		return readBagImageLatent(new File(file), dim, norm2, bias, pca, withFeatures, verbose, dataSource);
 	}
 		
 
@@ -513,7 +513,7 @@ public class BagReader {
 		return l;
 	}
 	
-	public static List<TrainingSample<LatentRepresentation<BagImage, Integer>>> readBagImageLatent(File file, int dim, boolean norm2, boolean bias, PrincipalComponentAnalysis pca, boolean withFeatures, int verbose) {
+	public static List<TrainingSample<LatentRepresentation<BagImage, Integer>>> readBagImageLatent(File file, int dim, boolean norm2, boolean bias, PrincipalComponentAnalysis pca, boolean withFeatures, int verbose, String dataSource) {
 		List<TrainingSample<LatentRepresentation<BagImage, Integer>>> list = null;
 		try {
 			// Read the file
@@ -571,7 +571,8 @@ public class BagReader {
 				for(int j=0; j<nbInstances; j++) {
 					// Read the file of the (j+1)-th instance
 					String fileInstance = st.nextToken();
-//					fileInstance =fileInstance.replace("home", "local");
+					if (dataSource == "local"){
+					fileInstance =fileInstance.replace("home", "local");}
 					fileInstance =fileInstance.replace("matconvnet_m_2048_features", "m_2048_trainval_features");
 					bag.addInstanceFile(fileInstance);
 					if(verbose>0) {
