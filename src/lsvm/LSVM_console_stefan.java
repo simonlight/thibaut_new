@@ -66,7 +66,7 @@ public class LSVM_console_stefan {
     double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
 
-    double[] tradeoffCV = {0, 0.1,0.2, 0.3, 0.4, 0.5, 0.6,0.7,0.8,0.9,1.0};
+    double[] tradeoffCV = {0,0.1, 0.5, 1.0, 1.5, 2, 5, 10,100,1000};
 //    double[] tradeoffCV = {0.1,1};
 		    	
 	int maxCCCPIter = 100;
@@ -107,7 +107,7 @@ public class LSVM_console_stefan {
 	    for(int scale : scaleCV) {
 			String listTrainPath =  sourceDir+"example_files/"+scale+"/"+className+"_train_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
 
-	    	List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listTrain = BagReader.readBagImageLatent(listTrainPath, numWords, true, true, null, true, 0);
+	    	List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listTrain = BagReader.readBagImageLatent(listTrainPath, numWords, true, true, null, true, 0, dataSource);
 			for(double epsilon : epsilonCV) {
 		    	for(double lambda : lambdaCV) {
 		    		for(double tradeoff : tradeoffCV){    		    			

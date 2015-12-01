@@ -30,7 +30,7 @@ import fr.durandt.jstruct.util.AveragePrecision;;
 public class LSVM_console_ferrari {
 	public static void main(String[] args) {
 	
-	String dataSource= "local";//local or other things
+	String dataSource= "big";//local or other things
 	String gazeType = "ferrari";
 
 	String sourceDir = new String();
@@ -48,7 +48,7 @@ public class LSVM_console_ferrari {
 	String initializedType = ".";//+0,+-,or other things
 	boolean hnorm = false;
 	
-	String taskName = "lsvm_basic_loss/";
+	String taskName = "lsvm_posneg_loss/";
 	
 	String resultFolder = resDir+taskName;
 	
@@ -57,16 +57,16 @@ public class LSVM_console_ferrari {
 	String classifierFolder = resultFolder + "classifier/";
 	String scoreFolder = resultFolder + "score/";
 
-//	String[] classes = {args[0]};
-//	int[] scaleCV = {Integer.valueOf(args[1])};
+	String[] classes = {args[0]};
+	int[] scaleCV = {Integer.valueOf(args[1])};
 //	String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
-	int[] scaleCV = {50};
-	String[] classes = {"sofa"};
+//	int[] scaleCV = {60};
+//	String[] classes = {"sofa"};
     double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
 
-//    double[] tradeoffCV = {0, 0.1,0.2, 0.3, 0.4, 0.5, 0.6,0.7,0.8,0.9,1.0};
-    double[] tradeoffCV = {0.8,0.9};
+    double[] tradeoffCV = {0,0.1, 0.5, 1.0, 1.5, 2, 5, 10,100,1000};
+//    double[] tradeoffCV = {0.8,0.9};
 		    	
 	int maxCCCPIter = 100;
 	int minCCCPIter = 2;
@@ -117,12 +117,13 @@ public class LSVM_console_ferrari {
 						}
 
 						LSVMGradientDescentBag classifier = new LSVMGradientDescentBag(); 
-						////
+					
 						File fileClassifier = new File(classifierFolder + "/" + className + "/"+ 
 								className + "_" + scale + "_"+epsilon+"_"+lambda + 
 								"_"+tradeoff+"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+
 								"_"+optim+"_"+numWords+".lsvm");
 						fileClassifier.getAbsoluteFile().getParentFile().mkdirs();
+						
 						if (loadClassifier && fileClassifier.exists()){
 							ObjectInputStream ois;
 							System.out.println("\nread classifier " + fileClassifier.getAbsolutePath());
@@ -141,6 +142,7 @@ public class LSVM_console_ferrari {
 								e.printStackTrace();
 							}
 						}
+						
 						else {
 							System.out.println("\ntraining classifier " + fileClassifier.getAbsolutePath());
 							classifier.setOptim(optim);

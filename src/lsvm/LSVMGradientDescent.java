@@ -80,7 +80,8 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 				optimizeLatentPos(l);
 			}
 			else {
-				optimizeAllLatent(l);
+				optimizeLatentPos(l);
+				optimizeLatentNeg(l);
 			}
 		}
 		if(verbose == 0) {
@@ -118,7 +119,7 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 
 			TrainingSample<LatentRepresentation<X,H>> ts = l.get(s);
 			if(semiConvexity && ts.label == -1) {
-				ts.sample.h = optimizeH(ts.sample.x);
+				ts.sample.h = optimizePredictionH(ts.sample.x);
 			}
 
 			// Compute the loss for sample s
@@ -177,73 +178,41 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 		t = (long) (1 / (eta0 * lambda));
 		double oldPrimal_Objectif = 0;
 		int iter = 0;
-
-
+		double[] lastW = new double[dim];
 		
 		do {
 			iter +=1;
 			oldPrimal_Objectif = getPrimalObjective(l);
-//			oldprimal = getPrimalObjective(l);
 			if(verbose >= 1) {
 				System.out.print((iter+1) + "/" + maxCCCPIter + "\t");
 			}
 			else {
 				System.out.print(".");
 			}
-			
+			System.arraycopy(w, 0, lastW, 0, dim);
 			for(int e=0; e<maxEpochs; e++) {
 				trainOnceEpochsSGD(l);
 			}
 			
-//			System.out.println(iter);
-//			System.out.println(oldprimal);
-//			System.out.println(getPrimalObjective(l));
+			System.out.println(iter);
+			System.out.println(getPrimalObjective(l));
 			// update latent variables
 			if(semiConvexity) {
 				optimizeLatentPos(l);
 			}
 			else {
-				optimizeAllLatent(l);
-			}
+				optimizeLatentPos(l);
+				optimizeLatentNeg(l);
+				}
 		}while((oldPrimal_Objectif - getPrimalObjective(l)> epsilon || iter < minCCCPIter) && (iter < maxCCCPIter));
+		
+		System.arraycopy(lastW, 0, w, 0, dim);
+		
 		if(verbose == 0) {
 			System.out.println("*");
 		}
 	}
 
-		
-//		for(int iter=0; iter<maxCCCPIter; iter++) {
-//			iter+=1;
-////			oldprimal = getPrimalObjective(l);
-//			if(verbose >= 1) {
-//				System.out.print((iter+1) + "/" + maxCCCPIter + "\t");
-//			}
-//			else {
-//				System.out.print(".");
-//			}
-//			
-//			
-//			for(int e=0; e<maxEpochs; e++) {
-//				trainOnceEpochsSGD(l);
-//				System.out.println(e);
-//			}
-//			System.out.println(getPrimalObjective(l));
-//			
-////			System.out.println(iter);
-////			System.out.println(oldprimal);
-////			System.out.println(getPrimalObjective(l));
-//			// update latent variables
-//			if(semiConvexity) {
-//				optimizeLatentPos(l);
-//			}
-//			else {
-//				optimizeAllLatent(l);
-//			}
-//		}
-//		if(verbose == 0) {
-//			System.out.println("*");
-//		}
-//	}
 	
 	/**
 	 * Update the separating hyperplane by learning one epoch on given training list
@@ -271,10 +240,10 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 			
 			TrainingSample<LatentRepresentation<X,H>> ts = l.get(i);
 			if(semiConvexity && ts.label == -1) {
-				ts.sample.h = optimizeH(ts.sample.x);
+				ts.sample.h = optimizeNegativeH(ts.sample.x);
 			}
 
-			//important: not the same as felsenswalb, note the objectif is without the number of examples n
+			//important: not the same as felzenswalb, note the objectif is without the number of examples n
 			double[] x = psi(ts.sample.x, ts.sample.h);
 			double y = ts.label;
 			double z = y * linear.valueOf(w, x);

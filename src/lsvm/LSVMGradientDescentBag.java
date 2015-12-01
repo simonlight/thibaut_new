@@ -11,7 +11,6 @@ import fr.durandt.jstruct.latent.LatentRepresentation;
 import fr.durandt.jstruct.util.Pair;
 import fr.durandt.jstruct.util.AveragePrecision;
 import fr.lip6.jkernelmachines.classifier.Classifier;
-import fr.lip6.jkernelmachines.evaluation.Evaluation;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 
 /**
@@ -19,6 +18,11 @@ import fr.lip6.jkernelmachines.type.TrainingSample;
  *
  */
 public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer> {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8563460344209868908L;
 
 	/* (non-Javadoc)
 	 * @see fr.lip6.jkernelmachines.classifier.Classifier#copy()
@@ -43,8 +47,12 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		}
 	}
 
+	/*
+	 * in the prediction phase, no fixations are used for scoring a region
+	 * @see lsvm.LSVM#optimizePredictionH(java.lang.Object)
+	 */
 	@Override
-	protected Integer optimizeH(BagImage x) {
+	protected Integer optimizePredictionH(BagImage x) {
 		int hp = -1;
 		double maxVal = -Double.MAX_VALUE;
 		for(int i=0; i<x.getInstances().size(); i++) {
@@ -63,7 +71,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		double maxVal = -Double.MAX_VALUE;
 		for(int i=0; i<x.getInstances().size(); i++) {
 
-			double val = valueOf(x,i)+ tradeoff * getGazeRatio(x, i, gazeType);
+			double val = valueOf(x,i)+ tradeoff * getPositiveGazeRatio(x, i, gazeType);
 			if(val > maxVal) {
 				maxVal = val;
 				hp = i;
@@ -71,11 +79,25 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		}
 		return hp;
 	}
-	
-	protected double getGazeRatio(BagImage x, Integer h, String gazeType){
-		if (gazeType.equals("ferrari")){
-			//
+
+	@Override
+	protected Integer optimizeNegativeH(BagImage x) {
+		int hp = -1;
+		double maxVal = -Double.MAX_VALUE;
+		for(int i=0; i<x.getInstances().size(); i++) {
 			
+			double val = valueOf(x,i)+ tradeoff * getNegativeGazeRatio(x, i, gazeType);
+			if(val > maxVal) {
+				maxVal = val;
+				hp = i;
+			}
+		}
+		return hp;
+	}
+
+	
+	protected double getPositiveGazeRatio(BagImage x, Integer h, String gazeType){
+		if (gazeType.equals("ferrari")){
 			String featurePath[] = x.getInstanceFile(h).split("/");
 			String ETLossFileName = featurePath[featurePath.length - 1];
 			double gaze_ratio = lossMap.get(className+"_"+ETLossFileName);
@@ -95,13 +117,23 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		}
 	}
 	
-	protected double getAllGazeRatio(BagImage x, Integer h, String gazeType){
+	protected double getNegativeGazeRatio(BagImage x, Integer h, String gazeType){
 		if (gazeType.equals("ferrari")){
 			
 			String featurePath[] = x.getInstanceFile(h).split("/");
 			String ETLossFileName = featurePath[featurePath.length - 1];
-			double gaze_ratio = lossMap.get(className+"_"+ETLossFileName);
-
+			String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
+			double gaze_ratio=0;
+			int cnt=0;
+			for (String c: classes){
+				if (lossMap.containsKey(c+"_"+ETLossFileName)){
+					cnt+=1;
+					if (lossMap.get(c+"_"+ETLossFileName)>gaze_ratio){
+						gaze_ratio =lossMap.get(c+"_"+ETLossFileName);
+					} 
+					
+				}
+			}
 			return gaze_ratio;
 		}
 		else if (gazeType.equals("stefan")){
@@ -121,10 +153,10 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		double v = valueOf(ts.sample.x, ts.sample.h);
 		if (ts.label == 1){
 //			return Math.max(0, 1 - v);
-			return Math.max(0, 1 - (v + tradeoff * getGazeRatio(ts.sample.x, ts.sample.h, gazeType)));
+			return Math.max(0, 1 - (v + tradeoff * getPositiveGazeRatio(ts.sample.x, ts.sample.h, gazeType)));
 		}
 		else{
-			return Math.max(0, 1 + v);
+			return Math.max(0, 1 + (v + tradeoff * getNegativeGazeRatio(ts.sample.x, ts.sample.h, gazeType)));
 			}
 	}
 	
@@ -141,5 +173,8 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
         double ap = AveragePrecision.getAP(eval);
         return ap;
 	}
+	
+
+	
 
 }

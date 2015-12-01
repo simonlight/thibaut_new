@@ -45,15 +45,18 @@ public abstract class LSVM<X,H> implements Classifier<LatentRepresentation<X, H>
 	 */
 	protected abstract void init(List<TrainingSample<LatentRepresentation<X,H>>> l);
 	protected abstract void learn(List<TrainingSample<LatentRepresentation<X,H>>> l);
-	protected abstract H optimizeH(X x);
+	protected abstract H optimizePredictionH(X x);
 	protected abstract H optimizePositiveH(X x);
+	protected abstract H optimizeNegativeH(X x);
 	protected abstract double loss(TrainingSample<LatentRepresentation<X,H>> ts);
 
-
-
-	@Override
+//	@Override
+//	public double valueOf(LatentRepresentation<X,H> rep) {
+//		H hp = optimizeH(rep.x);
+//		return linear.valueOf(w, psi(rep.x, hp));
+//	}
 	public double valueOf(LatentRepresentation<X,H> rep) {
-		H hp = optimizeH(rep.x);
+		H hp = optimizePredictionH(rep.x);
 		return linear.valueOf(w, psi(rep.x, hp));
 	}
 	
@@ -89,12 +92,6 @@ public abstract class LSVM<X,H> implements Classifier<LatentRepresentation<X, H>
 		// initialize latent variables and dim
 		init(l);
 
-		System.out.println("----------------------------------------------------------------------------------------");
-		System.out.println("Train latent SVM \tw: " + dim + "\tlambda: " + lambda); 
-		System.out.println("nb= " + l.size() + "\t" + Arrays.toString(nb));
-		showParameters();
-		System.out.println("----------------------------------------------------------------------------------------");
-
 		// initialize w
 		w = new double[dim];
 
@@ -121,14 +118,14 @@ public abstract class LSVM<X,H> implements Classifier<LatentRepresentation<X, H>
 	protected void optimizeLatentNeg(List<TrainingSample<LatentRepresentation<X,H>>> l){
 		for(TrainingSample<LatentRepresentation<X,H>> ts : l){
 			if(ts.label == -1){
-				ts.sample.h = optimizeH(ts.sample.x);
+				ts.sample.h = optimizeNegativeH(ts.sample.x);
 			}
 		}
 	}
 
-	protected void optimizeAllLatent(List<TrainingSample<LatentRepresentation<X,H>>> l){
+	protected void optimizePredictionLatent(List<TrainingSample<LatentRepresentation<X,H>>> l){
 		for(TrainingSample<LatentRepresentation<X,H>> ts : l){
-			ts.sample.h = optimizeH(ts.sample.x);
+			ts.sample.h = optimizePredictionH(ts.sample.x);
 //			ts.sample.h = optimizePositiveH(ts.sample.x);
 			}
 	}
