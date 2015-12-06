@@ -1,7 +1,7 @@
 /**
  * 
  */
-package lsvm;
+package lsvmCCCPVoc;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,14 +32,15 @@ public class LSVM_console_ferrari {
 	
 	String dataSource= "local";//local or other things
 	String gazeType = "ferrari";
-	String taskName = "lsvm_posneg_loss/";
+	String taskName = "lsvm_cccp/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
-    double[] tradeoffCV = {0,0.1, 0.5, 1.0, 1.5, 2, 5, 10,100,1000};
+//    double[] tradeoffCV = {0,0.1, 0.5, 1.0, 1.5, 2, 5, 10,100,1000};
 //    String[] classes = {args[0]};
-//	int[] scaleCV = {Integer.valueOf(args[1])};
+    //	int[] scaleCV = {Integer.valueOf(args[1])};
 	String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
-	int[] scaleCV = {90,80,70};
+//	String[] classes = {"aeroplane"};
+	int[] scaleCV = {90,80,70,60,50,40,30};
 //	String[] classes = {"sofa"};
     
 //    double[] tradeoffCV = {0.8,0.9};
@@ -79,7 +80,7 @@ public class LSVM_console_ferrari {
 	int optim = 2;
 	int numWords = 2048;
 	boolean saveClassifier = true;
-    boolean loadClassifier = true;
+    boolean loadClassifier = false;
     
 	System.out.println("experiment detail: "
 			+ "\nsourceDir:\t "+sourceDir
@@ -92,7 +93,6 @@ public class LSVM_console_ferrari {
 			+ "\nscale CV:\t"+Arrays.toString(scaleCV)
 			+ "\nlambda CV:\t" + Arrays.toString(lambdaCV)
 			+ "\nepsilon CV:\t" + Arrays.toString(epsilonCV)
-			+ "\ntradeoff CV:\t"+Arrays.toString(tradeoffCV)
 			+ "\noptim:\t"+optim
 			+ "\nmaxCCCPIter:\t"+maxCCCPIter
 			+ "\nminCCCPIter:\t"+minCCCPIter
@@ -109,7 +109,6 @@ public class LSVM_console_ferrari {
 	    	List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listTrain = BagReader.readBagImageLatent(listTrainPath, numWords, true, true, null, true, 0, dataSource);
 			for(double epsilon : epsilonCV) {
 		    	for(double lambda : lambdaCV) {
-		    		for(double tradeoff : tradeoffCV){    		    			
 		
 						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleTrain = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
 						for(int i=0; i<listTrain.size(); i++) {
@@ -120,7 +119,7 @@ public class LSVM_console_ferrari {
 					
 						File fileClassifier = new File(classifierFolder + "/" + className + "/"+ 
 								className + "_" + scale + "_"+epsilon+"_"+lambda + 
-								"_"+tradeoff+"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+
+								"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+
 								"_"+optim+"_"+numWords+".lsvm");
 						fileClassifier.getAbsoluteFile().getParentFile().mkdirs();
 						
@@ -156,7 +155,6 @@ public class LSVM_console_ferrari {
 
 							classifier.setGazeType(gazeType);								
 							classifier.setLossDict(sourceDir+"ETLoss_dict/"+"ETLOSS+_"+scale+".loss");
-							classifier.setTradeOff(tradeoff);
 							classifier.setHnorm(hnorm);
 							classifier.setCurrentClass(className);
 							//Initialize the region by fixations
@@ -205,6 +203,6 @@ public class LSVM_console_ferrari {
 //			Integer h = (Integer)res[1];
 //			System.out.println(h);
 //		}
-	}}}}}}
+	}}}}}
 
 }

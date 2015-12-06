@@ -1,7 +1,7 @@
 /**
  * 
  */
-package lsvm;
+package lsvmCCCPVoc;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,33 +27,35 @@ import fr.durandt.jstruct.util.AveragePrecision;;
  * @author Thibaut Durand - durand.tibo@gmail.com
  *
  */
-public class LSVM_console_ferrari {
+public class LSVM_console_stefan {
 	public static void main(String[] args) {
 	
 	String dataSource= "local";//local or other things
-	String gazeType = "ferrari";
-	String taskName = "lsvm_posneg_loss/";
+	String gazeType = "stefan";
+	
+	String taskName = "lsvm_cccp_test/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
-    double[] tradeoffCV = {0,0.1, 0.5, 1.0, 1.5, 2, 5, 10,100,1000};
-//    String[] classes = {args[0]};
+//	String[] classes = {args[0]};
 //	int[] scaleCV = {Integer.valueOf(args[1])};
-	String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
-	int[] scaleCV = {90,80,70};
-//	String[] classes = {"sofa"};
-    
-//    double[] tradeoffCV = {0.8,0.9};
+//	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
+    String[] classes = {"jumping"};
+    int[] scaleCV = {50};
 	
-    String sourceDir = new String();
+    
+    double[] tradeoffCV = {0,0.1, 0.5, 1.0, 1.5, 2, 5, 10,100,1000};
+    
+	String sourceDir = new String();
 	String resDir = new String();
 
 	if (dataSource=="local"){
-		sourceDir = "/local/wangxin/Data/ferrari_gaze/";
-		resDir = "/local/wangxin/results/ferrari_gaze/std_et/";
+		sourceDir = "/local/wangxin/Data/full_stefan_gaze/";
+		resDir = "/local/wangxin/results/full_stefan_gaze/lsvm_et/";
+		
 	}
 	else if (dataSource=="big"){
-		sourceDir = "/home/wangxin/Data/ferrari_gaze/";
-		resDir = "/home/wangxin/results/ferrari_gaze/std_et/";
+		sourceDir = "/home/wangxin/Data/full_stefan_gaze/";
+		resDir = "/home/wangxin/results/full_stefan_gaze/lsvm_et/";
 	}
 
 	String initializedType = ".";//+0,+-,or other things
@@ -66,7 +68,7 @@ public class LSVM_console_ferrari {
 	String classifierFolder = resultFolder + "classifier/";
 	String scoreFolder = resultFolder + "score/";
 
-	
+
 		    	
 	int maxCCCPIter = 100;
 	int minCCCPIter = 2;
@@ -117,13 +119,12 @@ public class LSVM_console_ferrari {
 						}
 
 						LSVMGradientDescentBag classifier = new LSVMGradientDescentBag(); 
-					
+				
 						File fileClassifier = new File(classifierFolder + "/" + className + "/"+ 
 								className + "_" + scale + "_"+epsilon+"_"+lambda + 
 								"_"+tradeoff+"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+
 								"_"+optim+"_"+numWords+".lsvm");
 						fileClassifier.getAbsoluteFile().getParentFile().mkdirs();
-						
 						if (loadClassifier && fileClassifier.exists()){
 							ObjectInputStream ois;
 							System.out.println("\nread classifier " + fileClassifier.getAbsolutePath());
@@ -142,7 +143,6 @@ public class LSVM_console_ferrari {
 								e.printStackTrace();
 							}
 						}
-						
 						else {
 							System.out.println("\ntraining classifier " + fileClassifier.getAbsolutePath());
 							classifier.setOptim(optim);

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package lsvm;
+package lsvmwithprediction;
 
 import java.io.BufferedWriter;
 import java.io.File;

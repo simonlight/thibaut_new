@@ -30,13 +30,18 @@ import fr.durandt.jstruct.util.AveragePrecision;;
 public class LSVM_console_stefan {
 	public static void main(String[] args) {
 	
-	String dataSource= "big";//local or other things
+	String dataSource= "local";//local or other things
 	String gazeType = "stefan";
 	
 	String taskName = "lsvm_posneg_loss/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
-
+//	String[] classes = {args[0]};
+//	int[] scaleCV = {Integer.valueOf(args[1])};
+	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
+	int[] scaleCV = {90,80,70};
+	
+    
     double[] tradeoffCV = {0,0.1, 0.5, 1.0, 1.5, 2, 5, 10,100,1000};
     
 	String sourceDir = new String();
@@ -62,13 +67,7 @@ public class LSVM_console_stefan {
 	String classifierFolder = resultFolder + "classifier/";
 	String scoreFolder = resultFolder + "score/";
 
-	String[] classes = {args[0]};
-	int[] scaleCV = {Integer.valueOf(args[1])};
-//	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
-//	int[] scaleCV = {90,80,70};
-	
-    
-//    double[] tradeoffCV = {0.1,1};
+
 		    	
 	int maxCCCPIter = 100;
 	int minCCCPIter = 2;

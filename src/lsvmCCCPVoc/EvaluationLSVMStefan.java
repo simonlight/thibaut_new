@@ -1,7 +1,7 @@
 /**
  * 
  */
-package lsvm;
+package lsvmCCCPVoc;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -50,7 +50,7 @@ public class EvaluationLSVMStefan {
 	String initializedType = ".";//+0,+-,or other things
 	boolean hnorm = false;
 	
-	String taskName = "lsvm_posneg_loss/";
+	String taskName = "lsvm_cccp_test/";
 	
 	String resultFolder = resDir+taskName;
 	
@@ -158,19 +158,19 @@ public class EvaluationLSVMStefan {
 							//train metric file
 							File trainMetricFile=new File(metricFolder+scale+"/metric_train_"+tradeoff+"_"+scale+"_"+epsilon+"_"+lambda+"_"+className+".txt");
 							trainMetricFile.getAbsoluteFile().getParentFile().mkdirs();
-							classifier.optimizePredictionLatent(exampleTrain);
+							classifier.optimizeLatent(exampleTrain);
 							double ap_train = classifier.testAP(exampleTrain);
 		    				System.out.println("ap train:"+ap_train);
 							//val metric file
 							File valMetricFile=new File(metricFolder+scale+"/metric_valval_"+tradeoff+"_"+scale+"_"+epsilon+"_"+lambda+"_"+className+".txt");
 							valMetricFile.getAbsoluteFile().getParentFile().mkdirs();
-							classifier.optimizePredictionLatent(exampleVal);
+							classifier.optimizeLatent(exampleVal);
 							double ap_val = classifier.testAP(exampleVal);
 		    				System.out.println("ap val:"+ap_val);
 		    				//test metric file		    				
 		    				File testMetricFile=new File(metricFolder+scale+"/metric_valtest_"+tradeoff+"_"+scale+"_"+epsilon+"_"+lambda+"_"+className+".txt");
 		    				testMetricFile.getAbsoluteFile().getParentFile().mkdirs();
-							classifier.optimizePredictionLatent(exampleTest);
+							classifier.optimizeLatent(exampleTest);
 		    				double ap_test = classifier.testAP(exampleTest);
 		    				System.out.println("ap test:"+ap_test);
 		    				

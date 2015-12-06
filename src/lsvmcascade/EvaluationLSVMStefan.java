@@ -1,7 +1,7 @@
 /**
  * 
  */
-package lsvm;
+package lsvmcascade;
 
 import java.io.BufferedWriter;
 import java.io.File;
