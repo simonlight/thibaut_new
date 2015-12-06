@@ -30,17 +30,17 @@ import fr.durandt.jstruct.util.AveragePrecision;;
 public class LSVM_console_ferrari {
 	public static void main(String[] args) {
 	
-	String dataSource= "local";//local or other things
+	String dataSource= "big";//local or other things
 	String gazeType = "ferrari";
 	String taskName = "lsvm_cccp/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
 //    double[] tradeoffCV = {0,0.1, 0.5, 1.0, 1.5, 2, 5, 10,100,1000};
-//    String[] classes = {args[0]};
-    //	int[] scaleCV = {Integer.valueOf(args[1])};
-	String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
+    String[] classes = {args[0]};
+    	int[] scaleCV = {Integer.valueOf(args[1])};
+//	String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
 //	String[] classes = {"aeroplane"};
-	int[] scaleCV = {90,80,70,60,50,40,30};
+//	int[] scaleCV = {90};
 //	String[] classes = {"sofa"};
     
 //    double[] tradeoffCV = {0.8,0.9};
@@ -153,10 +153,6 @@ public class LSVM_console_ferrari {
 							classifier.setStochastic(stochastic);
 							classifier.setVerbose(0);
 
-							classifier.setGazeType(gazeType);								
-							classifier.setLossDict(sourceDir+"ETLoss_dict/"+"ETLOSS+_"+scale+".loss");
-							classifier.setHnorm(hnorm);
-							classifier.setCurrentClass(className);
 							//Initialize the region by fixations
 //							for(STrainingSample<LatentRepresentation<BagMIL, Integer>,Integer> ts : exampleTrain){
 //								ts.input.h = lsvm.getGazeInitRegion(ts, scale, initializedType);

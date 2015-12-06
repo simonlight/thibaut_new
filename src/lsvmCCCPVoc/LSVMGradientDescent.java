@@ -33,10 +33,6 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 	protected boolean semiConvexity = true;
 	protected boolean stochastic = false;
 	
-	protected double tradeoff;
-	protected String gazeType;
-	protected boolean hnorm;
-	protected String className;
 	
 	protected HashMap<String , Double> lossMap = new HashMap<String , Double>(); 
 	
@@ -188,7 +184,8 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 				System.out.print(".");
 			}
 			
-			
+			System.out.println("objectif: "+oldPrimal_Objectif);
+
 			
 			System.arraycopy(w, 0, lastW, 0, dim);
 			
@@ -370,53 +367,7 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 		this.minCCCPIter = minCCCPIter;
 	}
 	
-	public String getGazeType() {
-		return gazeType;
-	}
-	public void setGazeType(String gazeType) {
-		this.gazeType = gazeType;
-	}
-	public void setHnorm(boolean hnorm) {
-		this.hnorm = hnorm;
-	}
-	public boolean getHnorm() {
-		return hnorm;
-	}
-
-	public void setTradeOff(double tradeoff){
-		this.tradeoff = tradeoff;
-	}
-	public double getTradeOff(){
-		return tradeoff;
-	}
-	
-	public void setCurrentClass(String className){
-		this.className = className;
-	}
-	public String getCurrentClass(){
-		return className;
-	}
-	
-	
-	public void setLossDict(String lossPath){
 		
-		try {
-			ObjectInputStream is;
-			is = new ObjectInputStream(new FileInputStream(lossPath));
-			this.lossMap = (HashMap<String, Double> ) is.readObject();// 从流中读取User的数据  
-			is.close();}
-		catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}  
-		
-	}
 	
 	
 	

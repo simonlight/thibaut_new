@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import fr.durandt.jstruct.latent.LatentRepresentation;
+import fr.durandt.jstruct.variable.BagImage;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 import fr.lip6.jkernelmachines.util.algebra.VectorOperations;
 
@@ -39,11 +40,13 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 	protected String className;
 	
 	protected HashMap<String , Double> lossMap = new HashMap<String , Double>(); 
+	protected HashMap<String , Integer> groundTruthGazeMap = new HashMap<String , Integer>();
 	
 	private long t=0;
 	
 	abstract public double[] getGazePsi(TrainingSample<LatentRepresentation<X,H>> ts);
-
+	abstract public HashMap<String , Integer> GroundTruthGazeRegion(List<TrainingSample<LatentRepresentation<BagImage, Integer>>> l);
+	
 	@Override
 	protected void learn(List<TrainingSample<LatentRepresentation<X,H>>> l) {
 		if(optim == 1) {
@@ -233,6 +236,7 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 				}
 			}
 		}
+		
 		for(int i=0; i<imax; i++) {
 			
 			double eta = 1.0 / (lambda * t);// learning rate
@@ -246,11 +250,13 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 			TrainingSample<LatentRepresentation<X,H>> ts = l.get(i);
 			ts.sample.h = optimizeH(ts.sample.x);
 			
-			double[] gazePsi = getGazePsi(ts);
-			for(int d=0; d<dim; d++) {
-				w[d] -= gazePsi[d] * eta;
+			//gaze gradient
+			if (ts.label == 1){
+				double[] gazePsi = getGazePsi(ts);
+				for(int d=0; d<dim; d++) {
+					w[d] -= gazePsi[d] * eta;
+				}
 			}
-			
 			double[] innerX = psi(ts.sample.x, ts.sample.h);
 			double y = ts.label;
 			double z = y * linear.valueOf(w, innerX);
@@ -421,7 +427,12 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 		
 	}
 	
-	
+	public HashMap<String, Integer> getGroundTruthGazeMap() {
+		return groundTruthGazeMap;
+	}
+	public void setGroundTruthGazeMap(HashMap<String, Integer> groundTruthGazeMap) {
+		this.groundTruthGazeMap = groundTruthGazeMap;
+	}
 	
 
 }
