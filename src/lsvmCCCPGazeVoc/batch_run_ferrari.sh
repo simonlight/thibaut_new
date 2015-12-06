@@ -1,6 +1,6 @@
-#cls_arr=("aeroplane" "cow" "dog" "cat" "motorbike" "boat"  "horse"  "sofa" "diningtable" "bicycle")
+cls_arr=("aeroplane" "cow" "dog" "cat" "motorbike" "boat"  "horse"  "sofa" "diningtable" "bicycle")
 #cls_arr=("dog" "cat" "motorbike" "boat" "aeroplane" "horse" "cow" "sofa" "diningtable" "bicycle")
-cls_arr=("dog" "cat" "motorbike" "boat"  "horse"  "sofa" "diningtable" "bicycle")
+#cls_arr=("dog" "cat" "motorbike" "boat"  "horse"  "sofa" "diningtable" "bicycle")
 scale_arr=("50" "40" "30")
 #cls_arr=("sofa")
 
