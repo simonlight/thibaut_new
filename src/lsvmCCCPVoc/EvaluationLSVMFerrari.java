@@ -118,7 +118,7 @@ public class EvaluationLSVMFerrari {
 						////
 						File fileClassifier = new File(classifierFolder + "/" + className + "/"+ 
 								className + "_" + scale + "_"+epsilon+"_"+lambda + 
-								"_"+tradeoff+"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+
+								"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+
 								"_"+optim+"_"+numWords+".lsvm");
 						ObjectInputStream ois;
 						System.out.println("read classifier " + fileClassifier.getAbsolutePath());

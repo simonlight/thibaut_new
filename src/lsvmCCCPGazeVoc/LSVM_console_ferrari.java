@@ -75,7 +75,6 @@ public class LSVM_console_ferrari {
 
 	int maxSGDEpochs = 100;
 	
-	boolean semiConvexity = true;
 	boolean stochastic = false;
     
 	int optim = 2;
@@ -148,7 +147,6 @@ public class LSVM_console_ferrari {
 							classifier.setOptim(optim);
 							classifier.setMaxCCCPIter(maxCCCPIter);
 							classifier.setMinCCCPIter(minCCCPIter);
-							classifier.setSemiConvexity(semiConvexity);
 							classifier.setEpsilon(epsilon);
 							classifier.setLambda(lambda);
 							classifier.setStochastic(stochastic);

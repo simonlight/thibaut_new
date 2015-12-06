@@ -184,7 +184,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		double valmax = -Double.MAX_VALUE;
 		if (ts.label == 1){
 			for(int h=0; h<ts.sample.x.getInstances().size(); h++) {
-				double val = (1 - getPositiveGazeRatio(ts.sample.x, h, gazeType))/(double)GroundTruthGazeRegion(ts)[1]
+				double val = 1 - getPositiveGazeRatio(ts.sample.x, h, gazeType)/(double)GroundTruthGazeRegion(ts)[1]
 						+ valueOf(ts.sample.x, h);
 				if(val>valmax){
 					valmax = val;
@@ -194,7 +194,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		}
 		else if (ts.label == -1){
 			for(int h=0; h<ts.sample.x.getInstances().size(); h++) {
-				double val = (1-getNegativeGazeRatio(ts.sample.x, h, gazeType))/(double)GroundTruthGazeRegion(ts)[1]
+				double val = 1 - getNegativeGazeRatio(ts.sample.x, h, gazeType)/(double)GroundTruthGazeRegion(ts)[1]
 						+ valueOf(ts.sample.x, h);
 				if(val>valmax){
 					valmax = val;
@@ -233,15 +233,15 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		return res;
 	}
 	
-	public double[] getGazeGradient(TrainingSample<LatentRepresentation<BagImage, Integer>> ts){
-		double[] gazeGradient= new double[dim];
+	public double[] getGazePsi(TrainingSample<LatentRepresentation<BagImage, Integer>> ts){
+		double[] gazePsi= new double[dim];
 		double[] laiPsi= psi(ts.sample.x, LAIRegion(ts));
 		double[] gtGazePsi= psi(ts.sample.x, (Integer)GroundTruthGazeRegion(ts)[0]);
 		
 		for (int i =0; i<dim;i++){
-			gazeGradient[i] = laiPsi[i] - gtGazePsi[i];
+			gazePsi[i] = laiPsi[i] - gtGazePsi[i];
 		}
-		return gazeGradient;
+		return gazePsi;
 	}
 	
 	public double loss(TrainingSample<LatentRepresentation<BagImage, Integer>> ts) {

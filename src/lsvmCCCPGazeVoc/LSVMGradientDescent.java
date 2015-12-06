@@ -42,7 +42,7 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 	
 	private long t=0;
 	
-	abstract public double[] getGazeGradient(TrainingSample<LatentRepresentation<X,H>> ts);
+	abstract public double[] getGazePsi(TrainingSample<LatentRepresentation<X,H>> ts);
 
 	@Override
 	protected void learn(List<TrainingSample<LatentRepresentation<X,H>>> l) {
@@ -246,7 +246,11 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 			TrainingSample<LatentRepresentation<X,H>> ts = l.get(i);
 			ts.sample.h = optimizeH(ts.sample.x);
 			
-
+			double[] gazePsi = getGazePsi(ts);
+			for(int d=0; d<dim; d++) {
+				w[d] -= gazePsi[d] * eta;
+			}
+			
 			double[] innerX = psi(ts.sample.x, ts.sample.h);
 			double y = ts.label;
 			double z = y * linear.valueOf(w, innerX);

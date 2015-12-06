@@ -37,7 +37,7 @@ public class EvaluationLSVMFerrari {
 	String initializedType = ".";//+0,+-,or other things
 	boolean hnorm = false;
 	
-	String taskName = "lsvm_cccp_test/";
+	String taskName = "lsvm_cccpgaze/";
 	
 	String resultFolder = resDir+taskName;
 	
@@ -48,22 +48,19 @@ public class EvaluationLSVMFerrari {
 
 //	String[] classes = {args[0]};
 //	int[] scaleCV = {Integer.valueOf(args[1])};
-//	String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
-	String[] classes = {"aeroplane"};
-	int[] scaleCV = {50};
+	String[] classes = {"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
+//	String[] classes = {"aeroplane"};
+	int[] scaleCV = {90,80,70,60,50,40};
 //	String[] classes = {"sofa"};
     double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
 
-    double[] tradeoffCV = {0};
-//    double[] tradeoffCV = {0.8,0.9};
 		    	
 	int maxCCCPIter = 100;
 	int minCCCPIter = 2;
 
 	int maxSGDEpochs = 100;
 	
-	boolean semiConvexity = true;
 	boolean stochastic = false;
     
 	int optim = 2;
@@ -82,7 +79,6 @@ public class EvaluationLSVMFerrari {
 			+ "\nscale CV:\t"+Arrays.toString(scaleCV)
 			+ "\nlambda CV:\t" + Arrays.toString(lambdaCV)
 			+ "\nepsilon CV:\t" + Arrays.toString(epsilonCV)
-			+ "\ntradeoff CV:\t"+Arrays.toString(tradeoffCV)
 			+ "\noptim:\t"+optim
 			+ "\nmaxCCCPIter:\t"+maxCCCPIter
 			+ "\nminCCCPIter:\t"+minCCCPIter
@@ -105,7 +101,6 @@ public class EvaluationLSVMFerrari {
 			
 	    	for(double epsilon : epsilonCV) {
 		    	for(double lambda : lambdaCV) {
-		    		for(double tradeoff : tradeoffCV){    		    			
 		
 		    			List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleTrain = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
 						for(int i=0; i<listTrain.size(); i++) {
@@ -125,7 +120,7 @@ public class EvaluationLSVMFerrari {
 						////
 						File fileClassifier = new File(classifierFolder + "/" + className + "/"+ 
 								className + "_" + scale + "_"+epsilon+"_"+lambda + 
-								"_"+tradeoff+"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+
+								"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+
 								"_"+optim+"_"+numWords+".lsvm");
 						ObjectInputStream ois;
 						System.out.println("read classifier " + fileClassifier.getAbsolutePath());
@@ -144,21 +139,21 @@ public class EvaluationLSVMFerrari {
 							e.printStackTrace();
 						}
 						//train metric file
-						File trainMetricFile=new File(metricFolder+scale+"/metric_train_"+tradeoff+"_"+scale+"_"+epsilon+"_"+lambda+"_"+className+".txt");
+						File trainMetricFile=new File(metricFolder+scale+"/metric_train_"+"_"+scale+"_"+epsilon+"_"+lambda+"_"+className+".txt");
 						trainMetricFile.getAbsoluteFile().getParentFile().mkdirs();
 						classifier.optimizeLatent(exampleTrain);
 						double ap_train = classifier.testAP(exampleTrain);
 	    				System.out.println("ap train:"+ap_train);
 
 	    				//val metric file
-						File valMetricFile=new File(metricFolder+scale+"/metric_valval_"+tradeoff+"_"+scale+"_"+epsilon+"_"+lambda+"_"+className+".txt");
+						File valMetricFile=new File(metricFolder+scale+"/metric_valval_"+"_"+scale+"_"+epsilon+"_"+lambda+"_"+className+".txt");
 						valMetricFile.getAbsoluteFile().getParentFile().mkdirs();
 						classifier.optimizeLatent(exampleVal);
 						double ap_val = classifier.testAP(exampleVal);
 	    				System.out.println("ap val:"+ap_val);
 	    				
 	    				//test metric file		    				
-	    				File testMetricFile=new File(metricFolder+scale+"/metric_valtest_"+tradeoff+"_"+scale+"_"+epsilon+"_"+lambda+"_"+className+".txt");
+	    				File testMetricFile=new File(metricFolder+scale+"/metric_valtest_"+"_"+scale+"_"+epsilon+"_"+lambda+"_"+className+".txt");
 	    				testMetricFile.getAbsoluteFile().getParentFile().mkdirs();
 						classifier.optimizeLatent(exampleTest);
 	    				double ap_test = classifier.testAP(exampleTest);
@@ -167,7 +162,7 @@ public class EvaluationLSVMFerrari {
 	    				//write ap 
 	    				try {
 							BufferedWriter out = new BufferedWriter(new FileWriter(resultFilePath, true));
-							out.write("category:"+className+" tradeoff:"+String.valueOf(tradeoff)+" scale:"+scale+" lambda:"+lambda+" epsilon:"+epsilon+" ap_train:"+ap_train+" ap_val:"+ap_val+" ap_test:"+ap_test+"\n");
+							out.write("category:"+className+" scale:"+scale+" lambda:"+lambda+" epsilon:"+epsilon+" ap_train:"+ap_train+" ap_val:"+ap_val+" ap_test:"+ap_test+"\n");
 							out.flush();
 							out.close();
 							
@@ -183,6 +178,5 @@ public class EvaluationLSVMFerrari {
 		    }
 	    }
 	   }
-	}
 
 }
