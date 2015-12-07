@@ -263,7 +263,8 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 			return Math.max(0, 1 + v) + tradeoff * g;
 		}
 		else if(ts.label == 1){
-			return Math.max(1, v) - v + tradeoff*(g);
+//			return Math.max(1, v) - v + tradeoff*(g);
+			return Math.max(1, v) - v;
 		}
 		return (Double) null;
 
