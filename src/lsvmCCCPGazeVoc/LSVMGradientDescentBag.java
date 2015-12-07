@@ -259,8 +259,8 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		double laiValue = (double)lai[1];
 		double g = laiValue - valueOf(ts.sample.x, groundTruthGazeMap.get(ts.sample.x.getName()));
 		if (ts.label == -1){
-			return Math.max(0, 1 + v);
-//			return Math.max(0, 1 + v) + tradeoff * g;
+//			return Math.max(0, 1 + v);
+			return Math.max(0, 1 + v) + tradeoff * g;
 		}
 		else if(ts.label == 1){
 			return Math.max(1, v) - v + tradeoff*(g);
