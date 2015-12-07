@@ -23,11 +23,8 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2073619978721969420L;
+	private static final long serialVersionUID = -3428682753907137329L;
 
-	/**
-	 * 
-	 */
 
 	/* (non-Javadoc)
 	 * @see fr.lip6.jkernelmachines.classifier.Classifier#copy()
@@ -49,7 +46,8 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		dim = l.get(0).sample.x.getInstance(0).length;
 		setGroundTruthGazeMap(GroundTruthGazeRegion(l));
 		for(TrainingSample<LatentRepresentation<BagImage, Integer>> ts : l) {
-			ts.sample.h = (int)(Math.random()*ts.sample.x.getInstances().size());
+//			ts.sample.h = (int)(Math.random()*ts.sample.x.getInstances().size());
+			ts.sample.h = 0;
 		}
 	}
 
@@ -181,9 +179,10 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		}
 	}
 	
-	public Integer LAIRegion(TrainingSample<LatentRepresentation<BagImage, Integer>> ts) {
+	public Object[] LAI(TrainingSample<LatentRepresentation<BagImage, Integer>> ts) {
 		Integer hpredict = -1;
 		double valmax = -Double.MAX_VALUE;
+		Object[] lai = new Object[2];
 		if (ts.label == 1){
 			for(int h=0; h<ts.sample.x.getInstances().size(); h++) {
 				double val = 1 - getPositiveGazeRatio(ts.sample.x, h, gazeType)
@@ -199,14 +198,16 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 			for(int h=0; h<ts.sample.x.getInstances().size(); h++) {
 				double val = 1 - getNegativeGazeRatio(ts.sample.x, h, gazeType)
 								 /getNegativeGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType)
-							 + valueOf(ts.sample.x, h);
+						 + valueOf(ts.sample.x, h);
 				if(val>valmax){
 					valmax = val;
 					hpredict = h;
 				}
 			}
 		}
-		return hpredict;
+		lai[0] = hpredict;
+		lai[1] = valmax;
+		return lai;
 	}
 	
 	public HashMap<String , Integer> GroundTruthGazeRegion(List<TrainingSample<LatentRepresentation<BagImage, Integer>>> l) {
@@ -242,24 +243,27 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 	
 	public double[] getGazePsi(TrainingSample<LatentRepresentation<BagImage, Integer>> ts){
 		double[] gazePsi= new double[dim];
-		double[] laiPsi= psi(ts.sample.x, LAIRegion(ts));
+		double[] laiPsi= psi(ts.sample.x, (Integer)LAI(ts)[0]);
 		double[] gtGazePsi= psi(ts.sample.x, groundTruthGazeMap.get(ts.sample.x.getName()));
 		
 		for (int i =0; i<dim;i++){
-			gazePsi[i] = laiPsi[i] - gtGazePsi[i];
+			gazePsi[i] = tradeoff*(laiPsi[i] - gtGazePsi[i]);
 		}
 		return gazePsi;
 	}
 	
 	public double loss(TrainingSample<LatentRepresentation<BagImage, Integer>> ts) {
 		double v = valueOf(ts.sample.x, ts.sample.h);
-		double g = valueOf(ts.sample.x, LAIRegion(ts)) - valueOf(ts.sample.x, groundTruthGazeMap.get(ts.sample.x.getName()));
+		Object[] lai = LAI(ts);
+		Integer laiRegion = (Integer)lai[0];
+		double laiValue = (double)lai[1];
+		double g = laiValue - valueOf(ts.sample.x, groundTruthGazeMap.get(ts.sample.x.getName()));
 		if (ts.label == -1){
 			return Math.max(0, 1 + v);
-//			return Math.max(0, 1 + v) + g;
+//			return Math.max(0, 1 + v) + tradeoff * g;
 		}
 		else if(ts.label == 1){
-			return Math.max(1, v) - v + g;
+			return Math.max(1, v) - v + tradeoff*(g);
 		}
 		return (Double) null;
 

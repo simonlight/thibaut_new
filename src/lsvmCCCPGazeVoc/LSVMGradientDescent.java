@@ -198,7 +198,6 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 			for(; e<maxEpochs; e++) {
 				trainOnceEpochsSGD(l);
 			}
-			System.out.format("SGD %d times, max SGD %d times", e, maxEpochs);
 			// update latent variables
 			optimizeLatent(l);
 
@@ -225,9 +224,8 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 		if(stochastic) {
 			Collections.shuffle(l);
 		}
-		
-		double[][] cp2BatchPsi = new double[l.size()][dim];
-		
+		//psi of cp2 term
+		double[][] cp2BatchPsi = new double[l.size()][dim];		
 		for (int i=0; i<l.size();i++){
 			if (l.get(i).label == 1){
 				double[] cp2Psi = psi(l.get(i).sample.x, l.get(i).sample.h);
@@ -257,6 +255,7 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 					w[d] -= gazePsi[d] * eta;
 				}
 			}
+			
 			double[] innerX = psi(ts.sample.x, ts.sample.h);
 			double y = ts.label;
 			double z = y * linear.valueOf(w, innerX);

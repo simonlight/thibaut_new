@@ -21,7 +21,17 @@ public class EvaluationLSVMFerrari {
 	
 	String dataSource= "local";//local or other things
 	String gazeType = "ferrari";
-
+	String taskName = "lsvm_cccpgaze_test/";
+//	String[] classes = {args[0]};
+//	int[] scaleCV = {Integer.valueOf(args[1])};
+//	String[] classes = {"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
+//	String[] classes = {"aeroplane"};
+	int[] scaleCV = {50};
+	String[] classes = {"sofa"};
+    double[] lambdaCV = {1e-4};
+    double[] epsilonCV = {0};
+    double[] tradeoffCV = {0.1};
+    
 	String sourceDir = new String();
 	String resDir = new String();
 
@@ -37,7 +47,7 @@ public class EvaluationLSVMFerrari {
 	String initializedType = ".";//+0,+-,or other things
 	boolean hnorm = false;
 	
-	String taskName = "lsvm_cccpgaze/";
+	
 	
 	String resultFolder = resDir+taskName;
 	
@@ -46,18 +56,8 @@ public class EvaluationLSVMFerrari {
 	String classifierFolder = resultFolder + "classifier/";
 	String scoreFolder = resultFolder + "score/";
 
-//	String[] classes = {args[0]};
-//	int[] scaleCV = {Integer.valueOf(args[1])};
-	String[] classes = {"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
-//	String[] classes = {"aeroplane"};
-	int[] scaleCV = {90,80,70,60,50,40};
-//	String[] classes = {"sofa"};
-    double[] lambdaCV = {1e-4};
-    double[] epsilonCV = {0};
-
-		    	
 	int maxCCCPIter = 100;
-	int minCCCPIter = 2;
+	int minCCCPIter = 1;
 
 	int maxSGDEpochs = 100;
 	
@@ -101,7 +101,8 @@ public class EvaluationLSVMFerrari {
 			
 	    	for(double epsilon : epsilonCV) {
 		    	for(double lambda : lambdaCV) {
-		
+		    		for(double tradeoff : tradeoffCV) {
+
 		    			List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleTrain = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
 						for(int i=0; i<listTrain.size(); i++) {
 							exampleTrain.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTrain.get(i).sample.x,0), listTrain.get(i).label));
@@ -120,7 +121,7 @@ public class EvaluationLSVMFerrari {
 						////
 						File fileClassifier = new File(classifierFolder + "/" + className + "/"+ 
 								className + "_" + scale + "_"+epsilon+"_"+lambda + 
-								"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+
+								"_"+tradeoff+"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+
 								"_"+optim+"_"+numWords+".lsvm");
 						ObjectInputStream ois;
 						System.out.println("read classifier " + fileClassifier.getAbsolutePath());
@@ -178,5 +179,5 @@ public class EvaluationLSVMFerrari {
 		    }
 	    }
 	   }
-
+	}
 }

@@ -185,8 +185,6 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 			}
 			
 			System.out.println("objectif: "+oldPrimal_Objectif);
-
-			
 			System.arraycopy(w, 0, lastW, 0, dim);
 			
 			for(int e=0; e<maxEpochs; e++) {
@@ -220,7 +218,6 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 		}
 		
 		double[][] cp2BatchPsi = new double[l.size()][dim];
-		
 		for (int i=0; i<l.size();i++){
 			if (l.get(i).label == 1){
 				double[] cp2Psi = psi(l.get(i).sample.x, l.get(i).sample.h);

@@ -1,7 +1,7 @@
 cls_arr=("aeroplane" "cow" "dog" "cat" "motorbike" "boat"  "horse"  "sofa" "diningtable" "bicycle")
 #cls_arr=("dog" "cat" "motorbike" "boat" "aeroplane" "horse" "cow" "sofa" "diningtable" "bicycle")
 #cls_arr=("dog" "cat" "motorbike" "boat"  "horse"  "sofa" "diningtable" "bicycle")
-scale_arr=("50" "40" "30")
+scale_arr=("90" "80" "70" "60" "50" "40" "30")
 #cls_arr=("sofa")
 
 #scale_arr=("90")
