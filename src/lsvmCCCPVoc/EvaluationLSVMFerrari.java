@@ -37,7 +37,7 @@ public class EvaluationLSVMFerrari {
 	String initializedType = ".";//+0,+-,or other things
 	boolean hnorm = false;
 	
-	String taskName = "lsvm_cccp_test/";
+	String taskName = "lsvm_cccp/";
 	
 	String resultFolder = resDir+taskName;
 	
@@ -48,23 +48,23 @@ public class EvaluationLSVMFerrari {
 
 //	String[] classes = {args[0]};
 //	int[] scaleCV = {Integer.valueOf(args[1])};
-//	String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
-	String[] classes = {"sofa"};
-	int[] scaleCV = {50};
+	String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
+//	String[] classes = {"sofa"};
+	int[] scaleCV = {90,80,70,60,50,40,30};
 //	String[] classes = {"sofa"};
     double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
 
 	int maxCCCPIter = 100;
-	int minCCCPIter = 1;
+	int minCCCPIter = 2;
 
 	int maxSGDEpochs = 100;
 	
     
 	int optim = 2;
 	int numWords = 2048;
-	boolean saveClassifier = true;
-    boolean loadClassifier = false;
+	boolean saveClassifier = false;
+    boolean loadClassifier = true;
     
 	System.out.println("experiment detail: "
 			+ "\nsourceDir:\t "+sourceDir

@@ -22,7 +22,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9205258851085430146L;
+	private static final long serialVersionUID = -2073619978721969420L;
 
 	/* (non-Javadoc)
 	 * @see fr.lip6.jkernelmachines.classifier.Classifier#copy()

@@ -30,19 +30,19 @@ import fr.durandt.jstruct.util.AveragePrecision;;
 public class LSVM_console_ferrari {
 	public static void main(String[] args) {
 	
-	String dataSource= "big";//local or other things
+	String dataSource= "local";//local or other things
 	String gazeType = "ferrari";
-	String taskName = "lsvm_cccpgaze_positive/";
+	String taskName = "lsvm_cccpgaze_negpos_test/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
 //    double[] tradeoffCV = {0,0.1, 0.5, 1.0, 1.5, 2, 5, 10,100,1000};
-    String[] classes = {args[0]};
-	int[] scaleCV = {Integer.valueOf(args[1])};
+//    String[] classes = {args[0]};
+//	int[] scaleCV = {Integer.valueOf(args[1])};
 //	String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
 //	String[] classes = {"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
 //	int[] scaleCV = {90,80,70,60};
-//	int[] scaleCV = {50};
-//	String[] classes = {"sofa"};
+	int[] scaleCV = {50};
+	String[] classes = {"sofa"};
     
 //    double[] tradeoffCV = {0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
   double[] tradeoffCV = {1};
@@ -105,10 +105,10 @@ public class LSVM_console_ferrari {
 	 for(String className: classes){
 	    for(int scale : scaleCV) {
 			String listTrainPath =  sourceDir+"example_files/"+scale+"/"+className+"_train_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
-//			String listValPath =  sourceDir+"example_files/"+scale+"/"+className+"_valtest_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
+			String listValPath =  sourceDir+"example_files/"+scale+"/"+className+"_valtest_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
 
 	    	List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listTrain = BagReader.readBagImageLatent(listTrainPath, numWords, true, true, null, true, 0, dataSource);
-//	    	List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listVal = BagReader.readBagImageLatent(listValPath, numWords, true, true, null, true, 0, dataSource);
+	    	List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listVal = BagReader.readBagImageLatent(listValPath, numWords, true, true, null, true, 0, dataSource);
 
 	    	for(double epsilon : epsilonCV) {
 		    	for(double lambda : lambdaCV) {
@@ -118,10 +118,10 @@ public class LSVM_console_ferrari {
 							exampleTrain.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTrain.get(i).sample.x,0), listTrain.get(i).label));
 						}
 						
-//						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleVal = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
-//						for(int i=0; i<listVal.size(); i++) {
-//							exampleVal.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listVal.get(i).sample.x,0), listVal.get(i).label));
-//						}
+						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleVal = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
+						for(int i=0; i<listVal.size(); i++) {
+							exampleVal.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listVal.get(i).sample.x,0), listVal.get(i).label));
+						}
 
 						LSVMGradientDescentBag classifier = new LSVMGradientDescentBag(); 
 					
@@ -200,12 +200,12 @@ public class LSVM_console_ferrari {
 							}
 							System.out.println("wrote classifier successfully!");
 						}
-						
+	    				classifier.optimizeLatent(exampleTrain);
 						double ap_train = classifier.testAP(exampleTrain);
 						System.err.println("train - ap= " + ap_train);
-//						classifier.optimizeLatent(exampleVal);
-//						double ap_val = classifier.testAP(exampleVal);
-//						System.err.println("train - ap= " + ap_val);
+						classifier.optimizeLatent(exampleVal);
+						double ap_val = classifier.testAP(exampleVal);
+						System.err.println("train - ap= " + ap_val);
 				
 		//System.out.println(Arrays.toString())
 

@@ -48,9 +48,9 @@ public class EvaluationLSVMFerrari {
 
 //	String[] classes = {args[0]};
 //	int[] scaleCV = {Integer.valueOf(args[1])};
-//	String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
-	int[] scaleCV = {50};
-	String[] classes = {"sofa"};
+	String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
+	int[] scaleCV = {30};
+//	String[] classes = {"sofa"};
     double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
 
@@ -66,8 +66,8 @@ public class EvaluationLSVMFerrari {
     
 	int optim = 2;
 	int numWords = 2048;
-	boolean saveClassifier = true;
-    boolean loadClassifier = false;
+	boolean saveClassifier = false;
+    boolean loadClassifier = true;
     
 	System.out.println("experiment detail: "
 			+ "\nsourceDir:\t "+sourceDir

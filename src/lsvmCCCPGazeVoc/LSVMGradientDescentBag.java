@@ -218,7 +218,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		for(TrainingSample<LatentRepresentation<BagImage, Integer>> ts : l) {
 			Integer maxH = -1;
 			double maxGazeRatio = -1;
-			if (ts.label==1){
+			if (ts.label == 1){
 				for(int h=0; h<ts.sample.x.getInstances().size(); h++) {
 					double gazeRatio = getPositiveGazeRatio(ts.sample.x, h, gazeType);
 					if (gazeRatio>=maxGazeRatio){
@@ -259,11 +259,11 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		double laiValue = (double)lai[1];
 		double g = laiValue - valueOf(ts.sample.x, groundTruthGazeMap.get(ts.sample.x.getName()));
 		if (ts.label == -1){
-			return Math.max(0, 1 + v);
-//			return Math.max(0, 1 + v) + tradeoff * g;
+//			return Math.max(0, 1 + v);
+			return Math.max(0, 1 + v) + tradeoff * g;
 		}
 		else if(ts.label == 1){
-			return Math.max(1, v) - v + tradeoff*(g);
+			return Math.max(1, v) - v + tradeoff * g;
 //			return Math.max(1, v) - v;
 		}
 		return (Double) null;
