@@ -19,7 +19,7 @@ import fr.lip6.jkernelmachines.type.TrainingSample;
 public class EvaluationLSVMFerrari {
 	public static void main(String[] args) {
 	
-	String dataSource= "local";//local or other things
+	String dataSource= "big";//local or other things
 	String gazeType = "ferrari";
 
 	String sourceDir = new String();
@@ -46,10 +46,10 @@ public class EvaluationLSVMFerrari {
 	String classifierFolder = resultFolder + "classifier/";
 	String scoreFolder = resultFolder + "score/";
 
-//	String[] classes = {args[0]};
-//	int[] scaleCV = {Integer.valueOf(args[1])};
-	String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
-	int[] scaleCV = {30};
+	String[] classes = {args[0]};
+	int[] scaleCV = {Integer.valueOf(args[1])};
+//	String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
+//	int[] scaleCV = {90,80,70,60,50,40,30};
 //	String[] classes = {"sofa"};
     double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
@@ -61,7 +61,6 @@ public class EvaluationLSVMFerrari {
 
 	int maxSGDEpochs = 100;
 	
-	boolean semiConvexity = true;
 	boolean stochastic = false;
     
 	int optim = 2;

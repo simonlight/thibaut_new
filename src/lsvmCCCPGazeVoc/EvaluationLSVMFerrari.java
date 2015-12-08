@@ -48,7 +48,6 @@ public class EvaluationLSVMFerrari {
 	boolean hnorm = false;
 	
 	
-	
 	String resultFolder = resDir+taskName;
 	
 	String resultFilePath = resultFolder + "ap_summary.txt";
