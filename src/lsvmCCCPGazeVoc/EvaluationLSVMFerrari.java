@@ -22,15 +22,15 @@ public class EvaluationLSVMFerrari {
 	String dataSource= "big";//local or other things
 	String gazeType = "ferrari";
 	String taskName = "lsvm_cccpgaze_positive/";
-//	String[] classes = {args[0]};
-//	int[] scaleCV = {Integer.valueOf(args[1])};
+	String[] classes = {args[0]};
+	int[] scaleCV = {Integer.valueOf(args[1])};
 //	String[] classes = {"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
 //	String[] classes = {"aeroplane"};
-	int[] scaleCV = {50};
-	String[] classes = {"sofa"};
+//	int[] scaleCV = {50};
+//	String[] classes = {"sofa"};
     double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
-    double[] tradeoffCV = {0.1};
+    double[] tradeoffCV = {1};
     
 	String sourceDir = new String();
 	String resDir = new String();
