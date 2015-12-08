@@ -32,7 +32,7 @@ public class LSVM_console_ferrari {
 	
 	String dataSource= "big";//local or other things
 	String gazeType = "ferrari";
-	String taskName = "lsvm_cccpgaze_negative/";
+	String taskName = "lsvm_cccpgaze_positive/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
 //    double[] tradeoffCV = {0,0.1, 0.5, 1.0, 1.5, 2, 5, 10,100,1000};
