@@ -1,6 +1,6 @@
 cls_arr=("jumping" "phoning" "playinginstrument" "reading" "ridingbike" "ridinghorse" "running" "takingphoto" "usingcomputer" "walking")
 #cls_arr=("takingphoto" "usingcomputer" "walking")
-scale_arr=("60" "50" "40" "30")
+scale_arr=("90" "80" "70" "60" "50" "40" "30")
 #cls_arr=("phoning")
 
 #scale_arr=("90")
