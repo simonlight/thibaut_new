@@ -276,9 +276,8 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 
 		if (ts.label == -1){
 			lossTerm[0]=Math.max(0, 1 + v);
-			lossTerm[1]=0;
+			lossTerm[1]=tradeoff * g;
 			return lossTerm;
-//			return Math.max(0, 1 + v) + tradeoff * g;
 		}
 		else if(ts.label == 1){
 			lossTerm[0]= Math.max(1, v) - v;
@@ -293,17 +292,22 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		double loss = 0;
 		double classfication_loss = 0;
 		double gaze_loss_bound = 0;
-		double gaze_loss = 0;
+		double positive_gaze_loss = 0;
+		double negative_gaze_loss = 0;
 		for(TrainingSample<LatentRepresentation<BagImage, Integer>> ts : l) {
 			double[] example_loss = loss(ts);
 			classfication_loss +=example_loss[0];
 			gaze_loss_bound += example_loss[1];
 			if (ts.label == 1){
-				gaze_loss+=1*getPositiveGazeLoss(ts, ts.sample.h);
+				positive_gaze_loss+=1*getPositiveGazeLoss(ts, ts.sample.h);
+			}
+			if (ts.label == -1){
+				negative_gaze_loss+=1*getNegativeGazeLoss(ts, ts.sample.h);
 			}
 			loss += DoubleStream.of(example_loss).sum();
 		}
-		System.out.format("classification loss:%f, gaze loss(bounded): %f, gaze loss: %f", classfication_loss, gaze_loss_bound, gaze_loss);
+		System.out.format("classification loss:%f, gaze loss(bounded): %f, positive gaze loss: %f, negative gaze loss:%f",
+				classfication_loss, gaze_loss_bound, positive_gaze_loss, negative_gaze_loss);
 		loss /= l.size();
 		return loss;
 	}
@@ -312,20 +316,37 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 	public double getLoss(List<TrainingSample<LatentRepresentation<BagImage, Integer>>> l, BufferedWriter trainingDetailFileOut) {
 		double loss = 0;
 		double classfication_loss = 0;
+		double positive_gaze_loss_bound = 0;
+		double negative_gaze_loss_bound = 0;
 		double gaze_loss_bound = 0;
-		double gaze_loss = 0;
+		double positive_gaze_loss = 0;
+		double negative_gaze_loss = 0;
 		for(TrainingSample<LatentRepresentation<BagImage, Integer>> ts : l) {
 			double[] example_loss = loss(ts);
 			classfication_loss +=example_loss[0];
 			gaze_loss_bound += example_loss[1];
 			if (ts.label == 1){
-				gaze_loss+=1*getPositiveGazeLoss(ts, ts.sample.h);
+				positive_gaze_loss_bound += example_loss[1];
+				positive_gaze_loss+=1*getPositiveGazeLoss(ts, ts.sample.h);
+			}
+			if (ts.label == -1){
+				negative_gaze_loss_bound += example_loss[1];
+				negative_gaze_loss+=1*getNegativeGazeLoss(ts, ts.sample.h);
 			}
 			loss += DoubleStream.of(example_loss).sum();
 		}
-		System.out.format("classification loss:%f, gaze loss(bounded): %f, gaze loss: %f, loss: %f", classfication_loss, gaze_loss_bound, gaze_loss, loss);
+		System.out.format("classification loss:%f, positive_gaze_loss_bound: %f, negative_gaze_loss_bound: %f,"
+						+ " gaze_loss_bound:%f, positive_gaze_loss:%f, negative_gaze_loss:%f, gaze_loss:%f",
+						classfication_loss, positive_gaze_loss_bound, negative_gaze_loss_bound, 
+						gaze_loss_bound, positive_gaze_loss, negative_gaze_loss, positive_gaze_loss+negative_gaze_loss);
 		try {
-			trainingDetailFileOut.write("classification_loss:"+classfication_loss+" gaze_loss_bound:"+gaze_loss_bound+" gaze_loss:"+gaze_loss + " loss:"+loss);
+			trainingDetailFileOut.write("classification_loss:"+classfication_loss+
+										" positive_gaze_loss_bound:"+positive_gaze_loss_bound+
+										" negative_gaze_loss_bound:"+negative_gaze_loss_bound+
+										" gaze_loss_bound:"+gaze_loss_bound+
+										" positive_gaze_loss:"+positive_gaze_loss+
+										" negative_gaze_loss:"+negative_gaze_loss+
+										" gaze_loss:"+(positive_gaze_loss+negative_gaze_loss));
 			trainingDetailFileOut.flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
