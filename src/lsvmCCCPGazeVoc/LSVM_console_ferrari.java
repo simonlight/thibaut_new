@@ -3,10 +3,12 @@
  */
 package lsvmCCCPGazeVoc;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -30,22 +32,23 @@ import fr.durandt.jstruct.util.AveragePrecision;;
 public class LSVM_console_ferrari {
 	public static void main(String[] args) {
 	
-	String dataSource= "local";//local or other things
+	String dataSource= "big";//local or other things
 	String gazeType = "ferrari";
-	String taskName = "lsvm_cccpgaze_negpos_test/";
+	String taskName = "lsvm_cccpgaze_positive_cv/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
 //    double[] tradeoffCV = {0,0.1, 0.5, 1.0, 1.5, 2, 5, 10,100,1000};
-//    String[] classes = {args[0]};
-//	int[] scaleCV = {Integer.valueOf(args[1])};
+    String[] classes = {args[0]};
+	int[] scaleCV = {Integer.valueOf(args[1])};
 //	String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
 //	String[] classes = {"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
 //	int[] scaleCV = {90,80,70,60};
-	int[] scaleCV = {50};
-	String[] classes = {"sofa"};
+//	int[] scaleCV = {50};
+//	String[] classes = {"sofa"};
+//    double[] tradeoffCV = {0.5,1};
     
-//    double[] tradeoffCV = {0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
-  double[] tradeoffCV = {1};
+    double[] tradeoffCV = {0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+//  double[] tradeoffCV = {1};
 	
     String sourceDir = new String();
 	String resDir = new String();
@@ -68,6 +71,7 @@ public class LSVM_console_ferrari {
 	String metricFolder = resultFolder + "metric/";
 	String classifierFolder = resultFolder + "classifier/";
 	String scoreFolder = resultFolder + "score/";
+	String trainingDetailFolder = resultFolder + "trainingdetail/";
 	
 	int maxCCCPIter = 100;
 	int minCCCPIter = 1;
@@ -137,7 +141,6 @@ public class LSVM_console_ferrari {
 							try {
 								ois = new ObjectInputStream(new FileInputStream(fileClassifier.getAbsolutePath()));
 								classifier = (LSVMGradientDescentBag) ois.readObject();
-								classifier.showParameters();
 							} catch (FileNotFoundException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -169,8 +172,24 @@ public class LSVM_console_ferrari {
 //							for(STrainingSample<LatentRepresentation<BagMIL, Integer>,Integer> ts : exampleTrain){
 //								ts.input.h = lsvm.getGazeInitRegion(ts, scale, initializedType);
 //							}
+							
+
+							File trainingDetailFile = new File(trainingDetailFolder + "/" + className + "/"+ 
+									className + "_" + scale + "_"+epsilon+"_"+lambda + 
+									"_"+tradeoff+"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+
+									"_"+optim+"_"+numWords+".traindetail");
+							trainingDetailFile.getAbsoluteFile().getParentFile().mkdirs();
+							try {
+								BufferedWriter trainingDetailFileOut = new BufferedWriter(new FileWriter(trainingDetailFile));
+								classifier.train(exampleTrain, trainingDetailFileOut);
+								trainingDetailFileOut.close();
+							}	
+							
+						 catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						
-							classifier.train(exampleTrain);
 						}
 						
 													
@@ -200,8 +219,8 @@ public class LSVM_console_ferrari {
 							}
 							System.out.println("wrote classifier successfully!");
 						}
-	    				classifier.optimizeLatent(exampleTrain);
-						double ap_train = classifier.testAP(exampleTrain);
+
+	    				double ap_train = classifier.testAP(exampleTrain);
 						System.err.println("train - ap= " + ap_train);
 						classifier.optimizeLatent(exampleVal);
 						double ap_val = classifier.testAP(exampleVal);

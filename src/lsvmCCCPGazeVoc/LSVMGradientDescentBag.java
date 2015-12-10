@@ -3,9 +3,12 @@
  */
 package lsvmCCCPGazeVoc;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.DoubleStream;
 
 import fr.durandt.jstruct.variable.BagImage;
 import fr.durandt.jstruct.latent.LatentRepresentation;
@@ -48,6 +51,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		for(TrainingSample<LatentRepresentation<BagImage, Integer>> ts : l) {
 //			ts.sample.h = (int)(Math.random()*ts.sample.x.getInstances().size());
 			ts.sample.h = 0;
+//			ts.sample.h = groundTruthGazeMap.get(ts.sample.x.getName());
 		}
 	}
 
@@ -179,14 +183,24 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		}
 	}
 	
+	public double getPositiveGazeLoss(TrainingSample<LatentRepresentation<BagImage, Integer>> ts, Integer h){
+		return 1 - getPositiveGazeRatio(ts.sample.x, h, gazeType)
+					/getPositiveGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType);
+	}
+
+	public double getNegativeGazeLoss(TrainingSample<LatentRepresentation<BagImage, Integer>> ts, Integer h){
+		return 1 - getNegativeGazeRatio(ts.sample.x, h, gazeType)
+					/getNegativeGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType);
+	}
+
+	
 	public Object[] LAI(TrainingSample<LatentRepresentation<BagImage, Integer>> ts) {
 		Integer hpredict = -1;
 		double valmax = -Double.MAX_VALUE;
 		Object[] lai = new Object[2];
 		if (ts.label == 1){
 			for(int h=0; h<ts.sample.x.getInstances().size(); h++) {
-				double val = 1 - getPositiveGazeRatio(ts.sample.x, h, gazeType)
-								/getPositiveGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType)
+				double val = getPositiveGazeLoss(ts, h)
 						+ valueOf(ts.sample.x, h);
 				if(val>valmax){
 					valmax = val;
@@ -196,8 +210,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		}
 		else if (ts.label == -1){
 			for(int h=0; h<ts.sample.x.getInstances().size(); h++) {
-				double val = 1 - getNegativeGazeRatio(ts.sample.x, h, gazeType)
-								 /getNegativeGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType)
+				double val = getNegativeGazeLoss(ts, h)
 						 + valueOf(ts.sample.x, h);
 				if(val>valmax){
 					valmax = val;
@@ -252,22 +265,74 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		return gazePsi;
 	}
 	
-	public double loss(TrainingSample<LatentRepresentation<BagImage, Integer>> ts) {
+	public double[] loss(TrainingSample<LatentRepresentation<BagImage, Integer>> ts) {
 		double v = valueOf(ts.sample.x, ts.sample.h);
 		Object[] lai = LAI(ts);
 		Integer laiRegion = (Integer)lai[0];
 		double laiValue = (double)lai[1];
 		double g = laiValue - valueOf(ts.sample.x, groundTruthGazeMap.get(ts.sample.x.getName()));
+
+		double[] lossTerm = new double[2];
+
 		if (ts.label == -1){
-//			return Math.max(0, 1 + v);
-			return Math.max(0, 1 + v) + tradeoff * g;
+			lossTerm[0]=Math.max(0, 1 + v);
+			lossTerm[1]=0;
+			return lossTerm;
+//			return Math.max(0, 1 + v) + tradeoff * g;
 		}
 		else if(ts.label == 1){
-			return Math.max(1, v) - v + tradeoff * g;
-//			return Math.max(1, v) - v;
+			lossTerm[0]= Math.max(1, v) - v;
+			lossTerm[1]= tradeoff * g;
+			return lossTerm;
 		}
-		return (Double) null;
+		return null;
 
+	}
+	
+	public double getLoss(List<TrainingSample<LatentRepresentation<BagImage, Integer>>> l) {
+		double loss = 0;
+		double classfication_loss = 0;
+		double gaze_loss_bound = 0;
+		double gaze_loss = 0;
+		for(TrainingSample<LatentRepresentation<BagImage, Integer>> ts : l) {
+			double[] example_loss = loss(ts);
+			classfication_loss +=example_loss[0];
+			gaze_loss_bound += example_loss[1];
+			if (ts.label == 1){
+				gaze_loss+=1*getPositiveGazeLoss(ts, ts.sample.h);
+			}
+			loss += DoubleStream.of(example_loss).sum();
+		}
+		System.out.format("classification loss:%f, gaze loss(bounded): %f, gaze loss: %f", classfication_loss, gaze_loss_bound, gaze_loss);
+		loss /= l.size();
+		return loss;
+	}
+
+	
+	public double getLoss(List<TrainingSample<LatentRepresentation<BagImage, Integer>>> l, BufferedWriter trainingDetailFileOut) {
+		double loss = 0;
+		double classfication_loss = 0;
+		double gaze_loss_bound = 0;
+		double gaze_loss = 0;
+		for(TrainingSample<LatentRepresentation<BagImage, Integer>> ts : l) {
+			double[] example_loss = loss(ts);
+			classfication_loss +=example_loss[0];
+			gaze_loss_bound += example_loss[1];
+			if (ts.label == 1){
+				gaze_loss+=1*getPositiveGazeLoss(ts, ts.sample.h);
+			}
+			loss += DoubleStream.of(example_loss).sum();
+		}
+		System.out.format("classification loss:%f, gaze loss(bounded): %f, gaze loss: %f, loss: %f", classfication_loss, gaze_loss_bound, gaze_loss, loss);
+		try {
+			trainingDetailFileOut.write("classification_loss:"+classfication_loss+" gaze_loss_bound:"+gaze_loss_bound+" gaze_loss:"+gaze_loss + " loss:"+loss);
+			trainingDetailFileOut.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		loss /= l.size();
+		return loss;
 	}
 	
 	public double testAP(List<TrainingSample<LatentRepresentation<BagImage,Integer>>> l) {
@@ -282,6 +347,8 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
         }
         double ap = AveragePrecision.getAP(eval);
         return ap;
-	}	
+	}
+
+
 
 }

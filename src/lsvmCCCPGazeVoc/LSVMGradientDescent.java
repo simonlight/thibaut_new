@@ -3,6 +3,8 @@
  */
 package lsvmCCCPGazeVoc;
 
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -10,6 +12,7 @@ import java.io.ObjectInputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.DoubleStream;
 
 import fr.durandt.jstruct.latent.LatentRepresentation;
 import fr.durandt.jstruct.variable.BagImage;
@@ -21,6 +24,12 @@ import fr.lip6.jkernelmachines.util.algebra.VectorOperations;
  *
  */
 public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -667731866975742617L;
+
 
 	protected int optim = 2	;
 	
@@ -38,7 +47,6 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 	protected String gazeType;
 	protected boolean hnorm;
 	protected String className;
-	
 	protected HashMap<String , Double> lossMap = new HashMap<String , Double>(); 
 	protected HashMap<String , Integer> groundTruthGazeMap = new HashMap<String , Integer>();
 	
@@ -56,6 +64,16 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 			learnSGD(l);
 		}
 	}
+	
+	protected void learn(List<TrainingSample<LatentRepresentation<X,H>>> l, BufferedWriter trainingDetailFileOut) {
+		if(optim == 1) {
+			learnPegasos(l);
+		}
+		else if(optim == 2) {
+			learnSGD(l, trainingDetailFileOut);
+		}
+	}
+	
 
 	/**
 	 * optim inspirée du ML3
@@ -125,7 +143,7 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 			}
 
 			// Compute the loss for sample s
-			double loss = loss(ts);
+			double loss = DoubleStream.of(loss(ts)).sum();
 
 			// Compute the gradient
 			if(loss > 0) {
@@ -167,7 +185,7 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 	 * 
 	 * @param l
 	 */
-	
+
 	
 	protected void learnSGD(List<TrainingSample<LatentRepresentation<X,H>>> l) {
 
@@ -178,13 +196,15 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 		double typw = Math.sqrt(maxw);
 		double eta0 = typw;
 		t = (long) (1 / (eta0 * lambda));
-		double oldPrimal_Objectif = 0;
+		
+		double newPrimal_Objectif = getPrimalObjective(l);
+		double oldPrimal_Objectif = newPrimal_Objectif;
+		
 		int iter = 0;
 		double[] lastW = new double[dim];
-		
 		do {
 			iter +=1;
-			oldPrimal_Objectif = getPrimalObjective(l);
+			oldPrimal_Objectif = newPrimal_Objectif;
 			if(verbose >= 1) {
 				System.out.print((iter+1) + "/" + maxCCCPIter + "\t");
 			}
@@ -200,10 +220,65 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 			}
 			// update latent variables
 			optimizeLatent(l);
-
-		}while((oldPrimal_Objectif - getPrimalObjective(l)> epsilon || iter < minCCCPIter) && (iter < maxCCCPIter));
+			newPrimal_Objectif = getPrimalObjective(l);
+		}while((oldPrimal_Objectif - newPrimal_Objectif> epsilon || iter < minCCCPIter) && (iter < maxCCCPIter));
+		
 		System.out.format("total iteration %d times",iter);
 		System.arraycopy(lastW, 0, w, 0, dim);
+		optimizeLatent(l);
+
+		if(verbose == 0) {
+			System.out.println("*");
+		}
+	}
+	
+	protected void learnSGD(List<TrainingSample<LatentRepresentation<X,H>>> l, BufferedWriter trainingDetailFileOut) {
+
+		// Shift t in order to have a
+		// reasonable initial learning rate.
+		// This assumes |x| \approx 1.
+		double maxw = 1.0 / Math.sqrt(lambda);
+		double typw = Math.sqrt(maxw);
+		double eta0 = typw;
+		t = (long) (1 / (eta0 * lambda));
+		
+		double newPrimal_Objectif = getPrimalObjective(l, trainingDetailFileOut);
+		double oldPrimal_Objectif = newPrimal_Objectif;
+		
+		int iter = 0;
+		double[] lastW = new double[dim];
+		do {
+			iter +=1;
+			oldPrimal_Objectif = newPrimal_Objectif;
+			if(verbose >= 1) {
+				System.out.print((iter+1) + "/" + maxCCCPIter + "\t");
+			}
+			else {
+				System.out.print(".");
+			}
+			System.out.println("objectif: "+oldPrimal_Objectif);
+			System.arraycopy(w, 0, lastW, 0, dim);
+			
+			int e = 0;
+			for(; e<maxEpochs; e++) {
+				trainOnceEpochsSGD(l);
+			}
+			// update latent variables
+			optimizeLatent(l);
+			newPrimal_Objectif = getPrimalObjective(l, trainingDetailFileOut);
+		}while((oldPrimal_Objectif - newPrimal_Objectif> epsilon || iter < minCCCPIter) && (iter < maxCCCPIter));
+		
+		try {
+			trainingDetailFileOut.write("total_iteratio_time:"+iter);
+			trainingDetailFileOut.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.format("total iteration %d times",iter);
+		System.arraycopy(lastW, 0, w, 0, dim);
+		optimizeLatent(l);
 		
 		if(verbose == 0) {
 			System.out.println("*");
@@ -432,6 +507,6 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 	public void setGroundTruthGazeMap(HashMap<String, Integer> groundTruthGazeMap) {
 		this.groundTruthGazeMap = groundTruthGazeMap;
 	}
-	
+
 
 }

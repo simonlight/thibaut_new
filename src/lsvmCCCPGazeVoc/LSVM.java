@@ -3,9 +3,13 @@
  */
 package lsvmCCCPGazeVoc;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.DoubleStream;
 
 import fr.durandt.jstruct.latent.LatentRepresentation;
 import fr.lip6.jkernelmachines.classifier.Classifier;
@@ -40,6 +44,7 @@ public abstract class LSVM<X,H> implements Classifier<LatentRepresentation<X, H>
 
 	//linear kernel
 	protected DoubleLinear linear = new DoubleLinear();
+//	protected BufferedWriter trainingDetailFileOut;
 
 	// abstract methods
 	protected abstract double[] psi(X x, H h);
@@ -49,8 +54,11 @@ public abstract class LSVM<X,H> implements Classifier<LatentRepresentation<X, H>
 	 */
 	protected abstract void init(List<TrainingSample<LatentRepresentation<X,H>>> l);
 	protected abstract void learn(List<TrainingSample<LatentRepresentation<X,H>>> l);
+	protected abstract void learn(List<TrainingSample<LatentRepresentation<X,H>>> l, BufferedWriter trainingDetailFileOut);
 	protected abstract H optimizeH(X x);
-	protected abstract double loss(TrainingSample<LatentRepresentation<X,H>> ts);
+	protected abstract double[] loss(TrainingSample<LatentRepresentation<X,H>> ts);
+	public abstract double getLoss(List<TrainingSample<LatentRepresentation<X,H>>> l);
+	public abstract double getLoss(List<TrainingSample<LatentRepresentation<X,H>>> l, BufferedWriter trainingDetailFileOut);
 
 //	@Override
 //	public double valueOf(LatentRepresentation<X,H> rep) {
@@ -70,14 +78,13 @@ public abstract class LSVM<X,H> implements Classifier<LatentRepresentation<X, H>
 	public void train(TrainingSample<LatentRepresentation<X,H>> t) {
 		// TODO Auto-generated method stub
 
-	}
-
+	}	
 	@Override
-	public void train(List<TrainingSample<LatentRepresentation<X,H>>> l) {
-
+	public void train(List<TrainingSample<LatentRepresentation<X,H>>> l){
+		
 		if(l.isEmpty())
 			return;
-
+		
 		for(TrainingSample<LatentRepresentation<X,H>> ts : l) {
 			if(ts.label == 1) {
 				nb[0] += 1;
@@ -102,12 +109,50 @@ public abstract class LSVM<X,H> implements Classifier<LatentRepresentation<X, H>
 		learn(l);
 		long endTime = System.currentTimeMillis();
 		System.out.println("END LEARNING - Time learning= "+ (endTime-startTime)/1000 + "s");
-		System.out.println("primal obj= " + getPrimalObjective(l));
+//		System.out.println("primal obj= " + getPrimalObjective(l));
 
 		// compute accuracy
 		accuracy(l);
 
 	}
+	public void train(List<TrainingSample<LatentRepresentation<X,H>>> l, BufferedWriter trainingDetailFileOut){
+		
+		if(l.isEmpty())
+			return;
+		
+		for(TrainingSample<LatentRepresentation<X,H>> ts : l) {
+			if(ts.label == 1) {
+				nb[0] += 1;
+			}
+			else if(ts.label == -1) {
+				nb[1] += 1;
+			}
+			else {
+				System.out.println("ERROR: label is not +1/-1 " + ts.label);
+				System.exit(0);
+			}
+		}
+
+		// initialize latent variables and dim
+		init(l);
+
+		// initialize w
+		w = new double[dim];
+
+		// Train LSVM 
+		long startTime = System.currentTimeMillis();
+		learn(l, trainingDetailFileOut);
+		long endTime = System.currentTimeMillis();
+		System.out.println("END LEARNING - Time learning= "+ (endTime-startTime)/1000 + "s");
+//		System.out.println("primal obj= " + getPrimalObjective(l));
+
+		// compute accuracy
+		accuracy(l);
+
+	}
+	
+	
+
 
 	protected void optimizeLatent(List<TrainingSample<LatentRepresentation<X,H>>> l){
 		for(TrainingSample<LatentRepresentation<X,H>> ts : l){
@@ -142,34 +187,28 @@ public abstract class LSVM<X,H> implements Classifier<LatentRepresentation<X, H>
 	 * @param l
 	 * @return the loss function
 	 */
-	public double getLoss(List<TrainingSample<LatentRepresentation<X,H>>> l) {
-		double loss = 0;
-		for(TrainingSample<LatentRepresentation<X,H>> ts : l) {
-			loss += loss(ts);
-		}
-		loss /= l.size();
-		return loss;
-	}
 
-	/**
-	 * Compute the loss function for one sample ts
-	 * @param ts
-	 * @return
-	 */
 
-	
-	
-
-	/** 
-	 * Compute the primal objective
-	 * @param l
-	 * @return the primal objective
-	 */
 	public double getPrimalObjective(List<TrainingSample<LatentRepresentation<X,H>>> l) {
 		double obj = 0;
 		obj += VectorOperations.dot(w,w) * lambda/2;
 		double loss = getLoss(l);
 		obj += loss;
+		return obj;
+	}
+	
+	public double getPrimalObjective(List<TrainingSample<LatentRepresentation<X,H>>> l, BufferedWriter trainingDetailFileOut) {
+		double obj = 0;
+		obj += VectorOperations.dot(w,w) * lambda/2;
+		double loss = getLoss(l ,trainingDetailFileOut);
+		obj += loss;
+		try {
+			trainingDetailFileOut.write(" objectif:"+obj+"\n");
+			trainingDetailFileOut.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return obj;
 	}
 
@@ -200,7 +239,6 @@ public abstract class LSVM<X,H> implements Classifier<LatentRepresentation<X, H>
 	public void setVerbose(int verbose) {
 		this.verbose = verbose;
 	};
-	
 	
 
 }
