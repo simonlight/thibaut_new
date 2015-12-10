@@ -145,7 +145,13 @@ public abstract class LSVM<X,H> implements Classifier<LatentRepresentation<X, H>
 		long endTime = System.currentTimeMillis();
 		System.out.println("END LEARNING - Time learning= "+ (endTime-startTime)/1000 + "s");
 //		System.out.println("primal obj= " + getPrimalObjective(l));
-
+		try {
+			trainingDetailFileOut.write(" time_learning:"+(endTime-startTime)/1000 + "s");
+			trainingDetailFileOut.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// compute accuracy
 		accuracy(l);
 

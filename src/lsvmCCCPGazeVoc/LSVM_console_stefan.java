@@ -3,10 +3,12 @@
  */
 package lsvmCCCPGazeVoc;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -30,20 +32,20 @@ import fr.durandt.jstruct.util.AveragePrecision;;
 public class LSVM_console_stefan {
 	public static void main(String[] args) {
 	
-	String dataSource= "local";//local or other things
+	String dataSource= "big";//local or other things
 	String gazeType = "stefan";
 	
-	String taskName = "lsvm_cccp_test/";
+	String taskName = "lsvm_cccpgaze_positive_cv";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
-//	String[] classes = {args[0]};
-//	int[] scaleCV = {Integer.valueOf(args[1])};
+	String[] classes = {args[0]};
+	int[] scaleCV = {Integer.valueOf(args[1])};
 //	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
-    String[] classes = {"jumping"};
-    int[] scaleCV = {50};
+//    String[] classes = {"jumping"};
+//    int[] scaleCV = {50};
 	
     
-    double[] tradeoffCV = {0,0.1, 0.5, 1.0, 1.5, 2, 5, 10,100,1000};
+    double[] tradeoffCV = {0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
     
 	String sourceDir = new String();
 	String resDir = new String();
@@ -67,21 +69,19 @@ public class LSVM_console_stefan {
 	String metricFolder = resultFolder + "metric/";
 	String classifierFolder = resultFolder + "classifier/";
 	String scoreFolder = resultFolder + "score/";
+	String trainingDetailFolder = resultFolder + "trainingdetail/";
 
-
-		    	
 	int maxCCCPIter = 100;
-	int minCCCPIter = 2;
+	int minCCCPIter = 1;
 
 	int maxSGDEpochs = 100;
 	
-	boolean semiConvexity = true;
 	boolean stochastic = false;
     
 	int optim = 2;
 	int numWords = 2048;
 	boolean saveClassifier = true;
-    boolean loadClassifier = true;
+    boolean loadClassifier = false;
     
 	System.out.println("experiment detail: "
 			+ "\nsourceDir:\t "+sourceDir
@@ -104,34 +104,41 @@ public class LSVM_console_stefan {
 		    + "\nloadClassifier:\t"+Boolean.toString(loadClassifier)
 		    );
 	
-	 for(String className: classes){
+	for(String className: classes){
 	    for(int scale : scaleCV) {
 			String listTrainPath =  sourceDir+"example_files/"+scale+"/"+className+"_train_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
+//			String listValPath =  sourceDir+"example_files/"+scale+"/"+className+"_valtest_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
 
 	    	List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listTrain = BagReader.readBagImageLatent(listTrainPath, numWords, true, true, null, true, 0, dataSource);
-			for(double epsilon : epsilonCV) {
+//	    	List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listVal = BagReader.readBagImageLatent(listValPath, numWords, true, true, null, true, 0, dataSource);
+
+	    	for(double epsilon : epsilonCV) {
 		    	for(double lambda : lambdaCV) {
-		    		for(double tradeoff : tradeoffCV){    		    			
-		
+		    		for(double tradeoff : tradeoffCV) {
 						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleTrain = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
 						for(int i=0; i<listTrain.size(); i++) {
 							exampleTrain.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTrain.get(i).sample.x,0), listTrain.get(i).label));
 						}
+						
+//						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleVal = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
+//						for(int i=0; i<listVal.size(); i++) {
+//							exampleVal.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listVal.get(i).sample.x,0), listVal.get(i).label));
+//						}
 
 						LSVMGradientDescentBag classifier = new LSVMGradientDescentBag(); 
-				
+					
 						File fileClassifier = new File(classifierFolder + "/" + className + "/"+ 
 								className + "_" + scale + "_"+epsilon+"_"+lambda + 
 								"_"+tradeoff+"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+
 								"_"+optim+"_"+numWords+".lsvm");
 						fileClassifier.getAbsoluteFile().getParentFile().mkdirs();
+						
 						if (loadClassifier && fileClassifier.exists()){
 							ObjectInputStream ois;
 							System.out.println("\nread classifier " + fileClassifier.getAbsolutePath());
 							try {
 								ois = new ObjectInputStream(new FileInputStream(fileClassifier.getAbsolutePath()));
 								classifier = (LSVMGradientDescentBag) ois.readObject();
-								classifier.showParameters();
 							} catch (FileNotFoundException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -143,28 +150,44 @@ public class LSVM_console_stefan {
 								e.printStackTrace();
 							}
 						}
+						
 						else {
 							System.out.println("\ntraining classifier " + fileClassifier.getAbsolutePath());
 							classifier.setOptim(optim);
 							classifier.setMaxCCCPIter(maxCCCPIter);
 							classifier.setMinCCCPIter(minCCCPIter);
-							classifier.setSemiConvexity(semiConvexity);
 							classifier.setEpsilon(epsilon);
 							classifier.setLambda(lambda);
 							classifier.setStochastic(stochastic);
 							classifier.setVerbose(0);
-
+							classifier.setTradeOff(tradeoff);
+							classifier.setMaxEpochs(maxSGDEpochs);
 							classifier.setGazeType(gazeType);								
 							classifier.setLossDict(sourceDir+"ETLoss_dict/"+"ETLOSS+_"+scale+".loss");
-							classifier.setTradeOff(tradeoff);
 							classifier.setHnorm(hnorm);
 							classifier.setCurrentClass(className);
 							//Initialize the region by fixations
 //							for(STrainingSample<LatentRepresentation<BagMIL, Integer>,Integer> ts : exampleTrain){
 //								ts.input.h = lsvm.getGazeInitRegion(ts, scale, initializedType);
 //							}
+							
+
+							File trainingDetailFile = new File(trainingDetailFolder + "/" + className + "/"+ 
+									className + "_" + scale + "_"+epsilon+"_"+lambda + 
+									"_"+tradeoff+"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+
+									"_"+optim+"_"+numWords+".traindetail");
+							trainingDetailFile.getAbsoluteFile().getParentFile().mkdirs();
+							try {
+								BufferedWriter trainingDetailFileOut = new BufferedWriter(new FileWriter(trainingDetailFile));
+								classifier.train(exampleTrain, trainingDetailFileOut);
+								trainingDetailFileOut.close();
+							}	
+							
+						 catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						
-							classifier.train(exampleTrain);
 						}
 						
 													
@@ -194,9 +217,12 @@ public class LSVM_console_stefan {
 							}
 							System.out.println("wrote classifier successfully!");
 						}
-						
-						double ap_train = classifier.testAP(exampleTrain);
+
+	    				double ap_train = classifier.testAP(exampleTrain);
 						System.err.println("train - ap= " + ap_train);
+//						classifier.optimizeLatent(exampleVal);
+//						double ap_val = classifier.testAP(exampleVal);
+//						System.err.println("train - ap= " + ap_val);
 				
 		//System.out.println(Arrays.toString())
 
