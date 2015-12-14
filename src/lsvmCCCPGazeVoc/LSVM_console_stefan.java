@@ -32,16 +32,16 @@ import fr.durandt.jstruct.util.AveragePrecision;;
 public class LSVM_console_stefan {
 	public static void main(String[] args) {
 	
-	String dataSource= "big";//local or other things
+	String dataSource= "local";//local or other things
 	String gazeType = "stefan";
-	String taskName = "lsvm_cccpgaze_negative_cv";
+	String taskName = "lsvm_cccpgaze_positive_cv/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
-	String[] classes = {args[0]};
-	int[] scaleCV = {Integer.valueOf(args[1])};
-//	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
+//	String[] classes = {args[0]};
+//	int[] scaleCV = {Integer.valueOf(args[1])};
+	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
 //    String[] classes = {"jumping"};
-//    int[] scaleCV = {50};
+    int[] scaleCV = {90,80,70,60,50,40,30};
 	
     
     double[] tradeoffCV = {0.0, 0.0001,0.001,0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};

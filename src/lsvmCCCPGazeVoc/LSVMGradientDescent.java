@@ -324,7 +324,7 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 			ts.sample.h = optimizeH(ts.sample.x);
 			
 			//gaze gradient
-			if (ts.label ==-1){
+			if (ts.label==1){
 				double[] gazePsi = getGazePsi(ts);
 				for(int d=0; d<dim; d++) {
 					w[d] -= gazePsi[d] * eta;

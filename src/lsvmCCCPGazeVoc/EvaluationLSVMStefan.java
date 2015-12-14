@@ -50,7 +50,7 @@ public class EvaluationLSVMStefan {
 	String initializedType = ".";//+0,+-,or other things
 	boolean hnorm = false;
 	
-	String taskName = "lsvm_cccp_test/";
+	String taskName = "lsvm_cccpgaze_positive_cv/";
 	
 	String resultFolder = resDir+taskName;
 	
@@ -62,25 +62,24 @@ public class EvaluationLSVMStefan {
 //	String[] classes = {args[0]};
 //	int[] scaleCV = {Integer.valueOf(args[1])};
 	String[] classes = {"jumping", "phoning" ,"playinginstrument" ,"reading" ,"ridingbike" ,"ridinghorse" ,"running" ,"takingphoto", "usingcomputer", "walking"};
-	int[] scaleCV = {40,30};
-//	String[] classes = {"sofa"};
+	int[] scaleCV = {90,80,70,60,50,40,30};
+//	String[] classes = {"walking"};
     double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
 
-    double[] tradeoffCV = {0,0.1, 0.5, 1.0, 1.5, 2, 5, 10,100,1000};
+    double[] tradeoffCV = {0.0, 0.0001,0.001,0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
 //    double[] tradeoffCV = {0.8,0.9};
 		    	
 	int maxCCCPIter = 100;
-	int minCCCPIter = 2;
+	int minCCCPIter = 1;
 
 	int maxSGDEpochs = 100;
 	
-	boolean semiConvexity = true;
 	boolean stochastic = false;
     
 	int optim = 2;
 	int numWords = 2048;
-	boolean saveClassifier = true;
+	boolean saveClassifier = false;
     boolean loadClassifier = true;
     
 	System.out.println("experiment detail: "
@@ -91,7 +90,6 @@ public class EvaluationLSVMStefan {
 			+ "\nhnorm:\t"+Boolean.toString(hnorm)
 			+ "\ntask name:\t"+taskName
 			+ "\nclasses CV:\t"+Arrays.toString(classes)
-			+ "\nscale CV:\t"+Arrays.toString(scaleCV)
 			+ "\nlambda CV:\t" + Arrays.toString(lambdaCV)
 			+ "\nepsilon CV:\t" + Arrays.toString(epsilonCV)
 			+ "\ntradeoff CV:\t"+Arrays.toString(tradeoffCV)

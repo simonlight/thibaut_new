@@ -34,7 +34,7 @@ public class LSVM_console_ferrari {
 	
 	String dataSource= "big";//local or other things
 	String gazeType = "ferrari";
-	String taskName = "lsvm_cccpgaze_negative_cv/";
+	String taskName = "lsvm_cccpgaze_positive_cv/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
     String[] classes = {args[0]};
@@ -80,7 +80,7 @@ public class LSVM_console_ferrari {
 	int optim = 2;
 	int numWords = 2048;
 	boolean saveClassifier = true;
-    boolean loadClassifier = false;
+    boolean loadClassifier = true;
     
 	System.out.println("experiment detail: "
 			+ "\nsourceDir:\t "+sourceDir
