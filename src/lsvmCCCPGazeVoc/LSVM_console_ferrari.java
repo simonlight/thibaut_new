@@ -32,7 +32,7 @@ import fr.durandt.jstruct.util.AveragePrecision;;
 public class LSVM_console_ferrari {
 	public static void main(String[] args) {
 	
-	String dataSource= "local";//local or other things
+	String dataSource= "big";//local or other things
 	String gazeType = "ferrari";
 	String taskName = "lsvm_cccpgaze_positive_cv/";
 	double[] lambdaCV = {1e-4};
