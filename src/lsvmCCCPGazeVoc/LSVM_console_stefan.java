@@ -32,9 +32,9 @@ import fr.durandt.jstruct.util.AveragePrecision;;
 public class LSVM_console_stefan {
 	public static void main(String[] args) {
 	
-	String dataSource= "local";//local or other things
+	String dataSource= "big";//local or other things
 	String gazeType = "stefan";
-	String taskName = "lsvm_cccpgaze_positive_cv/";
+	String taskName = "lsvm_cccpgaze_negative_cv/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
 //	String[] classes = {args[0]};
