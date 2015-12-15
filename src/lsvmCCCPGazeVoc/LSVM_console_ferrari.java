@@ -37,11 +37,11 @@ public class LSVM_console_ferrari {
 	String taskName = "lsvm_cccpgaze_positive_negative_cv/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
-//    String[] classes = {args[0]};
-//	int[] scaleCV = {Integer.valueOf(args[1])};
-	String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
+    String[] classes = {args[0]};
+	int[] scaleCV = {Integer.valueOf(args[1])};
+//	String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
 //	String[] classes = {"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
-	int[] scaleCV = {90,80,70,60,50,40,30};
+//	int[] scaleCV = {90,80,70,60,50,40,30};
 //	int[] scaleCV = {50};
 //	String[] classes = {"sofa"};
 //    double[] tradeoffCV = {0, 0.5, 1};
@@ -80,7 +80,7 @@ public class LSVM_console_ferrari {
 	int optim = 2;
 	int numWords = 2048;
 	boolean saveClassifier = true;
-    boolean loadClassifier = true;
+    boolean loadClassifier = false;
     
 	System.out.println("experiment detail: "
 			+ "\nsourceDir:\t "+sourceDir
