@@ -276,12 +276,12 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 
 		if (ts.label == -1){
 			lossTerm[0]=Math.max(0, 1 + v);
-			lossTerm[1]= 0 * g;
+			lossTerm[1]= tradeoff * g;
 			return lossTerm;
 		}
 		else if(ts.label == 1){
 			lossTerm[0]= Math.max(1, v) - v;
-			lossTerm[1]= tradeoff * g;
+			lossTerm[1]= 0 * g;
 			return lossTerm;
 		}
 		return null;
