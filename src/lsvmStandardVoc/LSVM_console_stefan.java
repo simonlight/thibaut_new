@@ -30,19 +30,16 @@ import fr.durandt.jstruct.util.AveragePrecision;;
 public class LSVM_console_stefan {
 	public static void main(String[] args) {
 	
-	String dataSource= "local";//local or other things
+	String dataSource= "big";//local or other things
 	String gazeType = "stefan";
 	
-	String taskName = "lsvm_posneg_loss/";
+	String taskName = "lsvm_standard/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
-//	String[] classes = {args[0]};
-//	int[] scaleCV = {Integer.valueOf(args[1])};
-	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
-	int[] scaleCV = {90,80,70};
-	
-    
-    double[] tradeoffCV = {0,0.1, 0.5, 1.0, 1.5, 2, 5, 10,100,1000};
+	String[] classes = {args[0]};
+	int[] scaleCV = {Integer.valueOf(args[1])};
+//	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
+//	int[] scaleCV = {90,80,70};
     
 	String sourceDir = new String();
 	String resDir = new String();
@@ -80,7 +77,7 @@ public class LSVM_console_stefan {
 	int optim = 2;
 	int numWords = 2048;
 	boolean saveClassifier = true;
-    boolean loadClassifier = true;
+    boolean loadClassifier = false;
     
 	System.out.println("experiment detail: "
 			+ "\nsourceDir:\t "+sourceDir
@@ -93,7 +90,6 @@ public class LSVM_console_stefan {
 			+ "\nscale CV:\t"+Arrays.toString(scaleCV)
 			+ "\nlambda CV:\t" + Arrays.toString(lambdaCV)
 			+ "\nepsilon CV:\t" + Arrays.toString(epsilonCV)
-			+ "\ntradeoff CV:\t"+Arrays.toString(tradeoffCV)
 			+ "\noptim:\t"+optim
 			+ "\nmaxCCCPIter:\t"+maxCCCPIter
 			+ "\nminCCCPIter:\t"+minCCCPIter
@@ -110,7 +106,6 @@ public class LSVM_console_stefan {
 	    	List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listTrain = BagReader.readBagImageLatent(listTrainPath, numWords, true, true, null, true, 0, dataSource);
 			for(double epsilon : epsilonCV) {
 		    	for(double lambda : lambdaCV) {
-		    		for(double tradeoff : tradeoffCV){    		    			
 		
 						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleTrain = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
 						for(int i=0; i<listTrain.size(); i++) {
@@ -121,7 +116,7 @@ public class LSVM_console_stefan {
 				
 						File fileClassifier = new File(classifierFolder + "/" + className + "/"+ 
 								className + "_" + scale + "_"+epsilon+"_"+lambda + 
-								"_"+tradeoff+"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+
+								"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+
 								"_"+optim+"_"+numWords+".lsvm");
 						fileClassifier.getAbsoluteFile().getParentFile().mkdirs();
 						if (loadClassifier && fileClassifier.exists()){
@@ -155,7 +150,6 @@ public class LSVM_console_stefan {
 
 							classifier.setGazeType(gazeType);								
 							classifier.setLossDict(sourceDir+"ETLoss_dict/"+"ETLOSS+_"+scale+".loss");
-							classifier.setTradeOff(tradeoff);
 							classifier.setHnorm(hnorm);
 							classifier.setCurrentClass(className);
 							//Initialize the region by fixations
@@ -206,4 +200,3 @@ public class LSVM_console_stefan {
 //		}
 	}}}}}}
 
-}
