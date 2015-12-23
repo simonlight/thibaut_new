@@ -19,18 +19,22 @@ import fr.lip6.jkernelmachines.type.TrainingSample;
 public class EvaluationLSVMFerrari {
 	public static void main(String[] args) {
 	
-	String dataSource= "big";//local or other things
+	String dataSource= "local";//local or other things
 	String gazeType = "ferrari";
-	String taskName = "lsvm_cccpgaze_positive/";
-	String[] classes = {args[0]};
-	int[] scaleCV = {Integer.valueOf(args[1])};
+	String taskName = "lsvm_cccpgaze_positive_cv/";
+//	String[] classes = {args[0]};
+//	int[] scaleCV = {Integer.valueOf(args[1])};
+    double[] tradeoffCV = {0.0, 0.0001,0.001,0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
 //	String[] classes = {"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
+//	String[] classes = {"aeroplane", "cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable"};
+	String[] classes = {"bicycle"};
+	int[] scaleCV = {80,70,60,50,40,30};
+
 //	String[] classes = {"aeroplane"};
 //	int[] scaleCV = {50};
 //	String[] classes = {"sofa"};
     double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
-    double[] tradeoffCV = {1};
     
 	String sourceDir = new String();
 	String resDir = new String();
@@ -139,21 +143,21 @@ public class EvaluationLSVMFerrari {
 							e.printStackTrace();
 						}
 						//train metric file
-						File trainMetricFile=new File(metricFolder+scale+"/metric_train_"+"_"+scale+"_"+epsilon+"_"+lambda+"_"+className+".txt");
+						File trainMetricFile=new File(metricFolder+scale+"/metric_train_"+tradeoff+"_"+scale+"_"+epsilon+"_"+lambda+"_"+className+".txt");
 						trainMetricFile.getAbsoluteFile().getParentFile().mkdirs();
 						classifier.optimizeLatent(exampleTrain);
 						double ap_train = classifier.testAP(exampleTrain);
 	    				System.out.println("ap train:"+ap_train);
 
 	    				//val metric file
-						File valMetricFile=new File(metricFolder+scale+"/metric_valval_"+"_"+scale+"_"+epsilon+"_"+lambda+"_"+className+".txt");
+						File valMetricFile=new File(metricFolder+scale+"/metric_valval_"+tradeoff+"_"+scale+"_"+epsilon+"_"+lambda+"_"+className+".txt");
 						valMetricFile.getAbsoluteFile().getParentFile().mkdirs();
 						classifier.optimizeLatent(exampleVal);
 						double ap_val = classifier.testAP(exampleVal);
 	    				System.out.println("ap val:"+ap_val);
 	    				
 	    				//test metric file		    				
-	    				File testMetricFile=new File(metricFolder+scale+"/metric_valtest_"+"_"+scale+"_"+epsilon+"_"+lambda+"_"+className+".txt");
+	    				File testMetricFile=new File(metricFolder+scale+"/metric_valtest_"+tradeoff+"_"+scale+"_"+epsilon+"_"+lambda+"_"+className+".txt");
 	    				testMetricFile.getAbsoluteFile().getParentFile().mkdirs();
 						classifier.optimizeLatent(exampleTest);
 	    				double ap_test = classifier.testAP(exampleTest);
@@ -162,7 +166,7 @@ public class EvaluationLSVMFerrari {
 	    				//write ap 
 	    				try {
 							BufferedWriter out = new BufferedWriter(new FileWriter(resultFilePath, true));
-							out.write("category:"+className+" scale:"+scale+" lambda:"+lambda+" epsilon:"+epsilon+" ap_train:"+ap_train+" ap_val:"+ap_val+" ap_test:"+ap_test+"\n");
+							out.write("category:"+className+" tradeoff:"+tradeoff+" scale:"+scale+" lambda:"+lambda+" epsilon:"+epsilon+" ap_train:"+ap_train+" ap_val:"+ap_val+" ap_test:"+ap_test+"\n");
 							out.flush();
 							out.close();
 							
