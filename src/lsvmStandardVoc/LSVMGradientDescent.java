@@ -351,12 +351,6 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 		this.minCCCPIter = minCCCPIter;
 	}
 	
-	public String getGazeType() {
-		return gazeType;
-	}
-	public void setGazeType(String gazeType) {
-		this.gazeType = gazeType;
-	}
 	public void setHnorm(boolean hnorm) {
 		this.hnorm = hnorm;
 	}

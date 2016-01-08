@@ -14,7 +14,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import fr.durandt.jstruct.data.io.BagReader;
 import fr.durandt.jstruct.latent.LatentRepresentation;
@@ -34,17 +36,18 @@ public class LSVM_console_stefan {
 	
 	String dataSource= "big";//local or other things
 	String gazeType = "stefan";
-	String taskName = "lsvm_cccpgaze_positive_cv/";
+	String taskName = "lsvm_cccpgaze_positive_5fold_scale30_tradeoff0.2/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
 	String[] classes = {args[0]};
 	int[] scaleCV = {Integer.valueOf(args[1])};
 //	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
 //    String[] classes = {"jumping"};
-//    int[] scaleCV = {90,80,70,60,50,40,30};
+//    int[] scaleCV = {90};
 	
     
-    double[] tradeoffCV = {0.0, 0.0001,0.001,0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+//    double[] tradeoffCV = {0.0, 0.0001,0.001,0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+    double[] tradeoffCV = {0.2};
     
 	String sourceDir = new String();
 	String resDir = new String();
@@ -102,10 +105,14 @@ public class LSVM_console_stefan {
 			+ "\nsaveClassifier:\t"+Boolean.toString(saveClassifier)
 		    + "\nloadClassifier:\t"+Boolean.toString(loadClassifier)
 		    );
+
+	int foldNum = 5;
+
 	
-	for(String className: classes){
+	 for(String className: classes){
 	    for(int scale : scaleCV) {
-			String listTrainPath =  sourceDir+"example_files/"+scale+"/"+className+"_train_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
+			String listTrainPath =  sourceDir+"example_files/"+scale+"/"+className+"_trainval_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
+//			String listTrainPath =  sourceDir+"example_files/"+scale+"/"+className+"_train_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
 //			String listValPath =  sourceDir+"example_files/"+scale+"/"+className+"_valtest_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
 
 	    	List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listTrain = BagReader.readBagImageLatent(listTrainPath, numWords, true, true, null, true, 0, dataSource);
@@ -114,10 +121,31 @@ public class LSVM_console_stefan {
 	    	for(double epsilon : epsilonCV) {
 		    	for(double lambda : lambdaCV) {
 		    		for(double tradeoff : tradeoffCV) {
-						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleTrain = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
-						for(int i=0; i<listTrain.size(); i++) {
-							exampleTrain.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTrain.get(i).sample.x,0), listTrain.get(i).label));
-						}
+		    			int listsize = listTrain.size();
+
+		    			List<Integer> apListIndex = new ArrayList<Integer>();
+		    			for (int m=0;m<listTrain.size();m++){
+		    				apListIndex.add(m);
+		    			}
+		    			Random seed = new Random(1);
+						Collections.shuffle(apListIndex, seed);
+		    			
+    					for (int i=0;i<foldNum; i++){
+    						int fromIndex = listsize * i/foldNum;
+    						int toIndex = listsize * (i+1)/foldNum;
+    						List<Integer> trainList_1 = apListIndex.subList(0, fromIndex);
+    						List<Integer> trainList_2 = apListIndex.subList(toIndex, listsize);
+    						List<Integer> leftOutList = apListIndex.subList(fromIndex, toIndex);
+    						
+    						List<Integer> trainList = new ArrayList<Integer>();
+    						trainList.addAll(trainList_1);
+    						trainList.addAll(trainList_2);
+		    			
+		    			
+    						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleTrain = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
+							for(int j:trainList) {
+								exampleTrain.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTrain.get(j).sample.x,0), listTrain.get(j).label));
+							}
 						
 //						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleVal = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
 //						for(int i=0; i<listVal.size(); i++) {
@@ -129,7 +157,7 @@ public class LSVM_console_stefan {
 						File fileClassifier = new File(classifierFolder + "/" + className + "/"+ 
 								className + "_" + scale + "_"+epsilon+"_"+lambda + 
 								"_"+tradeoff+"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+
-								"_"+optim+"_"+numWords+".lsvm");
+								"_"+optim+"_"+numWords+"_"+i+".lsvm");
 						fileClassifier.getAbsoluteFile().getParentFile().mkdirs();
 						
 						if (loadClassifier && fileClassifier.exists()){
@@ -174,7 +202,7 @@ public class LSVM_console_stefan {
 							File trainingDetailFile = new File(trainingDetailFolder + "/" + className + "/"+ 
 									className + "_" + scale + "_"+epsilon+"_"+lambda + 
 									"_"+tradeoff+"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+
-									"_"+optim+"_"+numWords+".traindetail");
+									"_"+optim+"_"+numWords+"_"+i+".traindetail");
 							trainingDetailFile.getAbsoluteFile().getParentFile().mkdirs();
 							try {
 								BufferedWriter trainingDetailFileOut = new BufferedWriter(new FileWriter(trainingDetailFile));
@@ -219,6 +247,7 @@ public class LSVM_console_stefan {
 
 	    				double ap_train = classifier.testAP(exampleTrain);
 						System.err.println("train - ap= " + ap_train);
+						}
 //						classifier.optimizeLatent(exampleVal);
 //						double ap_val = classifier.testAP(exampleVal);
 //						System.err.println("train - ap= " + ap_val);
