@@ -19,7 +19,7 @@ import fr.lip6.jkernelmachines.type.TrainingSample;
 public class EvaluationLSVMFerrari {
 	public static void main(String[] args) {
 	
-	String dataSource= "big";//local or other things
+	String dataSource= "local";//local or other things
 	String gazeType = "ferrari";
 
 	String sourceDir = new String();
@@ -46,11 +46,11 @@ public class EvaluationLSVMFerrari {
 	String classifierFolder = resultFolder + "classifier/";
 	String scoreFolder = resultFolder + "score/";
 
-	String[] classes = {args[0]};
-	int[] scaleCV = {Integer.valueOf(args[1])};
+//	String[] classes = {args[0]};
+//	int[] scaleCV = {Integer.valueOf(args[1])};
 //	String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
-//	int[] scaleCV = {90,80,70,60,50,40,30};
-//	String[] classes = {"sofa"};
+	int[] scaleCV = {90,80,70,60,50,40,30};
+	String[] classes = {"sofa"};
     double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
 
@@ -61,8 +61,6 @@ public class EvaluationLSVMFerrari {
 
 	int maxSGDEpochs = 100;
 	
-	boolean stochastic = false;
-    
 	int optim = 2;
 	int numWords = 2048;
 	boolean saveClassifier = false;
@@ -117,7 +115,6 @@ public class EvaluationLSVMFerrari {
 
 
 						LSVMGradientDescentBag classifier = new LSVMGradientDescentBag(); 
-						////
 						File fileClassifier = new File(classifierFolder + "/" + className + "/"+ 
 								className + "_" + scale + "_"+epsilon+"_"+lambda + 
 								"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+

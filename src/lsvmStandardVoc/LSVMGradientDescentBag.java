@@ -3,6 +3,10 @@
  */
 package lsvmStandardVoc;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,7 +89,32 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
         return ap;
 	}
 	
+	public double testAPRegion(List<TrainingSample<LatentRepresentation<BagImage,Integer>>> l, File resFile) {
+		
+		List<Pair<Integer,Double>> eval = new ArrayList<Pair<Integer,Double>>();
+			
+		try {
+			BufferedWriter out = new BufferedWriter(new FileWriter(resFile));
+			for(int i=0; i<l.size(); i++) {
 
+				double score = valueOf(l.get(i).sample.x,l.get(i).sample.h);
+				Integer yp = score > 0 ? 1 : -1;
+	        	Integer hp = l.get(i).sample.h;
+	        	Integer yi = l.get(i).label;
+				out.write(Double.valueOf(score) + ","+Integer.valueOf(yp) +","+Integer.valueOf(yi) +","+ Integer.valueOf(hp)+","+l.get(i).sample.x.getName()+"\n");
+				out.flush();
+	        	eval.add(new Pair<Integer,Double>((l.get(i).label), score)); //
+	        }
+			out.close();
+	        	
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+        double ap = AveragePrecision.getAP(eval);
+        return ap;
+	}
 	
 
 }

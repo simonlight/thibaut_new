@@ -67,7 +67,6 @@ public class EvaluationLSVMStefan {
     double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
 
-    double[] tradeoffCV = {0.0, 0.0001,0.001,0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
 //    double[] tradeoffCV = {0.8,0.9};
 		    	
 	int maxCCCPIter = 100;
@@ -75,8 +74,6 @@ public class EvaluationLSVMStefan {
 
 	int maxSGDEpochs = 100;
 	
-	boolean semiConvexity = true;
-	boolean stochastic = false;
     
 	int optim = 2;
 	int numWords = 2048;
