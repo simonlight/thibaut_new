@@ -10,7 +10,7 @@ scale_arr=("30")
 #lsvmStandardVoc/LSVM_console_ferrari'
 
 k='oarsub -p "host='"'"'big20'"'"' or host='"'"'big18'"'"'" -l "nodes=1/core=8,walltime=500:0:0" --notify "mail:biglip666@gmail.com" "/home/wangxin/lib/jdk1.8.0_25/bin/java -classpath /home/wangxin/mosek/7/tools/platform/linux64x86/bin/mosek.jar:/home/wangxin/lib/commons-cli-1.2.jar:/home/wangxin/lib/jkernelmachines.jar:/home/wangxin/code/thibaut_new/bin:. 
-lsvmStandardVoc/EvaluationLSVMFerrari'
+lsvmStandardVoc/LSVM_console_ferrari'
 
 
 end='"'
