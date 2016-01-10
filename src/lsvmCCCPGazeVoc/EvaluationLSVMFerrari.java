@@ -21,13 +21,14 @@ public class EvaluationLSVMFerrari {
 	
 	String dataSource= "local";//local or other things
 	String gazeType = "ferrari";
-	String taskName = "lsvm_cccpgaze_positive_cv/";
+	String taskName = "lsvm_standard_5fold_scale30_tradeoff0.2/";
 //	String[] classes = {args[0]};
 //	int[] scaleCV = {Integer.valueOf(args[1])};
-    double[] tradeoffCV = {0.0, 0.0001,0.001,0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+//    double[] tradeoffCV = {0.0, 0.0001,0.001,0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};	
+    double[] tradeoffCV = {0.2};
 //	String[] classes = {"aeroplane", "cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
 //	String[] classes = {"aeroplane", "cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable"};
-	String[] classes = {"aeroplane"};
+//	String[] classes = {"aeroplane"};
 	int[] scaleCV = {90, 80,70,60,50,40,30};
 
 //	String[] classes = {"aeroplane"};

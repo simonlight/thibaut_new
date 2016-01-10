@@ -34,7 +34,7 @@ import fr.durandt.jstruct.util.AveragePrecision;;
 public class EvaluationLSVMStefan5Fold {
 	public static void main(String[] args) {
 	
-	String dataSource= "local";//local or other things
+	String dataSource= "big";//local or other things
 	String gazeType = "stefan";
 
 	String sourceDir = new String();
@@ -52,7 +52,7 @@ public class EvaluationLSVMStefan5Fold {
 	String initializedType = ".";//+0,+-,or other things
 	boolean hnorm = false;
 	
-	String taskName = "lsvm_cccpgaze_positive_cv/";
+	String taskName = "lsvm_cccpgaze_positive_5fold_scale30_tradeoff0.2/";
 	
 	String resultFolder = resDir+taskName;
 	
@@ -61,23 +61,22 @@ public class EvaluationLSVMStefan5Fold {
 	String classifierFolder = resultFolder + "classifier/";
 	String scoreFolder = resultFolder + "score/";
 
-//	String[] classes = {args[0]};
-//	int[] scaleCV = {Integer.valueOf(args[1])};
-	String[] classes = {"jumping", "phoning" ,"playinginstrument" ,"reading" ,"ridingbike" ,"ridinghorse" ,"running" ,"takingphoto", "usingcomputer", "walking"};
-	int[] scaleCV = {90, 80,70,60,50,40, 30};
+	String[] classes = {args[0]};
+	int[] scaleCV = {Integer.valueOf(args[1])};
+//	String[] classes = {"jumping", "phoning" ,"playinginstrument" ,"reading" ,"ridingbike" ,"ridinghorse" ,"running" ,"takingphoto", "usingcomputer", "walking"};
+//	int[] scaleCV = {30};
 //	String[] classes = {"walking"};
     double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
 
-    double[] tradeoffCV = {0.0, 0.0001,0.001,0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
-//    double[] tradeoffCV = {0.8,0.9};
+//    double[] tradeoffCV = {0.0, 0.0001,0.001,0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+    double[] tradeoffCV = {0.2};
 		    	
 	int maxCCCPIter = 100;
 	int minCCCPIter = 1;
 
 	int maxSGDEpochs = 100;
 	
-	boolean stochastic = false;
     
 	int optim = 2;
 	int numWords = 2048;
@@ -100,12 +99,12 @@ public class EvaluationLSVMStefan5Fold {
 			+ "\nnumWords:\t"+numWords
 		    );
 	
-	int foldNum = 1;
+	int foldNum = 5;
 	
 	 for(String className: classes){
 	    for(int scale : scaleCV) {
 	    	
-	    	String listTestPath =  sourceDir+"example_files/"+scale+"/"+className+"_val_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
+	    	String listTestPath =  sourceDir+"example_files/"+scale+"/"+className+"_trainval_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
 	    	List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listTest = BagReader.readBagImageLatent(listTestPath, numWords, true, true, null, true, 0, dataSource);
 			
 	    	for(double epsilon : epsilonCV) {
@@ -135,7 +134,7 @@ public class EvaluationLSVMStefan5Fold {
     						testList.addAll(testList_2);
 							
 		    				List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleTest = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
-							for(int j:testList) {
+							for(int j:leftOutList) {
 								exampleTest.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTest.get(j).sample.x,0), listTest.get(j).label));
 							}
 
@@ -145,7 +144,7 @@ public class EvaluationLSVMStefan5Fold {
 							File fileClassifier = new File(classifierFolder + "/" + className + "/"+ 
 									className + "_" + scale + "_"+epsilon+"_"+lambda + 
 									"_"+tradeoff+"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+
-									"_"+optim+"_"+numWords+".lsvm");
+									"_"+optim+"_"+numWords+"_"+i+".lsvm");
 							ObjectInputStream ois;
 							System.out.println("read classifier " + fileClassifier.getAbsolutePath());
 							try {
@@ -166,31 +165,32 @@ public class EvaluationLSVMStefan5Fold {
 		    				
 		    				//test metric file		    				
 							classifier.optimizeLatent(exampleTest);
-							File valMetricFile=new File(metricFolder+"/metric_val_"+tradeoff+"_"+scale+"_"+epsilon+"_"+lambda+"_"+className+".txt");
-							double ap_test = classifier.testAPRegion(exampleTest, valMetricFile);
+//							File valMetricFile=new File(metricFolder+"/metric_trainval_"+tradeoff+"_"+scale+"_"+epsilon+"_"+lambda+"_"+className+"_"+i+".txt");
+//							double ap_test = classifier.testAPRegion(exampleTest, valMetricFile);
+							double ap_test = classifier.testAP(exampleTest);
 		    				apList[i] = ap_test;
     					}
-//    					double average = 0;
-//    					for (double ap: apList){
-//    						average+=ap;
-//    					}
-//    					average /= apList.length;
-//    					double variance = 0;
-//    					for (double ap: apList){
-//    						variance+=Math.pow(ap-average, 2);
-//    					}
-//    					variance /= apList.length;
-//    					double std_variance = Math.sqrt(variance);
-//						//write ap 
-//	    				try {
-//							BufferedWriter out = new BufferedWriter(new FileWriter(resultFilePath, true));
-//							out.write("category:"+className+" tradeoff:"+tradeoff+" scale:"+scale+" lambda:"+lambda+" epsilon:"+epsilon+" ap_test:"+average+" std_variance:"+std_variance+"\n");
-//							out.flush();
-//							out.close();
-//							
-//						} catch (IOException e) {
-//							e.printStackTrace();
-//						}
+    					double average = 0;
+    					for (double ap: apList){
+    						average+=ap;
+    					}
+    					average /= apList.length;
+    					double variance = 0;
+    					for (double ap: apList){
+    						variance+=Math.pow(ap-average, 2);
+    					}
+    					variance /= apList.length;
+    					double std_variance = Math.sqrt(variance);
+						//write ap 
+	    				try {
+							BufferedWriter out = new BufferedWriter(new FileWriter(resultFilePath, true));
+							out.write("category:"+className+" tradeoff:"+tradeoff+" scale:"+scale+" lambda:"+lambda+" epsilon:"+epsilon+" ap_test:"+average+" std_variance:"+std_variance+"\n");
+							out.flush();
+							out.close();
+							
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 					
 		    		
 		    	}
