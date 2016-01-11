@@ -21,7 +21,7 @@ import fr.lip6.jkernelmachines.type.TrainingSample;
 public class EvaluationLSVMFerrari5Fold {
 	public static void main(String[] args) {
 	
-		String dataSource= "big";//local or other things
+		String dataSource= "local";//local or other things
 		String gazeType = "ferrari";
 
 		String sourceDir = new String();
@@ -39,7 +39,7 @@ public class EvaluationLSVMFerrari5Fold {
 		String initializedType = ".";//+0,+-,or other things
 		boolean hnorm = false;
 		
-		String taskName = "lsvm_standard_5fold_scale30_tradeoff0.2/";
+		String taskName = "lsvm_standard_5fold_scale30_tradeoff0.2_testtodelete/";
 		
 		String resultFolder = resDir+taskName;
 		
@@ -52,8 +52,9 @@ public class EvaluationLSVMFerrari5Fold {
 		int[] scaleCV = {Integer.valueOf(args[1])};
 //		String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
 //		int[] scaleCV = {90,80,70,60,50,40,30};
-//		int[] scaleCV = {30};
-	    double[] lambdaCV = {1e-4};
+//		int[] scaleCV = {90};
+//	    String[] classes={"sofa"};
+		double[] lambdaCV = {1e-4};
 	    double[] epsilonCV = {0};
 
 //	    double[] tradeoffCV = {0.8,0.9};

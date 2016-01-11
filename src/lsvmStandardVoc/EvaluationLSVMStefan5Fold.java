@@ -7,11 +7,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,12 +18,8 @@ import java.util.Random;
 
 import fr.durandt.jstruct.data.io.BagReader;
 import fr.durandt.jstruct.latent.LatentRepresentation;
-import fr.durandt.jstruct.struct.STrainingSample;
-import fr.durandt.jstruct.variable.Bag;
 import fr.durandt.jstruct.variable.BagImage;
-import fr.durandt.jstruct.variable.BagLabel;
 import fr.lip6.jkernelmachines.type.TrainingSample;
-import fr.durandt.jstruct.util.AveragePrecision;;
 
 /**
  * @author Thibaut Durand - durand.tibo@gmail.com

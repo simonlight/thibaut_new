@@ -18,7 +18,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import lsvmCCCPGazeVoc.LSVMGradientDescentBag;
 import fr.durandt.jstruct.data.io.BagReader;
 import fr.durandt.jstruct.latent.LatentRepresentation;
 import fr.durandt.jstruct.struct.STrainingSample;
@@ -72,7 +71,7 @@ public class LSVM_console_stefan {
 
 		    	
 	int maxCCCPIter = 100;
-	int minCCCPIter = 2;
+	int minCCCPIter = 1;
 
 	int maxSGDEpochs = 100;
 	
@@ -185,7 +184,6 @@ public class LSVM_console_stefan {
 							classifier.setStochastic(stochastic);
 							classifier.setVerbose(0);
 							classifier.setMaxEpochs(maxSGDEpochs);
-							classifier.setGazeType(gazeType);								
 							classifier.setLossDict(sourceDir+"ETLoss_dict/"+"ETLOSS+_"+scale+".loss");
 							classifier.setHnorm(hnorm);
 							classifier.setCurrentClass(className);
@@ -202,7 +200,7 @@ public class LSVM_console_stefan {
 							trainingDetailFile.getAbsoluteFile().getParentFile().mkdirs();
 							try {
 								BufferedWriter trainingDetailFileOut = new BufferedWriter(new FileWriter(trainingDetailFile));
-								classifier.train(exampleTrain, trainingDetailFileOut);
+								classifier.train(exampleTrain);
 								trainingDetailFileOut.close();
 							}	
 							

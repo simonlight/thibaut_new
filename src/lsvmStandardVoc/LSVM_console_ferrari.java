@@ -18,7 +18,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import lsvmCCCPGazeVoc.LSVMGradientDescentBag;
 import fr.durandt.jstruct.data.io.BagReader;
 import fr.durandt.jstruct.latent.LatentRepresentation;
 import fr.durandt.jstruct.struct.STrainingSample;
@@ -43,7 +42,7 @@ public class LSVM_console_ferrari {
     String[] classes = {args[0]};
 	int[] scaleCV = {Integer.valueOf(args[1])};
 //	String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
-//	int[] scaleCV = {50};
+//	int[] scaleCV = {90};
 //	String[] classes = {"sofa"};
     
 //    double[] tradeoffCV = {0.8,0.9};
@@ -65,7 +64,7 @@ public class LSVM_console_ferrari {
 	
 	String resultFolder = resDir+taskName;
 	
-	String resultFilePath = resultFolder + "ap_summary.txt";
+	String resultFilePath = resultFolder + "ap_summary_ecarttype_seed1.txt";
 	String metricFolder = resultFolder + "metric/";
 	String classifierFolder = resultFolder + "classifier/";
 	String scoreFolder = resultFolder + "score/";
@@ -73,7 +72,7 @@ public class LSVM_console_ferrari {
 	
 		    	
 	int maxCCCPIter = 100;
-	int minCCCPIter = 2;
+	int minCCCPIter = 1;
 
 	int maxSGDEpochs = 100;
 	
@@ -186,7 +185,6 @@ public class LSVM_console_ferrari {
 							classifier.setStochastic(stochastic);
 							classifier.setVerbose(0);
 							classifier.setMaxEpochs(maxSGDEpochs);
-							classifier.setGazeType(gazeType);								
 							classifier.setLossDict(sourceDir+"ETLoss_dict/"+"ETLOSS+_"+scale+".loss");
 							classifier.setHnorm(hnorm);
 							classifier.setCurrentClass(className);
@@ -203,7 +201,8 @@ public class LSVM_console_ferrari {
 							trainingDetailFile.getAbsoluteFile().getParentFile().mkdirs();
 							try {
 								BufferedWriter trainingDetailFileOut = new BufferedWriter(new FileWriter(trainingDetailFile));
-								classifier.train(exampleTrain, trainingDetailFileOut);
+//								classifier.train(exampleTrain, trainingDetailFileOut);
+								classifier.train(exampleTrain);
 								trainingDetailFileOut.close();
 							}	
 							
