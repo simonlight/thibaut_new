@@ -60,7 +60,7 @@ public class EvaluationLSVMFerrari5Fold {
 //	    double[] tradeoffCV = {0.8,0.9};
 			    	
 		int maxCCCPIter = 100;
-		int minCCCPIter = 2;
+		int minCCCPIter = 1;
 
 		int maxSGDEpochs = 100;
 		

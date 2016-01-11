@@ -65,7 +65,7 @@ public class EvaluationLSVMStefan5Fold {
 
 			    	
 		int maxCCCPIter = 100;
-		int minCCCPIter = 2;
+		int minCCCPIter = 1;
 
 		int maxSGDEpochs = 100;
 		
