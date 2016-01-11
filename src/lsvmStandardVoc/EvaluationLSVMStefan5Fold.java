@@ -58,7 +58,7 @@ public class EvaluationLSVMStefan5Fold {
 		String[] classes = {args[0]};
 		int[] scaleCV = {Integer.valueOf(args[1])};
 //		String[] classes = {"jumping", "phoning" ,"playinginstrument" ,"reading" ,"ridingbike" ,"ridinghorse" ,"running" ,"takingphoto", "usingcomputer", "walking"};
-//		int[] scaleCV = {30};
+//		int[] scaleCV = {100};
 //		String[] classes = {"sofa"};
 	    double[] lambdaCV = {1e-4};
 	    double[] epsilonCV = {0};

@@ -34,15 +34,15 @@ import fr.durandt.jstruct.util.AveragePrecision;;
 public class LSVM_console_ferrari {
 	public static void main(String[] args) {
 	
-	String dataSource= "big";//local or other things
+	String dataSource= "local";//local or other things
 	String gazeType = "ferrari";
-	String taskName = "lsvm_standard_5fold_scale30_tradeoff0.2/";
+	String taskName = "lsvm_standard_scale100/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
-    String[] classes = {args[0]};
-	int[] scaleCV = {Integer.valueOf(args[1])};
-//	String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
-//	int[] scaleCV = {90};
+//    String[] classes = {args[0]};
+//	int[] scaleCV = {Integer.valueOf(args[1])};
+	String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
+	int[] scaleCV = {100};
 //	String[] classes = {"sofa"};
     
 //    double[] tradeoffCV = {0.8,0.9};
