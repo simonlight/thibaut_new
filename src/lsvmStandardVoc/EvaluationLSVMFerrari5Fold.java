@@ -48,10 +48,10 @@ public class EvaluationLSVMFerrari5Fold {
 		String classifierFolder = resultFolder + "classifier/";
 		String scoreFolder = resultFolder + "score/";
 
-//		String[] classes = {args[0]};
-//		int[] scaleCV = {Integer.valueOf(args[1])};
-		String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
-		int[] scaleCV = {90,80,70,60,50,40,30};
+		String[] classes = {args[0]};
+		int[] scaleCV = {Integer.valueOf(args[1])};
+//		String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
+//		int[] scaleCV = {30};
 //		int[] scaleCV = {100};
 //	    String[] classes={"sofa"};
 		double[] lambdaCV = {1e-4};
