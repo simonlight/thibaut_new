@@ -21,15 +21,15 @@ import fr.lip6.jkernelmachines.type.TrainingSample;
 public class EvaluationLSVMFerrari5Fold {
 	public static void main(String[] args) {
 	
-	String dataSource= "local";//local or other things
+	String dataSource= "big";//local or other things
 	String gazeType = "ferrari";
 	String taskName = "lsvm_cccpgaze_positive_5fold_scale30_tradeoff0.2/";
-//	String[] classes = {args[0]};
-//	int[] scaleCV = {Integer.valueOf(args[1])};
+	String[] classes = {args[0]};
+	int[] scaleCV = {Integer.valueOf(args[1])};
     double[] tradeoffCV = {0.2};
-	String[] classes = {"aeroplane", "cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
+//	String[] classes = {"aeroplane", "cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
 //	String[] classes = {"aeroplane"};
-	int[] scaleCV = {30};
+//	int[] scaleCV = {30};
 
 //	String[] classes = {"aeroplane"};
 //	int[] scaleCV = {50};
@@ -55,7 +55,7 @@ public class EvaluationLSVMFerrari5Fold {
 	
 	String resultFolder = resDir+taskName;
 	
-	String resultFilePath = resultFolder + "ap_summary_ecarttype_seed1.txt";
+	String resultFilePath = resultFolder + "ap_summary_ecarttype_seed1_detail.txt";
 	String metricFolder = resultFolder + "metric/";
 	String classifierFolder = resultFolder + "classifier/";
 	String scoreFolder = resultFolder + "score/";
@@ -154,6 +154,15 @@ public class EvaluationLSVMFerrari5Fold {
 //							double ap_test = classifier.testAPRegion(exampleTest, valMetricFile);
 							double ap_test = classifier.testAP(exampleTest);
 		    				apList[i] = ap_test;
+		    				try {
+								BufferedWriter out = new BufferedWriter(new FileWriter(resultFilePath, true));
+								out.write("category:"+className+" scale:"+scale+" index:"+i+" ap_test:"+ap_test+"\n");
+								out.flush();
+								out.close();
+								
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
     					}
 
     					
@@ -169,16 +178,7 @@ public class EvaluationLSVMFerrari5Fold {
     					}
     					variance /= apList.length;
     					double std_variance = Math.sqrt(variance);
-						//write ap 
-	    				try {
-							BufferedWriter out = new BufferedWriter(new FileWriter(resultFilePath, true));
-							out.write("category:"+className+" tradeoff:"+tradeoff+" scale:"+scale+" lambda:"+lambda+" epsilon:"+epsilon+" ap_test:"+average+" std_variance:"+std_variance+"\n");
-							out.flush();
-							out.close();
-							
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						
 					
 		    		
 		    	}

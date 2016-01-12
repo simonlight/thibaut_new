@@ -27,10 +27,6 @@ import fr.durandt.jstruct.variable.BagLabel;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 import fr.durandt.jstruct.util.AveragePrecision;;
 
-/**
- * @author Thibaut Durand - durand.tibo@gmail.com
- *
- */
 public class EvaluationLSVMStefan5Fold {
 	public static void main(String[] args) {
 	
@@ -56,7 +52,7 @@ public class EvaluationLSVMStefan5Fold {
 	
 	String resultFolder = resDir+taskName;
 	
-	String resultFilePath = resultFolder + "ap_summary_ecarttype_seed1.txt";
+	String resultFilePath = resultFolder + "ap_summary_ecarttype_seed1_detail.txt";
 	String metricFolder = resultFolder + "metric/";
 	String classifierFolder = resultFolder + "classifier/";
 	String scoreFolder = resultFolder + "score/";
@@ -169,6 +165,15 @@ public class EvaluationLSVMStefan5Fold {
 //							double ap_test = classifier.testAPRegion(exampleTest, valMetricFile);
 							double ap_test = classifier.testAP(exampleTest);
 		    				apList[i] = ap_test;
+		    				try {
+								BufferedWriter out = new BufferedWriter(new FileWriter(resultFilePath, true));
+								out.write("category:"+className+" scale:"+scale+" index:"+i+" ap_test:"+ap_test+"\n");
+								out.flush();
+								out.close();
+								
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
     					}
     					double average = 0;
     					for (double ap: apList){
@@ -181,16 +186,7 @@ public class EvaluationLSVMStefan5Fold {
     					}
     					variance /= apList.length;
     					double std_variance = Math.sqrt(variance);
-						//write ap 
-	    				try {
-							BufferedWriter out = new BufferedWriter(new FileWriter(resultFilePath, true));
-							out.write("category:"+className+" tradeoff:"+tradeoff+" scale:"+scale+" lambda:"+lambda+" epsilon:"+epsilon+" ap_test:"+average+" std_variance:"+std_variance+"\n");
-							out.flush();
-							out.close();
-							
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						
 					
 		    		
 		    	}

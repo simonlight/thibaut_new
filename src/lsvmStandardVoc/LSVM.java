@@ -4,7 +4,6 @@
 package lsvmStandardVoc;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 
 import fr.durandt.jstruct.latent.LatentRepresentation;

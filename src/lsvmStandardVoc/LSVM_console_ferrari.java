@@ -20,12 +20,8 @@ import java.util.Random;
 
 import fr.durandt.jstruct.data.io.BagReader;
 import fr.durandt.jstruct.latent.LatentRepresentation;
-import fr.durandt.jstruct.struct.STrainingSample;
-import fr.durandt.jstruct.variable.Bag;
 import fr.durandt.jstruct.variable.BagImage;
-import fr.durandt.jstruct.variable.BagLabel;
 import fr.lip6.jkernelmachines.type.TrainingSample;
-import fr.durandt.jstruct.util.AveragePrecision;;
 
 /**
  * @author Thibaut Durand - durand.tibo@gmail.com
@@ -188,10 +184,7 @@ public class LSVM_console_ferrari {
 							classifier.setLossDict(sourceDir+"ETLoss_dict/"+"ETLOSS+_"+scale+".loss");
 							classifier.setHnorm(hnorm);
 							classifier.setCurrentClass(className);
-							//Initialize the region by fixations
-//							for(STrainingSample<LatentRepresentation<BagMIL, Integer>,Integer> ts : exampleTrain){
-//								ts.input.h = lsvm.getGazeInitRegion(ts, scale, initializedType);
-//							}
+
 							
 
 							File trainingDetailFile = new File(trainingDetailFolder + "/" + className + "/"+ 

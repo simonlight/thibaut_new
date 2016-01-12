@@ -17,10 +17,6 @@ import fr.durandt.jstruct.util.AveragePrecision;
 import fr.lip6.jkernelmachines.classifier.Classifier;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 
-/**
- * @author Thibaut Durand - durand.tibo@gmail.com
- *
- */
 public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer> {
 
 	/**
