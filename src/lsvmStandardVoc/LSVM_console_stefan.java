@@ -34,15 +34,15 @@ import fr.durandt.jstruct.util.AveragePrecision;;
 public class LSVM_console_stefan {
 	public static void main(String[] args) {
 	
-	String dataSource= "local";//local or other things
+	String dataSource= "big";//local or other things
 	String gazeType = "stefan";
-	String taskName = "lsvm_standard_scale100/";
+	String taskName = "lsvm_scale30_init0/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
-//	String[] classes = {args[0]};
-//	int[] scaleCV = {Integer.valueOf(args[1])};
-	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
-	int[] scaleCV = {100};
+	String[] classes = {args[0]};
+	int[] scaleCV = {Integer.valueOf(args[1])};
+//	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
+//	int[] scaleCV = {100};
     
 	String sourceDir = new String();
 	String resDir = new String();
@@ -62,7 +62,7 @@ public class LSVM_console_stefan {
 	
 	String resultFolder = resDir+taskName;
 	
-	String resultFilePath = resultFolder + "ap_summary.txt";
+	String resultFilePath = resultFolder + "ap_summary_ecarttype_seed1_detail.txt";
 	String metricFolder = resultFolder + "metric/";
 	String classifierFolder = resultFolder + "classifier/";
 	String scoreFolder = resultFolder + "score/";
@@ -142,12 +142,11 @@ public class LSVM_console_stefan {
 							for(int j:trainList) {
 								exampleTrain.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTrain.get(j).sample.x,0), listTrain.get(j).label));
 							}
+						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleVal = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
+						for(int j:leftOutList) {
+							exampleVal.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTrain.get(j).sample.x,0), listTrain.get(j).label));
+						}
 						
-//						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleVal = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
-//						for(int i=0; i<listVal.size(); i++) {
-//							exampleVal.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listVal.get(i).sample.x,0), listVal.get(i).label));
-//						}
-
 						LSVMGradientDescentBag classifier = new LSVMGradientDescentBag(); 
 					
 						File fileClassifier = new File(classifierFolder + "/" + className + "/"+ 
@@ -239,8 +238,20 @@ public class LSVM_console_stefan {
 							System.out.println("wrote classifier successfully!");
 						}
 
-	    				double ap_train = classifier.testAP(exampleTrain);
-						System.err.println("train - ap= " + ap_train);
+	    				classifier.optimizeLatent(exampleVal);
+//						File valMetricFile=new File(metricFolder+"/metric_val_"+scale+"_"+epsilon+"_"+lambda+"_"+className+".txt");
+//						double ap_test = classifier.testAPRegion(exampleTest, valMetricFile);
+						double ap_test = classifier.testAP(exampleVal);
+	    				
+	    				try {
+							BufferedWriter out = new BufferedWriter(new FileWriter(resultFilePath, true));
+							out.write("category:"+className+" scale:"+scale+" index:"+i+" ap_test:"+ap_test+"\n");
+							out.flush();
+							out.close();
+							
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 						}
 //						classifier.optimizeLatent(exampleVal);
 //						double ap_val = classifier.testAP(exampleVal);
