@@ -146,20 +146,6 @@ public abstract class LSVM<X,H> implements Classifier<LatentRepresentation<X, H>
 		return loss;
 	}
 
-	/**
-	 * Compute the loss function for one sample ts
-	 * @param ts
-	 * @return
-	 */
-
-	
-	
-
-	/** 
-	 * Compute the primal objective
-	 * @param l
-	 * @return the primal objective
-	 */
 	public double getPrimalObjective(List<TrainingSample<LatentRepresentation<X,H>>> l) {
 		double obj = 0;
 		obj += VectorOperations.dot(w,w) * lambda/2;

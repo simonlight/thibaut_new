@@ -27,22 +27,19 @@ import fr.durandt.jstruct.variable.BagLabel;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 import fr.durandt.jstruct.util.AveragePrecision;;
 
-/**
- * @author Thibaut Durand - durand.tibo@gmail.com
- *
- */
 public class LSVM_console_stefan {
 	public static void main(String[] args) {
 	
-	String dataSource= "big";//local or other things
+	String dataSource= "local";//local or other things
 	String gazeType = "stefan";
-	String taskName = "lsvm_scale30_init0/";
+//	String taskName = "lsvm_scale30_init0/";
+	String taskName = "lsvm_standard_scale100/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
-	String[] classes = {args[0]};
-	int[] scaleCV = {Integer.valueOf(args[1])};
-//	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
-//	int[] scaleCV = {100};
+//	String[] classes = {args[0]};
+//	int[] scaleCV = {Integer.valueOf(args[1])};
+	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
+	int[] scaleCV = {100};
     
 	String sourceDir = new String();
 	String resDir = new String();
@@ -104,7 +101,6 @@ public class LSVM_console_stefan {
 		    );
 	
 	int foldNum = 5;
-
 	
 	 for(String className: classes){
 	    for(int scale : scaleCV) {
@@ -139,9 +135,9 @@ public class LSVM_console_stefan {
 		    			
 		    			
    						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleTrain = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
-							for(int j:trainList) {
-								exampleTrain.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTrain.get(j).sample.x,0), listTrain.get(j).label));
-							}
+						for(int j:trainList) {
+							exampleTrain.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTrain.get(j).sample.x,0), listTrain.get(j).label));
+						}
 						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleVal = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
 						for(int j:leftOutList) {
 							exampleVal.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTrain.get(j).sample.x,0), listTrain.get(j).label));

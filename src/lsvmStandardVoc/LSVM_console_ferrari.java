@@ -32,7 +32,8 @@ public class LSVM_console_ferrari {
 	
 	String dataSource= "big";//local or other things
 	String gazeType = "ferrari";
-	String taskName = "lsvm_scale30_init0/";
+	String taskName = "lsvm_scale30_init0_maxCCCP1000/";
+//	String taskName = "lsvm_standard_scale100/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
     String[] classes = {args[0]};
@@ -182,8 +183,7 @@ public class LSVM_console_ferrari {
 							classifier.setVerbose(0);
 							classifier.setMaxEpochs(maxSGDEpochs);
 							classifier.setCurrentClass(className);
-
-							
+							classifier.setSemiConvexity(semiConvexity);
 
 							File trainingDetailFile = new File(trainingDetailFolder + "/" + className + "/"+ 
 									className + "_" + scale + "_"+epsilon+"_"+lambda + 

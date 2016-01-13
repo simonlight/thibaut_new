@@ -36,7 +36,7 @@ public class LSVM_console_stefan {
 	
 	String dataSource= "big";//local or other things
 	String gazeType = "stefan";
-	String taskName = "lsvm_cccpgaze_positive_5fold_scale30_tradeoff0.2/";
+	String taskName = "lsvm_cccpgaze_positive_5fold_scale30_tradeoff0.2_random_init/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
 	String[] classes = {args[0]};
@@ -142,15 +142,15 @@ public class LSVM_console_stefan {
     						trainList.addAll(trainList_2);
 		    			
 		    			
-    						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleTrain = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
-							for(int j:trainList) {
-								exampleTrain.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTrain.get(j).sample.x,0), listTrain.get(j).label));
-							}
+						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleTrain = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
+						for(int j:trainList) {
+							exampleTrain.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTrain.get(j).sample.x,0), listTrain.get(j).label));
+						}
 						
-//						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleVal = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
-//						for(int i=0; i<listVal.size(); i++) {
-//							exampleVal.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listVal.get(i).sample.x,0), listVal.get(i).label));
-//						}
+						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleVal = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
+						for(int j:leftOutList) {
+							exampleVal.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTrain.get(j).sample.x,0), listTrain.get(j).label));
+						}
 
 						LSVMGradientDescentBag classifier = new LSVMGradientDescentBag(); 
 					
@@ -245,8 +245,22 @@ public class LSVM_console_stefan {
 							System.out.println("wrote classifier successfully!");
 						}
 
-	    				double ap_train = classifier.testAP(exampleTrain);
-						System.err.println("train - ap= " + ap_train);
+//	    				double ap_train = classifier.testAP(exampleTrain);
+//						System.err.println("train - ap= " + ap_train);
+	    				classifier.optimizeLatent(exampleVal);
+//						File valMetricFile=new File(metricFolder+"/metric_val_"+scale+"_"+epsilon+"_"+lambda+"_"+className+".txt");
+//						double ap_test = classifier.testAPRegion(exampleTest, valMetricFile);
+						double ap_test = classifier.testAP(exampleVal);
+	    				
+	    				try {
+							BufferedWriter out = new BufferedWriter(new FileWriter(resultFilePath, true));
+							out.write("category:"+className+" scale:"+scale+" index:"+i+" ap_test:"+ap_test+"\n");
+							out.flush();
+							out.close();
+							
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 						}
 //						classifier.optimizeLatent(exampleVal);
 //						double ap_val = classifier.testAP(exampleVal);
