@@ -68,7 +68,7 @@ public class LSVM_console_ferrari {
 	String trainingDetailFolder = resultFolder + "trainingdetail/";
 	
 		    	
-	int maxCCCPIter = 100;
+	int maxCCCPIter = 1000;
 	int minCCCPIter = 1;
 
 	int maxSGDEpochs = 100;
