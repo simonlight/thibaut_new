@@ -43,8 +43,8 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 	protected void init(List<TrainingSample<LatentRepresentation<BagImage, Integer>>> l) {
 		dim = l.get(0).sample.x.getInstance(0).length;
 		for(TrainingSample<LatentRepresentation<BagImage, Integer>> ts : l) {
-			ts.sample.h = (int)(Math.random()*ts.sample.x.getInstances().size());
-//			ts.sample.h=0;
+//			ts.sample.h = (int)(Math.random()*ts.sample.x.getInstances().size());
+			ts.sample.h=0;
 		}
 	}
 
