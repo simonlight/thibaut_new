@@ -55,14 +55,14 @@ public class EvaluationLSVMStefan {
 	String resultFolder = resDir+taskName;
 	
 	String resultFilePath = resultFolder + "ap_summary.txt";
-	String metricFolder = resultFolder + "metric/";
+	String metricFolder = resultFolder + "metric_final/";
 	String classifierFolder = resultFolder + "classifier/";
 	String scoreFolder = resultFolder + "score/";
 
-//	String[] classes = {args[0]};
-//	int[] scaleCV = {Integer.valueOf(args[1])};
-	String[] classes = {"jumping", "phoning" ,"playinginstrument" ,"reading" ,"ridingbike" ,"ridinghorse" ,"running" ,"takingphoto", "usingcomputer", "walking"};
-	int[] scaleCV = {90,80,70,60,50,40,30};
+	String[] classes = {args[0]};
+	int[] scaleCV = {Integer.valueOf(args[1])};
+//	String[] classes = {"jumping", "phoning" ,"playinginstrument" ,"reading" ,"ridingbike" ,"ridinghorse" ,"running" ,"takingphoto", "usingcomputer", "walking"};
+//	int[] scaleCV = {90,80,70,60,50,40,30};
 //	String[] classes = {"sofa"};
     double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
@@ -154,21 +154,21 @@ public class EvaluationLSVMStefan {
 						File trainMetricFile=new File(metricFolder+scale+"/metric_train_"+scale+"_"+epsilon+"_"+lambda+"_"+className+".txt");
 						trainMetricFile.getAbsoluteFile().getParentFile().mkdirs();
 						classifier.optimizeLatent(exampleTrain);
-						double ap_train = classifier.testAP(exampleTrain);
+						double ap_train = classifier.testAPRegion(exampleTrain,trainMetricFile);
 	    				System.out.println("ap train:"+ap_train);
 
 	    				//val metric file
 						File valMetricFile=new File(metricFolder+scale+"/metric_valval_"+scale+"_"+epsilon+"_"+lambda+"_"+className+".txt");
 						valMetricFile.getAbsoluteFile().getParentFile().mkdirs();
 						classifier.optimizeLatent(exampleVal);
-						double ap_val = classifier.testAP(exampleVal);
+						double ap_val = classifier.testAPRegion(exampleVal,valMetricFile);
 	    				System.out.println("ap val:"+ap_val);
 	    				
 	    				//test metric file		    				
 	    				File testMetricFile=new File(metricFolder+scale+"/metric_valtest_"+scale+"_"+epsilon+"_"+lambda+"_"+className+".txt");
 	    				testMetricFile.getAbsoluteFile().getParentFile().mkdirs();
 						classifier.optimizeLatent(exampleTest);
-	    				double ap_test = classifier.testAP(exampleTest);
+	    				double ap_test = classifier.testAPRegion(exampleTest, testMetricFile);
 	    				System.out.println("ap test:"+ap_test);
 	    				
 	    				//write ap 
