@@ -20,6 +20,7 @@ import fr.lip6.jkernelmachines.util.algebra.VectorOperations;
  *
  */
 public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
+	private static final long serialVersionUID = -5884756230804392756L;
 
 	protected int optim = 2	;
 	
