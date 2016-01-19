@@ -30,16 +30,16 @@ import fr.lip6.jkernelmachines.type.TrainingSample;
 public class LSVM_console_ferrari {
 	public static void main(String[] args) {
 	
-	String dataSource= "local";//local or other things
+	String dataSource= "big";//local or other things
 	String gazeType = "ferrari";
 //	String taskName = "lsvm_scale30_init0_maxCCCP1000/";
 	String taskName = "lsvm_standard_scale100_rigid_split/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
-//    String[] classes = {args[0]};
-//	int[] scaleCV = {Integer.valueOf(args[1])};
-	String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
-	int[] scaleCV = {100};
+    String[] classes = {args[0]};
+	int[] scaleCV = {Integer.valueOf(args[1])};
+//	String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
+//	int[] scaleCV = {100};
 //	String[] classes = {"sofa"};
     
 //    double[] tradeoffCV = {0.8,0.9};

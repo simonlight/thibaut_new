@@ -32,7 +32,7 @@ import fr.durandt.jstruct.util.AveragePrecision;;
 public class EvaluationLSVMStefan {
 	public static void main(String[] args) {
 	
-	String dataSource= "local";//local or other things
+	String dataSource= "big";//local or other things
 	String gazeType = "stefan";
 
 	String sourceDir = new String();

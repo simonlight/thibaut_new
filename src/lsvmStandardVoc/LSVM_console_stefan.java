@@ -30,16 +30,16 @@ import fr.durandt.jstruct.util.AveragePrecision;;
 public class LSVM_console_stefan {
 	public static void main(String[] args) {
 	
-	String dataSource= "local";//local or other things
+	String dataSource= "big";//local or other things
 	String gazeType = "stefan";
 //	String taskName = "lsvm_scale30_init0_maxCCCP1000/";
 	String taskName = "lsvm_standard_scale100_rigid_split/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
-//	String[] classes = {args[0]};
-//	int[] scaleCV = {Integer.valueOf(args[1])};
-	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
-	int[] scaleCV = {100};
+	String[] classes = {args[0]};
+	int[] scaleCV = {Integer.valueOf(args[1])};
+//	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
+//	int[] scaleCV = {100};
     
 	String sourceDir = new String();
 	String resDir = new String();
