@@ -19,20 +19,20 @@ import fr.lip6.jkernelmachines.type.TrainingSample;
 public class EvaluationLSVMFerrari {
 	public static void main(String[] args) {
 	
-	String dataSource= "big";//local or other things
+	String dataSource= "local";//local or other things
 	String gazeType = "ferrari";
 	String taskName = "lsvm_cccpgaze_positive_cv/";
-	String[] classes = {args[0]};
-	int[] scaleCV = {Integer.valueOf(args[1])};
-    double[] tradeoffCV = {0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};	
+//	String[] classes = {args[0]};
+//	int[] scaleCV = {Integer.valueOf(args[1])};
+    double[] tradeoffCV = {0.0};	
 //    double[] tradeoffCV = {0.2};
-//	String[] classes = {"aeroplane", "cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
+	String[] classes = {"aeroplane", "cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
 //	String[] classes = {"aeroplane", "cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable"};
 //	String[] classes = {"aeroplane"};
 //	int[] scaleCV = {90, 80,70,60,50,40,30};
 
 //	String[] classes = {"aeroplane"};
-//	int[] scaleCV = {50};
+	int[] scaleCV = {100};
 //	String[] classes = {"sofa"};
     double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};

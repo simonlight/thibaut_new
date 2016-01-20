@@ -32,7 +32,7 @@ import fr.durandt.jstruct.util.AveragePrecision;;
 public class EvaluationLSVMStefan {
 	public static void main(String[] args) {
 	
-	String dataSource= "big";//local or other things
+	String dataSource= "local";//local or other things
 	String gazeType = "stefan";
 
 	String sourceDir = new String();
@@ -59,18 +59,19 @@ public class EvaluationLSVMStefan {
 	String classifierFolder = resultFolder + "classifier/";
 	String scoreFolder = resultFolder + "score/";
 
-	String[] classes = {args[0]};
-	int[] scaleCV = {Integer.valueOf(args[1])};
-//	String[] classes = {"jumping", "phoning" ,"playinginstrument" ,"reading" ,"ridingbike" ,"ridinghorse" ,"running" ,"takingphoto", "usingcomputer", "walking"};
+//	String[] classes = {args[0]};
+//	int[] scaleCV = {Integer.valueOf(args[1])};
+	String[] classes = {"jumping", "phoning" ,"playinginstrument" ,"reading" ,"ridingbike" ,"ridinghorse" ,"running" ,"takingphoto", "usingcomputer", "walking"};
 //	int[] scaleCV = {90,80,70,60,50,40,30};
+	int[] scaleCV = {100};
 //	String[] classes = {"sofa"};
     double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
 
 //    double[] tradeoffCV = {0.8,0.9};
 		    	
-	int maxCCCPIter = 100;
-	int minCCCPIter = 2;
+	int maxCCCPIter = 1000;
+	int minCCCPIter = 1;
 
 	int maxSGDEpochs = 100;
 	
