@@ -36,10 +36,10 @@ public class LSVM_console_stefan {
 	String taskName = "lsvm_standard_cv_5fold(allscale)/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
-//	String[] classes = {args[0]};
-//	int[] scaleCV = {Integer.valueOf(args[1])};
-	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
-	int[] scaleCV = {100};
+	String[] classes = {args[0]};
+	int[] scaleCV = {Integer.valueOf(args[1])};
+//	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
+//	int[] scaleCV = {100};
     
 	String sourceDir = new String();
 	String resDir = new String();
