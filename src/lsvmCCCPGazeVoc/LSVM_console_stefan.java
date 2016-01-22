@@ -36,7 +36,7 @@ public class LSVM_console_stefan {
 	
 	String dataSource= "big";//local or other things
 	String gazeType = "stefan";
-	String taskName = "lsvm_cccpBB_positive_cv_5fold/";
+	String taskName = "lsvm_cccpgaze_positive_cv_5fold(allscale)_correct/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
 	String[] classes = {args[0]};
@@ -195,7 +195,7 @@ public class LSVM_console_stefan {
 							classifier.setTradeOff(tradeoff);
 							classifier.setMaxEpochs(maxSGDEpochs);
 							classifier.setGazeType(gazeType);								
-							classifier.setLossDict(sourceDir+"BBLoss_dict/"+"ETLOSS+_"+scale+".loss");
+							classifier.setLossDict(sourceDir+"ETLoss_dict/"+"ETLOSS+_"+scale+".loss");
 							classifier.setHnorm(hnorm);
 							classifier.setCurrentClass(className);
 							//Initialize the region by fixations
