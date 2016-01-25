@@ -162,6 +162,8 @@ public class EvaluationLSVMStefan5Fold {
 		    				//test metric file		    				
 							classifier.optimizeLatent(exampleTest);
 							File valMetricFile=new File(metricFolder+"/metric_train_"+tradeoff+"_"+scale+"_"+epsilon+"_"+lambda+"_"+className+"_"+i+".txt");
+							valMetricFile.getAbsoluteFile().getParentFile().mkdirs();
+
 							double ap_test = classifier.testAPRegion(exampleTest, valMetricFile);
 //							double ap_test = classifier.testAP(exampleTest);
 		    				apList[i] = ap_test;

@@ -42,12 +42,12 @@ public class EvaluationLSVMStefan5Fold {
 		String initializedType = ".";//+0,+-,or other things
 		boolean hnorm = false;
 		
-		String taskName = "lsvm_standard_5fold_scale30_tradeoff0.2/";
+		String taskName = "lsvm_standard_cv_5fold_allscale/";
 		
 		String resultFolder = resDir+taskName;
 		
-		String resultFilePath = resultFolder + "ap_summary_ecarttype_seed1_detail.txt";
-		String metricFolder = resultFolder + "metric/";
+		String resultFilePath = resultFolder + "ap_summary_ecarttype_seed1_detail_todelete.txt";
+		String metricFolder = resultFolder + "training_metric/";
 		String classifierFolder = resultFolder + "classifier/";
 		String scoreFolder = resultFolder + "score/";
 
@@ -124,7 +124,7 @@ public class EvaluationLSVMStefan5Fold {
     						testList.addAll(testList_2);
 							
 		    				List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleTest = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
-							for(int j:leftOutList) {
+							for(int j:testList) {
 								exampleTest.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTest.get(j).sample.x,0), listTest.get(j).label));
 							}
 
@@ -155,9 +155,11 @@ public class EvaluationLSVMStefan5Fold {
 		    				
 		    				//test metric file		    				
 							classifier.optimizeLatent(exampleTest);
-//							File valMetricFile=new File(metricFolder+"/metric_val_"+scale+"_"+epsilon+"_"+lambda+"_"+className+".txt");
-//							double ap_test = classifier.testAPRegion(exampleTest, valMetricFile);
-							double ap_test = classifier.testAP(exampleTest);
+							File valMetricFile=new File(metricFolder+"/metric_train_"+scale+"_"+epsilon+"_"+lambda+"_"+className+".txt");
+							valMetricFile.getAbsoluteFile().getParentFile().mkdirs();
+
+							double ap_test = classifier.testAPRegion(exampleTest, valMetricFile);
+//							double ap_test = classifier.testAP(exampleTest);
 		    				apList[i] = ap_test;
 		    				try {
 								BufferedWriter out = new BufferedWriter(new FileWriter(resultFilePath, true));
