@@ -34,16 +34,16 @@ import fr.durandt.jstruct.util.AveragePrecision;;
 public class LSVM_console_stefan {
 	public static void main(String[] args) {
 	
-	String dataSource= "big";//local or other things
+	String dataSource= "local";//local or other things
 	String gazeType = "stefan";
-	String taskName = "lsvm_cccpgaze_positive_cv_5fold(allscale)_correct/";
+	String taskName = "lsvm_cccpBB_positive_cv_5fold/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
-	String[] classes = {args[0]};
-	int[] scaleCV = {Integer.valueOf(args[1])};
-//	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
+//	String[] classes = {args[0]};
+//	int[] scaleCV = {Integer.valueOf(args[1])};
+	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
 //    String[] classes = {"jumping"};
-//    int[] scaleCV = {90};
+    int[] scaleCV = {50};
 	
     
 //    double[] tradeoffCV = {0.0, 0.0001,0.001,0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
@@ -195,7 +195,7 @@ public class LSVM_console_stefan {
 							classifier.setTradeOff(tradeoff);
 							classifier.setMaxEpochs(maxSGDEpochs);
 							classifier.setGazeType(gazeType);								
-							classifier.setLossDict(sourceDir+"ETLoss_dict/"+"ETLOSS+_"+scale+".loss");
+							classifier.setLossDict(sourceDir+"BBLoss_dict/"+"ETLOSS+_"+scale+".loss");
 							classifier.setHnorm(hnorm);
 							classifier.setCurrentClass(className);
 							//Initialize the region by fixations
