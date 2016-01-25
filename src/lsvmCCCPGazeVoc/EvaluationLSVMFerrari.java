@@ -19,7 +19,7 @@ import fr.lip6.jkernelmachines.type.TrainingSample;
 public class EvaluationLSVMFerrari {
 	public static void main(String[] args) {
 	
-	String dataSource= "local";//local or other things
+	String dataSource= "big";//local or other things
 	String gazeType = "ferrari";
 	String taskName = "lsvm_cccpgaze_positive_cv/";
 //	String[] classes = {args[0]};

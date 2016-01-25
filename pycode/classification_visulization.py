@@ -93,14 +93,11 @@ def get_y(ap_res, scale_cv):
 def get_y_ecarttype_single_scale(ap_res, tradeoff_cv):
     ap_test_list = [0]*len(tradeoff_cv)
     std_var_list = [0]*len(tradeoff_cv)
-    print ap_res
     for tradeoff in tradeoff_cv:
         y_ap_all=[]
         for category in ap_res.keys():
             y_ap_all.append(ap_res[category][str(tradeoff)])
-        print y_ap_all
         ap_test, std_var = np.sum(y_ap_all, axis=0) / len(y_ap_all)
-        print ap_test
         ap_test_list[tradeoff_cv.index(tradeoff)] = ap_test
         std_var_list[tradeoff_cv.index(tradeoff)] = std_var
     return ap_test_list, std_var_list
@@ -457,7 +454,10 @@ if __name__=='__main__':
     import numpy as np
     import os
 
-    ap_results = open("/local/wangxin/results/full_stefan_gaze/lsvm_et/lsvm_cccpgaze_positive_cv/ap_summary_ecarttype.txt")
+
+#     ap_results = open("/local/wangxin/results/full_stefan_gaze/lsvm_et/lsvm_cccpgaze_positive_cv/ap_summary_ecarttype.txt")
+    ap_results = open("/local/wangxin/results/ferrari_gaze/std_et/lsvm_cccpgaze_positive_cv/ap_summary.txt")
+    
     td_folder = "/local/wangxin/results/full_stefan_gaze/lsvm_et/lsvm_cccpgaze_positive_cv/trainingdetail"
 
 #     ap_results = open("/local/wangxin/results/ferrari_gaze/std_et/lsvm_cccpgaze_positive_cv/ap_summary_ecarttype.txt")
