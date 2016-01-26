@@ -24,7 +24,7 @@ import fr.lip6.jkernelmachines.type.TrainingSample;
 public class EvaluationLSVMStefan5Fold {
 	public static void main(String[] args) {
 	
-		String dataSource= "big";//local or other things
+		String dataSource= "local";//local or other things
 		String gazeType = "stefan";
 
 		String sourceDir = new String();
@@ -51,11 +51,11 @@ public class EvaluationLSVMStefan5Fold {
 		String classifierFolder = resultFolder + "classifier/";
 		String scoreFolder = resultFolder + "score/";
 
-		String[] classes = {args[0]};
-		int[] scaleCV = {Integer.valueOf(args[1])};
-//		String[] classes = {"jumping", "phoning" ,"playinginstrument" ,"reading" ,"ridingbike" ,"ridinghorse" ,"running" ,"takingphoto", "usingcomputer", "walking"};
-//		int[] scaleCV = {100};
-//		String[] classes = {"sofa"};
+//		String[] classes = {args[0]};
+//		int[] scaleCV = {Integer.valueOf(args[1])};
+		String[] classes = {"jumping", "phoning" ,"playinginstrument" ,"reading" ,"ridingbike" ,"ridinghorse" ,"running" ,"takingphoto", "usingcomputer", "walking"};
+		int[] scaleCV = {100};
+//		String[] classes = {"jumping", "phoning" ,"playinginstrument" };
 	    double[] lambdaCV = {1e-4};
 	    double[] epsilonCV = {0};
 

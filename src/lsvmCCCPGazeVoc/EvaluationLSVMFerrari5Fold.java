@@ -21,18 +21,18 @@ import fr.lip6.jkernelmachines.type.TrainingSample;
 public class EvaluationLSVMFerrari5Fold {
 	public static void main(String[] args) {
 	
-	String dataSource= "big";//local or other things
+	String dataSource= "local";//local or other things
 	String gazeType = "ferrari";
 	String taskName = "lsvm_cccpgaze_positive_cv_5fold_allscale/";
-	String[] classes = {args[0]};
-	int[] scaleCV = {Integer.valueOf(args[1])};
+//	String[] classes = {args[0]};
+//	int[] scaleCV = {Integer.valueOf(args[1])};
     double[] tradeoffCV = {0.2};
 //	String[] classes = {"aeroplane", "cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
-//	String[] classes = {"aeroplane"};
+	String[] classes = {"aeroplane","cow"};
 //	int[] scaleCV = {30};
 
 //	String[] classes = {"aeroplane"};
-//	int[] scaleCV = {50};
+	int[] scaleCV = {70};
 //	String[] classes = {"sofa"};
     double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
@@ -121,7 +121,7 @@ public class EvaluationLSVMFerrari5Fold {
     						testList.addAll(testList_2);
 							
 		    				List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleTest = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
-							for(int j:testList) {
+							for(int j:leftOutList) {
 								exampleTest.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTest.get(j).sample.x,0), listTest.get(j).label));
 							}
 
@@ -150,7 +150,7 @@ public class EvaluationLSVMFerrari5Fold {
 	
 		    				//write metric file, yp, yi, hp, score, filename		    				
 							classifier.optimizeLatent(exampleTest);
-							File valMetricFile=new File(metricFolder+"/metric_train_"+tradeoff+"_"+scale+"_"+epsilon+"_"+lambda+"_"+className+"_"+i+".txt");
+							File valMetricFile=new File(metricFolder+"/metric_val_"+tradeoff+"_"+scale+"_"+epsilon+"_"+lambda+"_"+className+"_"+i+".txt");
 							valMetricFile.getAbsoluteFile().getParentFile().mkdirs();
 
 							double ap_test = classifier.testAPRegion(exampleTest, valMetricFile);

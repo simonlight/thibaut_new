@@ -248,11 +248,17 @@ public class LSVM_console_ferrari {
 							System.out.println("wrote classifier successfully!");
 						}
 
+	    				classifier.optimizeLatent(exampleTrain);
+						File trainMetricFile=new File(metricFolder+"/metric_train_"+scale+"_"+tradeoff+"_"+epsilon+"_"+lambda+"_"+className+"_"+i+".txt");
+						trainMetricFile.getAbsoluteFile().getParentFile().mkdirs();
+
+						double ap_test = classifier.testAPRegion(exampleTrain, trainMetricFile);
+	    				
 	    				classifier.optimizeLatent(exampleVal);
 						File valMetricFile=new File(metricFolder+"/metric_val_"+scale+"_"+tradeoff+"_"+epsilon+"_"+lambda+"_"+className+"_"+i+".txt");
 						valMetricFile.getAbsoluteFile().getParentFile().mkdirs();
 
-						double ap_test = classifier.testAPRegion(exampleVal, valMetricFile);
+						ap_test = classifier.testAPRegion(exampleVal, valMetricFile);
 //						double ap_test = classifier.testAP(exampleVal);
 	    				
 	    				try {
