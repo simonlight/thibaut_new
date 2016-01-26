@@ -28,12 +28,12 @@ public class EvaluationLSVMFerrari5Fold {
 //	int[] scaleCV = {Integer.valueOf(args[1])};
     double[] tradeoffCV = {0.2};
 //	String[] classes = {"aeroplane", "cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
-	String[] classes = {"aeroplane","cow"};
+//	String[] classes = {"aeroplane","cow"};
 //	int[] scaleCV = {30};
 
 //	String[] classes = {"aeroplane"};
-	int[] scaleCV = {70};
-//	String[] classes = {"sofa"};
+	int[] scaleCV = {40};
+	String[] classes = {"sofa"};
     double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
     
