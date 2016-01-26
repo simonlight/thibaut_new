@@ -153,7 +153,7 @@ public class EvaluationLSVMFerrari5Fold {
 		    				
 		    				//test metric file		    				
 							classifier.optimizeLatent(exampleTest);
-							File valMetricFile=new File(metricFolder+"/metric_train_"+scale+"_"+epsilon+"_"+lambda+"_"+className+".txt");
+							File valMetricFile=new File(metricFolder+"/metric_train_"+scale+"_"+epsilon+"_"+lambda+"_"+className+"_"+i+".txt");
 							valMetricFile.getAbsoluteFile().getParentFile().mkdirs();
 
 							double ap_test = classifier.testAPRegion(exampleTest, valMetricFile);
