@@ -36,7 +36,7 @@ public class LSVM_console_stefan {
 	
 	String dataSource= "big";//local or other things
 	String gazeType = "stefan";
-	String taskName = "lsvm_standard_cv_5fold_allscale_random_init_finaltest/";
+	String taskName = "lsvm_cccpgaze_positive_cv_5fold_allscale_random_init_finaltest/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
 	String[] classes = {args[0]};
