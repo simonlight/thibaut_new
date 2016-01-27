@@ -34,16 +34,16 @@ import fr.durandt.jstruct.util.AveragePrecision;;
 public class LSVM_console_stefan {
 	public static void main(String[] args) {
 	
-	String dataSource= "local";//local or other things
+	String dataSource= "big";//local or other things
 	String gazeType = "stefan";
-	String taskName = "lsvm_cccpgaze_positive_cv_5fold_allscale/";
+	String taskName = "lsvm_standard_cv_5fold_allscale_random_init_finaltest/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
-//	String[] classes = {args[0]};
-//	int[] scaleCV = {Integer.valueOf(args[1])};
+	String[] classes = {args[0]};
+	int[] scaleCV = {Integer.valueOf(args[1])};
 //	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
-    String[] classes = {"ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
-    int[] scaleCV = {30};
+//    String[] classes = {"ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
+//    int[] scaleCV = {30};
 	
     
 //    double[] tradeoffCV = {0.0, 0.0001,0.001,0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
@@ -67,7 +67,7 @@ public class LSVM_console_stefan {
 	
 	String resultFolder = resDir+taskName;
 	
-	String resultFilePath = resultFolder + "ap_summary.txt";
+	String resultFilePath = resultFolder + "ap_summary_ecarttype_seed1_detail.txt";
 	String metricFolder = resultFolder + "metric/";
 	String classifierFolder = resultFolder + "classifier/";
 	String scoreFolder = resultFolder + "score/";

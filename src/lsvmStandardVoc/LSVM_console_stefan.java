@@ -30,18 +30,18 @@ import fr.durandt.jstruct.util.AveragePrecision;;
 public class LSVM_console_stefan {
 	public static void main(String[] args) {
 	
-	String dataSource= "local";//local or other things
+	String dataSource= "big";//local or other things
 	String gazeType = "stefan";
 //	String taskName = "lsvm_scale30_init0_maxCCCP1000/";
-	String taskName = "lsvm_standard_cv_5fold_allscale/";
+	String taskName = "lsvm_standard_cv_5fold_allscale_random_init_finaltest/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
-//	String[] classes = {args[0]};
-//	int[] scaleCV = {Integer.valueOf(args[1])};
+	String[] classes = {args[0]};
+	int[] scaleCV = {Integer.valueOf(args[1])};
 //	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
 
-    String[] classes = {"phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
-	int[] scaleCV = {100};
+//    String[] classes = {"phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
+//	int[] scaleCV = {100};
     
 	String sourceDir = new String();
 	String resDir = new String();
@@ -236,11 +236,17 @@ public class LSVM_console_stefan {
 							}
 							System.out.println("wrote classifier successfully!");
 						}
+	    				classifier.optimizeLatent(exampleTrain);
+						File trainMetricFile=new File(metricFolder+"/metric_train_"+scale+"_"+epsilon+"_"+lambda+"_"+className+"_"+i+".txt");
+						trainMetricFile.getAbsoluteFile().getParentFile().mkdirs();
+
+						double ap_test = classifier.testAPRegion(exampleTrain, trainMetricFile);
+	    				
 	    				classifier.optimizeLatent(exampleVal);
 						File valMetricFile=new File(metricFolder+"/metric_val_"+scale+"_"+epsilon+"_"+lambda+"_"+className+"_"+i+".txt");
 						valMetricFile.getAbsoluteFile().getParentFile().mkdirs();
 
-						double ap_test = classifier.testAPRegion(exampleVal, valMetricFile);
+						ap_test = classifier.testAPRegion(exampleVal, valMetricFile);
 	    				
 	    				try {
 							BufferedWriter out = new BufferedWriter(new FileWriter(resultFilePath, true));
