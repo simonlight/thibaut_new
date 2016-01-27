@@ -251,7 +251,6 @@ public class LSVM_console_stefan {
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
-	    				break;
  					}
 //						classifier.optimizeLatent(exampleVal);
 //						double ap_val = classifier.testAP(exampleVal);

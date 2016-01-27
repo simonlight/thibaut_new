@@ -36,14 +36,14 @@ public class LSVM_console_stefan {
 	
 	String dataSource= "local";//local or other things
 	String gazeType = "stefan";
-	String taskName = "lsvm_cccpBB_positive_cv_5fold/";
+	String taskName = "lsvm_cccpgaze_positive_cv_5fold_allscale/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
 //	String[] classes = {args[0]};
 //	int[] scaleCV = {Integer.valueOf(args[1])};
-	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
-//    String[] classes = {"jumping"};
-    int[] scaleCV = {50};
+//	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
+    String[] classes = {"ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
+    int[] scaleCV = {30};
 	
     
 //    double[] tradeoffCV = {0.0, 0.0001,0.001,0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
@@ -195,7 +195,7 @@ public class LSVM_console_stefan {
 							classifier.setTradeOff(tradeoff);
 							classifier.setMaxEpochs(maxSGDEpochs);
 							classifier.setGazeType(gazeType);								
-							classifier.setLossDict(sourceDir+"BBLoss_dict/"+"ETLOSS+_"+scale+".loss");
+							classifier.setLossDict(sourceDir+"ETLoss_dict/"+"ETLOSS+_"+scale+".loss");
 							classifier.setHnorm(hnorm);
 							classifier.setCurrentClass(className);
 							//Initialize the region by fixations
@@ -252,11 +252,17 @@ public class LSVM_console_stefan {
 
 //	    				double ap_train = classifier.testAP(exampleTrain);
 //						System.err.println("train - ap= " + ap_train);
+	    				classifier.optimizeLatent(exampleTrain);
+						File trainMetricFile=new File(metricFolder+"/metric_train_"+scale+"_"+tradeoff+"_"+epsilon+"_"+lambda+"_"+className+"_"+i+".txt");
+						trainMetricFile.getAbsoluteFile().getParentFile().mkdirs();
+
+						double ap_test = classifier.testAPRegion(exampleTrain, trainMetricFile);
+	    				
 	    				classifier.optimizeLatent(exampleVal);
 						File valMetricFile=new File(metricFolder+"/metric_val_"+scale+"_"+tradeoff+"_"+epsilon+"_"+lambda+"_"+className+"_"+i+".txt");
 						valMetricFile.getAbsoluteFile().getParentFile().mkdirs();
 
-						double ap_test = classifier.testAPRegion(exampleVal, valMetricFile);
+						ap_test = classifier.testAPRegion(exampleVal, valMetricFile);
 //						double ap_test = classifier.testAP(exampleVal);
 	    				
 	    				try {

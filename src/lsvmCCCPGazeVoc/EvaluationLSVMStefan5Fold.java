@@ -30,7 +30,7 @@ import fr.durandt.jstruct.util.AveragePrecision;;
 public class EvaluationLSVMStefan5Fold {
 	public static void main(String[] args) {
 	
-	String dataSource= "big";//local or other things
+	String dataSource= "local";//local or other things
 	String gazeType = "stefan";
 
 	String sourceDir = new String();
@@ -57,11 +57,11 @@ public class EvaluationLSVMStefan5Fold {
 	String classifierFolder = resultFolder + "classifier/";
 	String scoreFolder = resultFolder + "score/";
 
-	String[] classes = {args[0]};
-	int[] scaleCV = {Integer.valueOf(args[1])};
+//	String[] classes = {args[0]};
+//	int[] scaleCV = {Integer.valueOf(args[1])};
 //	String[] classes = {"jumping", "phoning" ,"playinginstrument" ,"reading" ,"ridingbike" ,"ridinghorse" ,"running" ,"takingphoto", "usingcomputer", "walking"};
-//	int[] scaleCV = {30};
-//	String[] classes = {"walking"};
+	int[] scaleCV = {30};
+    String[] classes = {"ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
     double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
 
@@ -129,10 +129,15 @@ public class EvaluationLSVMStefan5Fold {
     						testList.addAll(testList_1);
     						testList.addAll(testList_2);
 							
-		    				List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleTest = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
-							for(int j:testList) {
-								exampleTest.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTest.get(j).sample.x,0), listTest.get(j).label));
-							}
+    						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleTrain = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
+    						for(int j:testList) {
+    							exampleTrain.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTest.get(j).sample.x,0), listTest.get(j).label));
+    						}
+    						
+    						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleVal = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
+    						for(int j:leftOutList) {
+    							exampleVal.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTest.get(j).sample.x,0), listTest.get(j).label));
+    						}
 
 
 							LSVMGradientDescentBag classifier = new LSVMGradientDescentBag(); 
@@ -160,11 +165,17 @@ public class EvaluationLSVMStefan5Fold {
 	
 		    				
 		    				//test metric file		    				
-							classifier.optimizeLatent(exampleTest);
-							File valMetricFile=new File(metricFolder+"/metric_train_"+tradeoff+"_"+scale+"_"+epsilon+"_"+lambda+"_"+className+"_"+i+".txt");
+							classifier.optimizeLatent(exampleTrain);
+							File trainMetricFile=new File(metricFolder+"/metric_train_"+scale+"_"+tradeoff+"_"+epsilon+"_"+lambda+"_"+className+"_"+i+".txt");
+							trainMetricFile.getAbsoluteFile().getParentFile().mkdirs();
+
+							double ap_test = classifier.testAPRegion(exampleTrain, trainMetricFile);
+		    				
+		    				classifier.optimizeLatent(exampleVal);
+							File valMetricFile=new File(metricFolder+"/metric_val_"+scale+"_"+tradeoff+"_"+epsilon+"_"+lambda+"_"+className+"_"+i+".txt");
 							valMetricFile.getAbsoluteFile().getParentFile().mkdirs();
 
-							double ap_test = classifier.testAPRegion(exampleTest, valMetricFile);
+							ap_test = classifier.testAPRegion(exampleVal, valMetricFile);
 //							double ap_test = classifier.testAP(exampleTest);
 		    				apList[i] = ap_test;
 		    				try {
