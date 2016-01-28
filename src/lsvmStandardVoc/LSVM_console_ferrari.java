@@ -32,7 +32,7 @@ public class LSVM_console_ferrari {
 	
 	String dataSource= "big";//local or other things
 	String gazeType = "ferrari";
-//	String taskName = "lsvm_scale30_init0_maxCCCP1000/";
+//	String taskName = "lsvm_standard_cv_5fold_allscale/";
 	String taskName = "lsvm_standard_cv_5fold_allscale_random_init_finaltest/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
@@ -40,7 +40,7 @@ public class LSVM_console_ferrari {
 	int[] scaleCV = {Integer.valueOf(args[1])};
 //	String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
 //	int[] scaleCV = {100};
-//	String[] classes = {"sofa"};
+//	String[] classes = {"aeroplane"};
     
 //    double[] tradeoffCV = {0.8,0.9};
 	
@@ -79,7 +79,7 @@ public class LSVM_console_ferrari {
 	int optim = 2;
 	int numWords = 2048;
 	boolean saveClassifier = true;
-    boolean loadClassifier = false;
+    boolean loadClassifier = true;
     
 	System.out.println("experiment detail: "
 			+ "\nsourceDir:\t "+sourceDir

@@ -80,7 +80,7 @@ public class LSVM_console_stefan {
 	int optim = 2;
 	int numWords = 2048;
 	boolean saveClassifier = true;
-    boolean loadClassifier = false;
+    boolean loadClassifier = true;
     
 	System.out.println("experiment detail: "
 			+ "\nsourceDir:\t "+sourceDir
