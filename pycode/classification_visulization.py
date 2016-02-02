@@ -1,6 +1,7 @@
 def res_file_2_dict(ap_results):
     res = collections.defaultdict(lambda : collections.defaultdict(lambda : collections.defaultdict(lambda : None)))
     for line in ap_results:
+        print line
         category, scale, lbd, epsilon, ap_train, ap_val, ap_test = [i.split(":")[1] for i in line.strip().split()]
         res[scale][category]= [float(ap_train), float(ap_val), float(ap_test)]
     return res
@@ -12,8 +13,9 @@ def res_tradeoff_file_2_dict(ap_results, td_folder):
     max_tradeoff_dict=      collections.defaultdict(lambda : collections.defaultdict(lambda : collections.defaultdict(lambda : None)))
     
     for line in ap_results:
+        print line
         category, tradeoff, scale, lbd, epsilon, ap_train, ap_val, ap_test = [i.split(":")[1] for i in line.strip().split()]
-        res_tradeoff[scale][category][tradeoff]= [float(ap_train), float(ap_val), float(ap_test)]
+        res_tradeoff[scale][tradeoff][category]= [float(ap_train), float(ap_val), float(ap_test)]
     
     for k1 in res_tradeoff.keys():
         for k2 in res_tradeoff[k1].keys():
@@ -31,18 +33,18 @@ def res_tradeoff_file_2_dict(ap_results, td_folder):
     loss = collections.defaultdict(lambda : collections.defaultdict(lambda : collections.defaultdict(lambda : None)))
     loss_baseline = collections.defaultdict(lambda : collections.defaultdict(lambda : collections.defaultdict(lambda : None)))
     
-    for fp in os.listdir(td_folder):
-        category, scale, eps, lbd, tradeoff, _,_,_,_,_ =fp.strip().split('_')
-        with open(os.path.join(td_folder, fp)) as f:
-            iterations = f.readlines()[:-1]
-            for line in iterations:
-                elements = line.strip().split()
-                classification_loss, positive_gaze_loss_bound, negative_gaze_loss_bound, gaze_loss_bound,\
-                positive_gaze_loss, negative_gaze_loss, gaze_loss, objectif = [ele.split(":")[1] for ele in elements]
-            
-            loss_tradeoff[scale][category][tradeoff]= [float(classification_loss), float(positive_gaze_loss_bound), float(negative_gaze_loss_bound),
-                                                      float(gaze_loss_bound), float(positive_gaze_loss), float(negative_gaze_loss),
-                                                      float(gaze_loss), float(objectif)]
+#     for fp in os.listdir(td_folder):
+#         category, scale, eps, lbd, tradeoff, _,_,_,_,_ =fp.strip().split('_')
+#         with open(os.path.join(td_folder, fp)) as f:
+#             iterations = f.readlines()[:-1]
+#             for line in iterations:
+#                 elements = line.strip().split()
+#                 classification_loss, positive_gaze_loss_bound, negative_gaze_loss_bound, gaze_loss_bound,\
+#                 positive_gaze_loss, negative_gaze_loss, gaze_loss, objectif = [ele.split(":")[1] for ele in elements]
+#             
+#             loss_tradeoff[scale][category][tradeoff]= [float(classification_loss), float(positive_gaze_loss_bound), float(negative_gaze_loss_bound),
+#                                                       float(gaze_loss_bound), float(positive_gaze_loss), float(negative_gaze_loss),
+#                                                       float(gaze_loss), float(objectif)]
 
     for k1 in res_tradeoff.keys():
         for k2 in res_tradeoff[k1].keys():
@@ -65,6 +67,7 @@ def res_tradeoff_file_2_dict_ecarttype(ap_results, td_folder):
     res_baseline = collections.defaultdict(lambda : collections.defaultdict(lambda : collections.defaultdict(lambda : None)))
 
     for line in ap_results:
+        print line
         category, tradeoff, scale, lbd, epsilon, ap_test, std_variance = [i.split(":")[1] for i in line.strip().split()]
         res_tradeoff[scale][category][tradeoff]= [float(ap_test), float(std_variance)]
     for k1 in res_tradeoff.keys():
@@ -72,7 +75,20 @@ def res_tradeoff_file_2_dict_ecarttype(ap_results, td_folder):
             res_baseline[k1][k2] = res_tradeoff[k1][k2]['0.0']
     return res_tradeoff, res_baseline
 
+def get_y_for_given_scale_diff_tradeoff(ap_res, tradeoff_cv, scale):
 
+    y_train = [0] * len(tradeoff_cv)
+    y_test = [0]*len(tradeoff_cv)
+    
+    for tradeoff in tradeoff_cv:
+
+        y_ap_all = ap_res[scale]
+
+        ap_train, ap_val, ap_test = np.sum(y_ap_all.values(), axis=0) / len(y_ap_all.values())
+
+        y_train[tradeoff_cv.index(tradeoff)] = ap_train
+        y_test[tradeoff_cv.index(tradeoff)] = ap_test
+    return y_train, y_test
 
 def get_y(ap_res, scale_cv):
 
@@ -198,6 +214,48 @@ def plot_1_methods(ap_res1, res_typ):
     plt.show()
 
 
+def plot_1_methods_x_tradeoff(ap_res1, res_typ):
+    tradeoff_cv = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+    for scale in ['90','80','70','60', '50', '40', '30']:
+
+        cccpgaze_positive_train = [0]*len(tradeoff_cv)
+        #     y_val = [0]*len(scale_cv)
+        cccpgaze_positive_test = [0]*len(tradeoff_cv)
+        categories = ["dog", "cat", "motorbike", "boat", "aeroplane", "horse" ,"cow", "sofa", "diningtable", "bicycle"]
+        categories = ["jumping", "phoning", "playinginstrument", "reading", "ridingbike", "ridinghorse", "running", "takingphoto", "usingcomputer", "walking"]
+    
+        for gamma in tradeoff_cv:
+            
+            y_ap_all = ap_res1[scale][str(gamma)]
+            print y_ap_all
+            ap_test_this_gamma = 0
+            for category in categories:
+                ap_test_one_category = [y for y in y_ap_all[category]][2]
+                ap_test_this_gamma += ap_test_one_category
+    #             cccpgaze_positive_train[tradeoff_cv.index(gamma)] = ap_train
+            cccpgaze_positive_test[tradeoff_cv.index(gamma)] = ap_test_this_gamma/10
+        plt.figure(figsize=(8,4))
+        plt.rc('xtick', labelsize=30)
+        plt.rc('ytick', labelsize=30)
+        mng = plt.get_current_fig_manager()
+        mng.full_screen_toggle()
+        plt.plot(tradeoff_cv,cccpgaze_positive_test, label="G-LSVM (scale=%s)"%scale,color="red",linewidth=5)
+    #     plt.ylim(min(min(y_train), min(y_val),min(y_test)),max(max(y_train), max(y_val),max(y_test)))
+    #     plt.title(res_typ+" of scale:%s, gain of test:%4.2f %%"%(scale,(y_test[y_val.index(max(y_val))]-y_test[0])*100))
+    #     plt.title("object classification: test mAP")
+    #     plt.axvline(x=scale_cv[y_val.index(max(y_val))], color= 'black', linestyle='dashed')
+        
+        plt.xlabel("$\gamma$",  fontsize=50)
+        plt.ylabel(res_typ, fontsize=50)
+    
+    #     plt.ylim(min(min(y_train), min(y_val),min(y_test)),max(max(y_train), max(y_val),max(y_test)))
+    #     plt.title(res_typ+" of scale:%s, gain of test:%4.2f %%"%(scale,(y_test[y_val.index(max(y_val))]-y_test[0])*100))
+        plt.title("")
+    #     plt.axvline(x=scale_cv[y_val.index(max(y_val))], color= 'black', linestyle='dashed')
+        plt.legend(loc='best',fancybox=True,framealpha=1, prop={'size':50})
+        plt.show()
+    #     plt.savefig("/home/wangxin/ownCloud/Xin/ICIP2016/figures/gamma_trend/act_%s_gamma.png"%scale, )  
+    
 def plot_every_tradeoff_2(ap_res1, ap_baseline, res_typ):
     scale_cv = ['90','80','70','60', '50', '40', '30']
     cccpgaze_positive_train = [0]*len(scale_cv)
@@ -392,6 +450,9 @@ def plot_single_scale_tradeoff_3_ecarttype(ap_res1, ap_baseline, ap_lsvm_standar
 #     plt.axvline(x=scale_cv[y_val.index(max(y_val))], color= 'black', linestyle='dashed')
     plt.legend(loc='best',fancybox=True,framealpha=1, prop={'size':40})
     plt.show()
+
+
+    
 def plot_2_methods(ap_res1, ap_res2, res_typ):
     scale_cv = ['90','80','70','60', '50', '40', '30']
     cccpgaze_positive_train, cccpgaze_positive_test = get_y(ap_res1 ,scale_cv)
@@ -455,24 +516,26 @@ if __name__=='__main__':
     import os
 
 
-#     ap_results = open("/local/wangxin/results/full_stefan_gaze/lsvm_et/lsvm_cccpgaze_positive_cv/ap_summary_ecarttype.txt")
     ap_results = open("/local/wangxin/results/ferrari_gaze/std_et/lsvm_cccpgaze_positive_cv/ap_summary.txt")
+    ap_results = open("/local/wangxin/results/full_stefan_gaze/lsvm_et/lsvm_cccpgaze_positive_cv/ap_summary.txt")
     
     td_folder = "/local/wangxin/results/full_stefan_gaze/lsvm_et/lsvm_cccpgaze_positive_cv/trainingdetail"
 
 #     ap_results = open("/local/wangxin/results/ferrari_gaze/std_et/lsvm_cccpgaze_positive_cv/ap_summary_ecarttype.txt")
 #     td_folder = "/local/wangxin/results/ferrari_gaze/std_et/lsvm_cccpgaze_positive_cv/trainingdetail"
-    res_tradeoff, ap_baseline = res_tradeoff_file_2_dict_ecarttype(ap_results, td_folder)
-#     ap_res1, ap_baseline, res_tradeoff, loss_res1, loss_baseline = res_tradeoff_file_2_dict(ap_results, td_folder)
+#     res_tradeoff, ap_baseline = res_tradeoff_file_2_dict_ecarttype(ap_results, td_folder)
+    ap_res1, ap_baseline, res_tradeoff, loss_res1, loss_baseline = res_tradeoff_file_2_dict(ap_results, td_folder)
 #     ap_results = open("/local/wangxin/results/ferrari_gaze/std_et/lsvm_cccp/ap_summary.txt")
 #     ap_res2 = res_file_2_dict(ap_results)
-#     ap_lsvm_standard_f = open("/local/wangxin/results/ferrari_gaze/std_et/lsvm_standard/ap_summary_ecarttype.txt")
-    ap_lsvm_standard_f = open("/local/wangxin/results/full_stefan_gaze/lsvm_et/lsvm_standard/ap_summary_ecarttype.txt")
-    ap_lsvm_standard = res_file_2_dict_ecarttype(ap_lsvm_standard_f, td_folder)
+#     ap_lsvm_standard_f = open("/local/wangxin/results/ferrari_gaze/std_et/lsvm_standard/ap_summary.txt")
+#     ap_lsvm_standard_f = open("/local/wangxin/results/full_stefan_gaze/lsvm_et/lsvm_standard/ap_summary_ecarttype.txt")
+#     ap_lsvm_standard = res_file_2_dict_ecarttype(ap_lsvm_standard_f, td_folder)
+#     ap_lsvm_standard = res_file_2_dict(ap_lsvm_standard_f)
+    
 #     plot_res(ap_res1, ap_res2, ap_res3, "AP")
-
-#     plot_2_methods(ap_res1, ap_baseline,  "mAP")
+    print res_tradeoff
+    plot_1_methods_x_tradeoff(res_tradeoff, "mAP")
 #     plot_every_tradeoff_3(res_tradeoff, ap_baseline,ap_lsvm_standard,"mAP")
-    plot_every_tradeoff_3_ecarttype(res_tradeoff, ap_baseline,ap_lsvm_standard,"mAP")
+#     plot_every_tradeoff_3_ecarttype(res_tradeoff, ap_baseline,ap_lsvm_standard,"mAP")
 #     plot_single_scale_tradeoff_3_ecarttype(res_tradeoff, ap_baseline,ap_lsvm_standard,"mAP")
 #     plot_2_loss(loss_res1, loss_baseline,  "loss")

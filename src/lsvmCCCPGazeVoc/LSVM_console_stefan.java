@@ -267,7 +267,7 @@ public class LSVM_console_stefan {
 	    				
 	    				try {
 							BufferedWriter out = new BufferedWriter(new FileWriter(resultFilePath, true));
-							out.write("category:"+className+" scale:"+scale+" index:"+i+" ap_test:"+ap_test+"\n");
+							out.write("category:"+className+" scale:"+scale+" tradeoff:"+tradeoff+" index:"+i+" ap_test:"+ap_test+"\n");
 							out.flush();
 							out.close();
 							
