@@ -34,7 +34,7 @@ public class LSVM_console_ferrari {
 	
 	String dataSource= "big";//local or other things
 	String gazeType = "ferrari";
-	String taskName = "lsvm_cccpgaze_posneg_cv_single_split_loss_divised_by_nb_of_examples/";
+	String taskName = "lsvm_cccpgaze_posneg_cv_single_split_loss_divised_by_nb_of_examples_1-negloss/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
     String[] classes = {args[0]};
@@ -53,11 +53,11 @@ public class LSVM_console_ferrari {
 
 	if (dataSource=="local"){
 		sourceDir = "/local/wangxin/Data/ferrari_gaze/";
-		resDir = "/local/wangxin/results/ferrari_gaze/std_et/";
+		resDir = "/local/wangxin/results/ferrari_gaze/glsvm_pos_neg/";
 	}
 	else if (dataSource=="big"){
 		sourceDir = "/home/wangxin/Data/ferrari_gaze/";
-		resDir = "/home/wangxin/results/ferrari_gaze/std_et/";
+		resDir = "/home/wangxin/results/ferrari_gaze/glsvm_pos_neg/";
 	}
 
 	String initializedType = ".";//+0,+-,or other things

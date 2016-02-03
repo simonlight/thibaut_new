@@ -276,16 +276,17 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 
 		double[] lossTerm = new double[2];
 
-		if (ts.label == -1){
-			lossTerm[0] = Math.max(0, 1 + v);
-			lossTerm[1] = tradeoff * g;
-			return lossTerm;
-		}
-		else if(ts.label == 1){
+		if(ts.label == 1){
 			lossTerm[0] = Math.max(1, v) - v;
 			lossTerm[1] = tradeoff * g;
 			return lossTerm;
 		}
+		else if (ts.label == -1){
+			lossTerm[0] = Math.max(0, 1 + v);
+			lossTerm[1] = 1- tradeoff * g;
+			return lossTerm;
+		}
+
 		return null;
 
 	}
@@ -329,11 +330,11 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 			classfication_loss +=example_loss[0];
 			gaze_loss_bound += example_loss[1];
 			if (ts.label == 1){
-				positive_gaze_loss+=1*getPositiveGazeLoss(ts, ts.sample.h);
+				positive_gaze_loss+=1*getPositiveGazeLoss(ts, ts.sample.h)/ nb[0];
 				loss += DoubleStream.of(example_loss).sum() / nb[0];
 			}
 			if (ts.label == -1){
-				negative_gaze_loss+=1*getNegativeGazeLoss(ts, ts.sample.h);
+				negative_gaze_loss+=1*getNegativeGazeLoss(ts, ts.sample.h)/ nb[1];
 				loss += DoubleStream.of(example_loss).sum() / nb[1];
 
 			}
