@@ -329,14 +329,14 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 			classfication_loss +=example_loss[0];
 			gaze_loss_bound += example_loss[1];
 			if (ts.label == 1){
-				positive_gaze_loss_bound += example_loss[1];
 				positive_gaze_loss+=1*getPositiveGazeLoss(ts, ts.sample.h);
+				loss += DoubleStream.of(example_loss).sum() / nb[0];
 			}
 			if (ts.label == -1){
-				negative_gaze_loss_bound += example_loss[1];
 				negative_gaze_loss+=1*getNegativeGazeLoss(ts, ts.sample.h);
+				loss += DoubleStream.of(example_loss).sum() / nb[1];
+
 			}
-			loss += DoubleStream.of(example_loss).sum();
 		}
 		System.out.format("classification loss:%f, positive_gaze_loss_bound: %f, negative_gaze_loss_bound: %f,"
 						+ " gaze_loss_bound:%f, positive_gaze_loss:%f, negative_gaze_loss:%f, gaze_loss:%f",
@@ -355,7 +355,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		loss /= l.size();
+//		loss /= l.size();
 		return loss;
 	}
 	

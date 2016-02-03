@@ -34,7 +34,7 @@ public class LSVM_console_ferrari {
 	
 	String dataSource= "big";//local or other things
 	String gazeType = "ferrari";
-	String taskName = "lsvm_cccpgaze_posneg_cv_single_split/";
+	String taskName = "lsvm_cccpgaze_posneg_cv_single_split_loss_divised_by_nb_of_examples/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
     String[] classes = {args[0]};
