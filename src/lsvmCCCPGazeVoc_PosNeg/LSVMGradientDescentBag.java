@@ -43,16 +43,23 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 
 	@Override
 	protected double[] psi(BagImage x, Integer h) {
+		
+		if (h==-1){
+			System.out.println();
+		}
+		
 		return x.getInstance(h);
 	}
 
 	@Override
 	protected void init(List<TrainingSample<LatentRepresentation<BagImage, Integer>>> l) {
 		dim = l.get(0).sample.x.getInstance(0).length;
+		
 		setGroundTruthGazeMap(GroundTruthGazeRegion(l));
+		
 		for(TrainingSample<LatentRepresentation<BagImage, Integer>> ts : l) {
-			ts.sample.h = (int)(Math.random()*ts.sample.x.getInstances().size());
-//			ts.sample.h = 0;
+//			ts.sample.h = (int)(Math.random()*ts.sample.x.getInstances().size());
+			ts.sample.h = 0;
 //			ts.sample.h = groundTruthGazeMap.get(ts.sample.x.getName());
 		}
 	}
@@ -79,7 +86,6 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		//Only positive image will be initialized by gaze most area
 		//Negative image is initialized by 0
 		if (mode.equals("+0")){
-			
 			if (ts.label == 1){
 				Integer maxH = -1;
 				double maxGazeRatio = -1;
@@ -100,7 +106,6 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		else if(mode.equals("+-")){
 			//Positive image is initialized by gaze most area
 			//Negative image is initialized by gaze least area 
-			
 			if (ts.label==1){
 				Integer maxH = -1;
 				double maxGazeRatio = -1;
@@ -167,7 +172,6 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 					if (lossMap.get(c+"_"+ETLossFileName)>gaze_ratio){
 						gaze_ratio =lossMap.get(c+"_"+ETLossFileName);
 					} 
-					
 				}
 			}
 			return gaze_ratio;
@@ -186,15 +190,56 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 	}
 	
 	public double getPositiveGazeLoss(TrainingSample<LatentRepresentation<BagImage, Integer>> ts, Integer h){
+		
 		return 1 - getPositiveGazeRatio(ts.sample.x, h, gazeType)
 					/getPositiveGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType);
 	}
 
 	public double getNegativeGazeLoss(TrainingSample<LatentRepresentation<BagImage, Integer>> ts, Integer h){
-		return 1 - getNegativeGazeRatio(ts.sample.x, h, gazeType)
-					/getNegativeGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType);
+//		System.out.println(getNegativeGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType));
+		System.out.println("1:"+(1-getNegativeGazeRatio(ts.sample.x, h, gazeType)));
+		System.out.println("2:"+(1-getNegativeGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType)));
+		return 1 - ((1-getNegativeGazeRatio(ts.sample.x, h, gazeType))
+					/(1-getNegativeGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType)));
 	}
 
+	public HashMap<String , Integer> GroundTruthGazeRegion(List<TrainingSample<LatentRepresentation<BagImage, Integer>>> l) {
+		
+
+		HashMap<String , Integer> groundTruthGazeMap = new HashMap<String , Integer>(); 
+		
+		for(TrainingSample<LatentRepresentation<BagImage, Integer>> ts : l) {
+			// ground truth gaze region of negative image is the one with the least gazes
+
+			if (ts.label == 1){
+				Integer maxH = -1;
+				double maxGazeRatio = -1;
+				for(int h=0; h<ts.sample.x.getInstances().size(); h++) {
+					double gazeRatio = getPositiveGazeRatio(ts.sample.x, h, gazeType);
+					if (gazeRatio>=maxGazeRatio){
+						maxH=h;
+						maxGazeRatio = gazeRatio;
+					}
+				}
+				groundTruthGazeMap.put(ts.sample.x.getName(), maxH);
+			}
+			// ground truth gaze region of negative image is the one with the least gazes
+			else if (ts.label == -1){
+				Integer minH = 4;
+				double minGazeRatio = 10;
+				for(int h=0; h<ts.sample.x.getInstances().size(); h++) {
+					double negGazeRatio = getNegativeGazeRatio(ts.sample.x, h, gazeType);
+					if (negGazeRatio<=minGazeRatio){
+						minH=h;
+						minGazeRatio = negGazeRatio;
+					}
+				}
+				groundTruthGazeMap.put(ts.sample.x.getName(), minH);
+				
+			}
+		}
+		return groundTruthGazeMap;
+	}
 	
 	public Object[] LAI(TrainingSample<LatentRepresentation<BagImage, Integer>> ts) {
 		Integer hpredict = -1;
@@ -225,36 +270,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		return lai;
 	}
 	
-	public HashMap<String , Integer> GroundTruthGazeRegion(List<TrainingSample<LatentRepresentation<BagImage, Integer>>> l) {
-		
 
-		HashMap<String , Integer> lossMap = new HashMap<String , Integer>(); 
-		
-		for(TrainingSample<LatentRepresentation<BagImage, Integer>> ts : l) {
-			Integer maxH = -1;
-			double maxGazeRatio = -1;
-			if (ts.label == 1){
-				for(int h=0; h<ts.sample.x.getInstances().size(); h++) {
-					double gazeRatio = getPositiveGazeRatio(ts.sample.x, h, gazeType);
-					if (gazeRatio>=maxGazeRatio){
-						maxH=h;
-						maxGazeRatio = gazeRatio;
-					}
-				}
-			}
-			else if (ts.label == -1){
-				for(int h=0; h<ts.sample.x.getInstances().size(); h++) {
-					double gazeRatio = getNegativeGazeRatio(ts.sample.x, h, gazeType);
-					if (gazeRatio>=maxGazeRatio){
-						maxH=h;
-						maxGazeRatio = gazeRatio;
-					}
-				}
-			}
-			lossMap.put(ts.sample.x.getName(), maxH);
-		}
-		return lossMap;
-	}
 	
 	public double[] getGazePsi(TrainingSample<LatentRepresentation<BagImage, Integer>> ts){
 		double[] gazePsi= new double[dim];
@@ -279,11 +295,14 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		if(ts.label == 1){
 			lossTerm[0] = Math.max(1, v) - v;
 			lossTerm[1] = tradeoff * g;
+//			System.out.println("+:"+lossTerm[1] );
 			return lossTerm;
 		}
 		else if (ts.label == -1){
 			lossTerm[0] = Math.max(0, 1 + v);
-			lossTerm[1] = 1- tradeoff * g;
+			lossTerm[1] = tradeoff * g;
+//			System.out.println("-:"+lossTerm[1]);
+
 			return lossTerm;
 		}
 
@@ -334,6 +353,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 				loss += DoubleStream.of(example_loss).sum() / nb[0];
 			}
 			if (ts.label == -1){
+
 				negative_gaze_loss+=1*getNegativeGazeLoss(ts, ts.sample.h)/ nb[1];
 				loss += DoubleStream.of(example_loss).sum() / nb[1];
 
