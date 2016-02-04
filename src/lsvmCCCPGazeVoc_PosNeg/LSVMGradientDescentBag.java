@@ -197,8 +197,6 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 
 	public double getNegativeGazeLoss(TrainingSample<LatentRepresentation<BagImage, Integer>> ts, Integer h){
 //		System.out.println(getNegativeGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType));
-		System.out.println("1:"+(1-getNegativeGazeRatio(ts.sample.x, h, gazeType)));
-		System.out.println("2:"+(1-getNegativeGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType)));
 		return 1 - ((1-getNegativeGazeRatio(ts.sample.x, h, gazeType))
 					/(1-getNegativeGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType)));
 	}
