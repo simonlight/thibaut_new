@@ -307,7 +307,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		return null;
 
 	}
-	
+//	
 	public double getLoss(List<TrainingSample<LatentRepresentation<BagImage, Integer>>> l) {
 		double loss = 0;
 		double classfication_loss = 0;
