@@ -197,8 +197,10 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 
 	public double getNegativeGazeLoss(TrainingSample<LatentRepresentation<BagImage, Integer>> ts, Integer h){
 //		System.out.println(getNegativeGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType));
-		return 1 - ((1-getNegativeGazeRatio(ts.sample.x, h, gazeType))
-					/(1-getNegativeGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType)));
+//		return 1 - ((1.00001-getNegativeGazeRatio(ts.sample.x, h, gazeType))
+//					/(1.00001-getNegativeGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType)));
+		return 1 -getNegativeGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType)
+				/getNegativeGazeRatio(ts.sample.x, h, gazeType);
 	}
 
 	public HashMap<String , Integer> GroundTruthGazeRegion(List<TrainingSample<LatentRepresentation<BagImage, Integer>>> l) {
@@ -289,7 +291,6 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		double g = laiValue - valueOf(ts.sample.x, groundTruthGazeMap.get(ts.sample.x.getName()));
 
 		double[] lossTerm = new double[2];
-
 		if(ts.label == 1){
 			lossTerm[0] = Math.max(1, v) - v;
 			lossTerm[1] = tradeoff * g;
@@ -348,12 +349,12 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 			gaze_loss_bound += example_loss[1];
 			if (ts.label == 1){
 				positive_gaze_loss+=1*getPositiveGazeLoss(ts, ts.sample.h)/ nb[0];
-				loss += DoubleStream.of(example_loss).sum() / nb[0];
+				loss += DoubleStream.of(example_loss).sum() ;
 			}
 			if (ts.label == -1){
 
 				negative_gaze_loss+=1*getNegativeGazeLoss(ts, ts.sample.h)/ nb[1];
-				loss += DoubleStream.of(example_loss).sum() / nb[1];
+				loss += DoubleStream.of(example_loss).sum() ;
 
 			}
 		}
