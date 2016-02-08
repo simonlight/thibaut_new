@@ -36,7 +36,7 @@ public class LSVM_console_stefan {
 	String gazeType = "stefan";
 //	String taskName = "lsvm_cccpgaze_posneg_cv_single_split_loss_divised_by_nb_of_examples_1-negloss_full_params_4/";
 	String taskName = "lsvm_cccpgaze_posneg_cv_single_split_loss_1-negloss_full_params_4/";
-	double[] lambdaCV = {1e-5, 1e-4,1e-3};
+	double[] lambdaCV = {1e-6, 1e-5, 1e-4,1e-3};
     double[] epsilonCV = {0};
 	String[] classes = {args[0]};
 	int[] scaleCV = {Integer.valueOf(args[1])};
