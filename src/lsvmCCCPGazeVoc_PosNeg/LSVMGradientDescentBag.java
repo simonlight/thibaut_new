@@ -197,7 +197,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 
 	public double getNegativeGazeLoss(TrainingSample<LatentRepresentation<BagImage, Integer>> ts, Integer h){
 //		System.out.println(getNegativeGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType));
-		if(getNegativeGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType)==0){
+//		if(getNegativeGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType)==0){
 //		System.out.println("----------");
 //		System.out.println(getNegativeGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType));
 //		System.out.println(h);
@@ -205,7 +205,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 //		System.out.println(1 -getNegativeGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType)
 //		/(getNegativeGazeRatio(ts.sample.x, h, gazeType)+0.00001));
 //		System.out.println("----------");
-		}
+//		}
 //add 0.00001 to avoid NaN		
 		return 1 -getNegativeGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType)
 				/(getNegativeGazeRatio(ts.sample.x, h, gazeType)+0.00001);
@@ -363,12 +363,12 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 			gaze_loss_bound += example_loss[1];
 			if (ts.label == 1){
 				positive_gaze_loss+=1*getPositiveGazeLoss(ts, ts.sample.h)/ nb[0];
-				loss += DoubleStream.of(example_loss).sum();
+				loss += DoubleStream.of(example_loss).sum()/ nb[0];
 			}
 			if (ts.label == -1){
 
 				negative_gaze_loss+=1*getNegativeGazeLoss(ts, ts.sample.h)/ nb[1];
-				loss += DoubleStream.of(example_loss).sum();
+				loss += DoubleStream.of(example_loss).sum()/ nb[1];
 
 			}
 		}
@@ -389,7 +389,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		loss /= l.size();
+//		loss /= l.size();
 		return loss;
 	}
 	
