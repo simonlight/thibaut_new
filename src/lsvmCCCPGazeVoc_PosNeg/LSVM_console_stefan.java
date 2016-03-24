@@ -32,21 +32,21 @@ import fr.durandt.jstruct.util.AveragePrecision;;
 public class LSVM_console_stefan {
 	public static void main(String[] args) {
 	
-	String dataSource= "big";//local or other things
+	String dataSource= "local";//local or other things
 	String gazeType = "stefan";
 //	String taskName = "lsvm_cccpgaze_posneg_cv_single_split_loss_divised_by_nb_of_examples_1-negloss_full_params_4/";
-	String taskName = "lsvm_cccpgaze_posneg_cv_single_split_loss_1-negloss_full_params/";
-	double[] lambdaCV = {1e-6, 1e-5, 1e-4,1e-3};
+	String taskName = "lsvm_cccpgaze_posnegvisual_test_sameloss_as_positive/";
+	double[] lambdaCV = { 1e-4};
     double[] epsilonCV = {0};
-	String[] classes = {args[0]};
-	int[] scaleCV = {Integer.valueOf(args[1])};
+//	String[] classes = {args[0]};
+//	int[] scaleCV = {Integer.valueOf(args[1])};
 //	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
-//    String[] classes = {"jumping"};
+    String[] classes = {"jumping"};
 //    int[] scaleCV = {90,80,70,60,50,40,30};
-//    int[] scaleCV = {50};
+    int[] scaleCV = {50};
     
-    double[] tradeoffCV = {0.0,  0.0001,0.0005, 0.001,0.005, 0.01,0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
-//    double[] tradeoffCV = {0.1};
+//    double[] tradeoffCV = {0.0,  0.0001,0.0005, 0.001,0.005, 0.01,0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+    double[] tradeoffCV = {0, 0.1, 0.5 ,1.0};
 	String sourceDir = new String();
 	String resDir = new String();
 

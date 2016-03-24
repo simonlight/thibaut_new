@@ -34,21 +34,21 @@ import fr.durandt.jstruct.util.AveragePrecision;;
 public class LSVM_console_ferrari {
 	public static void main(String[] args) {
 	
-	String dataSource= "big";//local or other things
+	String dataSource= "local";//local or other things
 	String gazeType = "ferrari";
-	String taskName = "lsvm_cccpgaze_positive_cv_5fold_allscale_random_init_finaltest/";
+	String taskName = "lsvm_cccpgaze_positive_compare_symil/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
-    String[] classes = {args[0]};
-	int[] scaleCV = {Integer.valueOf(args[1])};
+//    String[] classes = {args[0]};
+//	int[] scaleCV = {Integer.valueOf(args[1])};
 //	String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
 //	String[] classes = {"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
 //	int[] scaleCV = {90,80,70,60,50,40,30};
-//	int[] scaleCV = {40};
-//	String[] classes = {"diningtable"};
+	int[] scaleCV = {90};
+	String[] classes = {"horse"};
 //    double[] tradeoffCV = {0};
 //    double[] tradeoffCV = {0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
-	double[] tradeoffCV={0.2};
+	double[] tradeoffCV={0.0};
     String sourceDir = new String();
 	String resDir = new String();
 
@@ -130,6 +130,10 @@ public class LSVM_console_ferrari {
 						Collections.shuffle(apListIndex, seed);
 		    			
    					for (int i=0;i<foldNum; i++){
+   						
+   						if (i==1){
+	    					break;
+	    				}
    						int fromIndex = listsize * i/foldNum;
    						int toIndex = listsize * (i+1)/foldNum;
    						List<Integer> trainList_1 = apListIndex.subList(0, fromIndex);

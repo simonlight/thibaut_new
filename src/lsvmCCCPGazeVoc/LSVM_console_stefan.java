@@ -34,20 +34,20 @@ import fr.durandt.jstruct.util.AveragePrecision;;
 public class LSVM_console_stefan {
 	public static void main(String[] args) {
 	
-	String dataSource= "big";//local or other things
+	String dataSource= "local";//local or other things
 	String gazeType = "stefan";
-	String taskName = "lsvm_cccpgaze_positive_cv_5fold_allscale_random_init_finaltest/";
+	String taskName = "lsvm_cccpgaze_positive_compare_symil/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
-	String[] classes = {args[0]};
-	int[] scaleCV = {Integer.valueOf(args[1])};
+//	String[] classes = {args[0]};
+//	int[] scaleCV = {Integer.valueOf(args[1])};
 //	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
-//    String[] classes = {"ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
-//    int[] scaleCV = {30};
+    String[] classes = {"jumping"};
+    int[] scaleCV = {90};
 	
     
 //    double[] tradeoffCV = {0.0, 0.0001,0.001,0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
-    double[] tradeoffCV = {0.2};
+    double[] tradeoffCV = {0.0};
     
 	String sourceDir = new String();
 	String resDir = new String();
@@ -131,6 +131,9 @@ public class LSVM_console_stefan {
 						Collections.shuffle(apListIndex, seed);
 		    			
     					for (int i=0;i<foldNum; i++){
+    	    				if (i==1){
+    	    					break;
+    	    				}
     						int fromIndex = listsize * i/foldNum;
     						int toIndex = listsize * (i+1)/foldNum;
     						List<Integer> trainList_1 = apListIndex.subList(0, fromIndex);
@@ -256,18 +259,18 @@ public class LSVM_console_stefan {
 						File trainMetricFile=new File(metricFolder+"/metric_train_"+scale+"_"+tradeoff+"_"+epsilon+"_"+lambda+"_"+className+"_"+i+".txt");
 						trainMetricFile.getAbsoluteFile().getParentFile().mkdirs();
 
-						double ap_test = classifier.testAPRegion(exampleTrain, trainMetricFile);
+						double ap_train = classifier.testAPRegion(exampleTrain, trainMetricFile);
 	    				
 	    				classifier.optimizeLatent(exampleVal);
 						File valMetricFile=new File(metricFolder+"/metric_val_"+scale+"_"+tradeoff+"_"+epsilon+"_"+lambda+"_"+className+"_"+i+".txt");
 						valMetricFile.getAbsoluteFile().getParentFile().mkdirs();
 
-						ap_test = classifier.testAPRegion(exampleVal, valMetricFile);
+						double ap_test = classifier.testAPRegion(exampleVal, valMetricFile);
 //						double ap_test = classifier.testAP(exampleVal);
 	    				
 	    				try {
 							BufferedWriter out = new BufferedWriter(new FileWriter(resultFilePath, true));
-							out.write("category:"+className+" scale:"+scale+" tradeoff:"+tradeoff+" index:"+i+" ap_test:"+ap_test+"\n");
+							out.write("category:"+className+" scale:"+scale+" tradeoff:"+tradeoff+" index:"+i+" ap_test:"+ap_test+" ap_train"+ap_train+"\n");
 							out.flush();
 							out.close();
 							

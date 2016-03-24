@@ -44,9 +44,6 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 	@Override
 	protected double[] psi(BagImage x, Integer h) {
 		
-		if (h==-1){
-			System.out.println();
-		}
 		
 		return x.getInstance(h);
 	}
@@ -207,8 +204,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 //		System.out.println("----------");
 //		}
 //add 0.00001 to avoid NaN		
-		return 1 -getNegativeGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType)
-				/(getNegativeGazeRatio(ts.sample.x, h, gazeType)+0.00001);
+		return 1 - (getNegativeGazeRatio(ts.sample.x, h, gazeType))/getNegativeGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType);
 	}
 
 	public HashMap<String , Integer> GroundTruthGazeRegion(List<TrainingSample<LatentRepresentation<BagImage, Integer>>> l) {
@@ -233,18 +229,18 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 			}
 			// ground truth gaze region of negative image is the one with the least gazes
 			else if (ts.label == -1){
-				Integer minH = -1;
-				double minGazeRatio = 10;
+				Integer maxH = -1;
+				double maxGazeRatio = -1;
 				for(int h=0; h<ts.sample.x.getInstances().size(); h++) {
 					double negGazeRatio = getNegativeGazeRatio(ts.sample.x, h, gazeType);
-					if (negGazeRatio<=minGazeRatio){
-						minH=h;
-						minGazeRatio = negGazeRatio;
+					if (negGazeRatio>=maxGazeRatio){
+						maxH=h;
+						maxGazeRatio = negGazeRatio;
 					}
 				}
 //				System.out.println(minGazeRatio);
 //				System.out.println(minH);
-				groundTruthGazeMap.put(ts.sample.x.getName(), minH);
+				groundTruthGazeMap.put(ts.sample.x.getName(), maxH);
 				
 			}
 		}

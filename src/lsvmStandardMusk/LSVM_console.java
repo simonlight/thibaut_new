@@ -99,6 +99,7 @@ public class LSVM_console {
 									classifier.setVerbose(0);
 		
 									classifier.train(exampleTrain);
+									classifier.optimizeLatent(exampleTest);
 									cv_results += classifier.accuracy(exampleTest);
 			    			}
 			    		System.err.println(cv_results);
