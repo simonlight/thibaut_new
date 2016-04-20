@@ -365,14 +365,14 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 			if (ts.label == 1){
 				positive_gaze_loss_bound+=example_loss[1];
 				positive_gaze_loss+=1*getPositiveGazeLoss(ts, ts.sample.h);
-//				loss += DoubleStream.of(example_loss).sum() ;
-				loss += DoubleStream.of(example_loss).sum() * nb[1] /( nb[0]+ nb[1]);
+				loss += DoubleStream.of(example_loss).sum() ;
+//				loss += DoubleStream.of(example_loss).sum() * nb[1] /( nb[0]+ nb[1]);
 			}
 			if (ts.label == -1){
 				negative_gaze_loss_bound+=example_loss[1];
 				negative_gaze_loss+=1*getNegativeGazeLoss(ts, ts.sample.h);
-//				loss += DoubleStream.of(example_loss).sum() ;
-				loss += DoubleStream.of(example_loss).sum() * nb[0] /( nb[0]+ nb[1]);
+				loss += DoubleStream.of(example_loss).sum() ;
+//				loss += DoubleStream.of(example_loss).sum() * nb[0] /( nb[0]+ nb[1]);
 			}
 		}
 		System.out.format("classification loss:%f, positive_gaze_loss_bound: %f, negative_gaze_loss_bound: %f,"
