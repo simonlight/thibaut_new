@@ -41,11 +41,12 @@ public abstract class SSVMFrankWolfe<X,Y> extends SSVM<X,Y> {
 	 * Train SSVM with Primal-Dual Frank-Wolfe
 	 * @param l
 	 */
+	@Override
 	protected void learning(List<STrainingSample<X, Y>> l) {
 
 		// init
 		double lk = 0;
-		double n = (double)l.size();
+		double n = l.size();
 
 		// List of indexes
 		List<Integer> index = new ArrayList<Integer>(l.size());
@@ -75,7 +76,7 @@ public abstract class SSVMFrankWolfe<X,Y> extends SSVM<X,Y> {
 				ls += delta(ts.output, yp);
 			}
 
-			ws = VectorOperations.mul(ws, (double)1/(double)(lambda*n));
+			ws = VectorOperations.mul(ws, 1/(lambda*n));
 			ls /= n;
 
 			double[] diff = VectorOperations.add(w, -1, ws);
@@ -115,11 +116,13 @@ public abstract class SSVMFrankWolfe<X,Y> extends SSVM<X,Y> {
 		this.maxIter = maxIter;
 	}
 
+	@Override
 	protected void showParameters() {
 		super.showParameters();
 		System.out.println("Learning: Frank-Wolfe - maxIter= " + maxIter);
 	}
 
+	@Override
 	public String toString() {
 		String s = "ssvm_FrankWolfe_lambda_" + lambda + "_maxIter_" + maxIter;
 		return s;

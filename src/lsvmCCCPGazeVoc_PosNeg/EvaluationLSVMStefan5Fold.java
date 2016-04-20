@@ -7,11 +7,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,12 +17,8 @@ import java.util.List;
 
 import fr.durandt.jstruct.data.io.BagReader;
 import fr.durandt.jstruct.latent.LatentRepresentation;
-import fr.durandt.jstruct.struct.STrainingSample;
-import fr.durandt.jstruct.variable.Bag;
 import fr.durandt.jstruct.variable.BagImage;
-import fr.durandt.jstruct.variable.BagLabel;
-import fr.lip6.jkernelmachines.type.TrainingSample;
-import fr.durandt.jstruct.util.AveragePrecision;;
+import fr.lip6.jkernelmachines.type.TrainingSample;;
 
 /**
  * @author Thibaut Durand - durand.tibo@gmail.com
@@ -41,17 +35,17 @@ public class EvaluationLSVMStefan5Fold {
 
 	if (dataSource=="local"){
 		sourceDir = "/local/wangxin/Data/full_stefan_gaze/";
-		resDir = "/local/wangxin/results/full_stefan_gaze/lsvm_et/";
+		resDir = "/local/wangxin/results/full_stefan_gaze/lsvm_negpos/";
 	}
 	else if (dataSource=="big"){
 		sourceDir = "/home/wangxin/Data/full_stefan_gaze/";
-		resDir = "/home/wangxin/results/full_stefan_gaze/lsvm_et/";
+		resDir = "/home/wangxin/results/full_stefan_gaze/lsvm_negpos/";
 	}
 
 	String initializedType = ".";//+0,+-,or other things
 	boolean hnorm = false;
 	
-	String taskName = "lsvm_cccpgaze_posneg_cv/";
+	String taskName = "lsvm_cccpgaze_posneg_inverse_jumping/";
 	
 	String resultFolder = resDir+taskName;
 	
@@ -62,14 +56,18 @@ public class EvaluationLSVMStefan5Fold {
 
 //	String[] classes = {args[0]};
 //	int[] scaleCV = {Integer.valueOf(args[1])};
-	String[] classes = {"jumping", "phoning" ,"playinginstrument" ,"reading" ,"ridingbike" ,"ridinghorse" ,"running" ,"takingphoto", "usingcomputer", "walking"};
-	int[] scaleCV = {90, 80,70,60,50,40,30};
+	
+//	String[] classes = {"jumping", "phoning" ,"playinginstrument" ,"reading" ,"ridingbike" ,"ridinghorse" ,"running" ,"takingphoto", "usingcomputer", "walking"};
+	String[] classes = {"jumping"};
+
+//	int[] scaleCV = {90, 80,70,60,50,40,30};
+	int[] scaleCV = {50};
 //	String[] classes = {"walking"};
     double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
 
-    double[] tradeoffCV = {0.0, 0.0001,0.001,0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
-//    double[] tradeoffCV = {0.8,0.9};
+//    double[] tradeoffCV = {0.0, 0.0001,0.001,0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+    double[] tradeoffCV = {0};
 		    	
 	int maxCCCPIter = 100;
 	int minCCCPIter = 1;

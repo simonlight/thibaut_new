@@ -174,7 +174,7 @@ public class FastMulticlassLSSVMConvexCuttingPlane1SlackBagImage extends FastMul
 		double accuracy = 0;
 		int nb = 0;
 		for(STrainingSample<LatentRepresentation<BagImage, Integer>,Integer> ts : l){
-			int ypredict = (int) prediction(ts.input);
+			int ypredict = prediction(ts.input);
 			if(ts.output == ypredict){	
 				nb++;
 			}
@@ -184,6 +184,7 @@ public class FastMulticlassLSSVMConvexCuttingPlane1SlackBagImage extends FastMul
 		return accuracy;
 	}
 	
+	@Override
 	public String toString() {
 		return "fast_multiclass_" + super.toString();
 	}

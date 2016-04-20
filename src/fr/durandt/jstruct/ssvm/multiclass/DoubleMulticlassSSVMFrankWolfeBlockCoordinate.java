@@ -115,6 +115,7 @@ public class DoubleMulticlassSSVMFrankWolfeBlockCoordinate extends SSVMFrankWolf
 		w = new double[dim];
 	}
 
+	@Override
 	public String toString() {
 		return "multiclass_" + super.toString();
 	}

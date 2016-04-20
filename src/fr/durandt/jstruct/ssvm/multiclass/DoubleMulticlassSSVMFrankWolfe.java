@@ -115,6 +115,7 @@ public class DoubleMulticlassSSVMFrankWolfe extends SSVMFrankWolfe<double[], Int
 		w = new double[dim];
 	}
 
+	@Override
 	public String toString() {
 		return "multiclass_" + super.toString();
 	}

@@ -80,6 +80,7 @@ public abstract class LSSVMCuttingPlane1Slack<X,Y,H> extends LSSVM<X,Y,H> {
 	 * Each iteration of the CCCP is solved with a cutting plane (1 slack formulation)
 	 * @param l list of training samples
 	 */
+	@Override
 	protected void learning(List<STrainingSample<LatentRepresentation<X,H>,Y>> l) {
 		int el=0;
 		double decrement = 0;
@@ -204,7 +205,7 @@ public abstract class LSSVMCuttingPlane1Slack<X,Y,H> extends LSSVM<X,Y,H> {
 		// compute g(t) and c(t)
 		final double[] gt = new double[w.length];
 		double ct = 0;
-		double n = (double)l.size();
+		double n = l.size();
 
 		long startTime = System.currentTimeMillis();
 		if(nThreads > 1) {
@@ -295,6 +296,7 @@ public abstract class LSSVMCuttingPlane1Slack<X,Y,H> extends LSSVM<X,Y,H> {
 		return s;
 	}
 
+	@Override
 	protected void showParameters() {
 		super.showParameters();
 		System.out.println("Learning: Cutting-Plane 1 Slack - Mosek");
@@ -302,6 +304,7 @@ public abstract class LSSVMCuttingPlane1Slack<X,Y,H> extends LSSVM<X,Y,H> {
 				+ "\tcpmax= " + cpmax + "\tcpmin= " + cpmin);
 	}
 
+	@Override
 	public String toString() {
 		String s = "lssvm_cuttingplane1slack_lambda_" + lambda + "_epsilon_" + epsilon 
 				+ "_maxCCCPIter_" + maxCCCPIter + "_minCCCPIter_" + minCCCPIter

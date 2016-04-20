@@ -120,6 +120,7 @@ public class BagImage extends Bag {
 	 * Remove the index-th instance
 	 * @param index
 	 */
+	@Override
 	public void removeInstance(int index) {
 		if(index >= 0) {
 			// remove the instance
@@ -129,6 +130,7 @@ public class BagImage extends Bag {
 		}
 	}
 
+	@Override
 	public String toString() {
 		String s = super.toString() + "\theight: " + height + "\twidth: " + width;
 		if(instanceFiles != null) {

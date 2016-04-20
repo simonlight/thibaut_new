@@ -162,6 +162,7 @@ public abstract class MantraBeta<X,Y,H> implements LatentStructuralClassifier<X,
 	 * Train a model (w) with the list of training examples l
 	 * @param l list of training examples
 	 */
+	@Override
 	public void train(List<STrainingSample<LatentRepresentation<X,H>,Y>> l) {
 		if(l.isEmpty())
 			return;
@@ -383,6 +384,7 @@ public abstract class MantraBeta<X,Y,H> implements LatentStructuralClassifier<X,
 		return prediction(x, y, w);
 	}
 
+	@Override
 	public Y prediction(LatentRepresentation<X,H> x) {
 		return prediction(x,w);
 	}
@@ -391,6 +393,7 @@ public abstract class MantraBeta<X,Y,H> implements LatentStructuralClassifier<X,
 		return lossAugmentedInference(ts, w);
 	}
 
+	@Override
 	public Object[] predictionOutputLatent(X x) {
 		return predictionOutputLatent(x, w);
 	}

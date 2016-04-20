@@ -38,6 +38,7 @@ public abstract class SSVMFrankWolfeBlockCoordinate<X,Y> extends SSVM<X,Y> {
 	 * Train SSVM with Block-Coordinate Primal-Dual Frank-Wolfe
 	 * @param l
 	 */
+	@Override
 	protected void learning(List<STrainingSample<X, Y>> l) {
 
 		// init
@@ -62,8 +63,8 @@ public abstract class SSVMFrankWolfeBlockCoordinate<X,Y> extends SSVM<X,Y> {
 				Y ystar = lossAugmentedInference(ts);
 
 				double[] dpsi = VectorOperations.add(psi(ts.input, ts.output), -1, psi(ts.input, ystar));
-				double[] ws = VectorOperations.mul(dpsi, 1/((double)lambda*l.size()));
-				double ls = delta(ts.output,ystar)/(double)l.size();
+				double[] ws = VectorOperations.mul(dpsi, 1/(lambda*l.size()));
+				double ls = delta(ts.output,ystar)/l.size();
 
 				double[] diff = VectorOperations.add(wall[i], -1, ws);
 				double denom = VectorOperations.dot(diff, diff);
@@ -110,11 +111,13 @@ public abstract class SSVMFrankWolfeBlockCoordinate<X,Y> extends SSVM<X,Y> {
 		this.maxIter = maxIter;
 	}
 
+	@Override
 	protected void showParameters() {
 		super.showParameters();
 		System.out.println("Learning: Block-Coordinate Primal-Dual Frank-Wolfe - maxIter= " + maxIter);
 	}
 
+	@Override
 	public String toString() {
 		String s = "ssvm_FrankWolfeBlockCoordinate_lambda_" + lambda + "_maxIter_" + maxIter;
 		return s;

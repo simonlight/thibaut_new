@@ -66,6 +66,7 @@ public abstract class FastMulticlassSSVMCuttingPlane1Slack<X> extends FastMultic
 	/**
 	 * Learning with cutting plane algorithm and 1 slack formulation
 	 */
+	@Override
 	protected void learning(List<STrainingSample<X, Integer>> l) {
 
 		double c = 1/lambda;
@@ -162,7 +163,7 @@ public abstract class FastMulticlassSSVMCuttingPlane1Slack<X> extends FastMultic
 		// compute g(t) and c(t)
 		double[][] gt = new double[listClass.size()][dim];
 		double ct = 0;
-		double n = (double)l.size();
+		double n = l.size();
 
 		long startTime = System.currentTimeMillis();
 
@@ -250,12 +251,14 @@ public abstract class FastMulticlassSSVMCuttingPlane1Slack<X> extends FastMultic
 		return s;
 	}
 
+	@Override
 	protected void showParameters() {
 		super.showParameters();
 		System.out.println("Learning: Cutting-Plane 1 Slack - Mosek");
 		System.out.println("epsilon= " + epsilon + "\t\tcpmax= " + cpmax + "\tcpmin= " + cpmin);
 	}
 
+	@Override
 	public String toString() {
 		String s = "fast_multiclass_ssvm_cuttingplane1slack_lambda_" + lambda + "_epsilon_" + epsilon 
 				+ "_cpmax_" + cpmax + "_cpmin_" + cpmin;

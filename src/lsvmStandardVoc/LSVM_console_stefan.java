@@ -20,12 +20,8 @@ import java.util.Random;
 
 import fr.durandt.jstruct.data.io.BagReader;
 import fr.durandt.jstruct.latent.LatentRepresentation;
-import fr.durandt.jstruct.struct.STrainingSample;
-import fr.durandt.jstruct.variable.Bag;
 import fr.durandt.jstruct.variable.BagImage;
-import fr.durandt.jstruct.variable.BagLabel;
-import fr.lip6.jkernelmachines.type.TrainingSample;
-import fr.durandt.jstruct.util.AveragePrecision;;
+import fr.lip6.jkernelmachines.type.TrainingSample;;
 
 public class LSVM_console_stefan {
 	public static void main(String[] args) {

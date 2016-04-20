@@ -4,13 +4,9 @@
 package lsvmCCCPGazeVoc_PosNeg;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.DoubleStream;
-
 import fr.durandt.jstruct.latent.LatentRepresentation;
 import fr.lip6.jkernelmachines.classifier.Classifier;
 import fr.lip6.jkernelmachines.kernel.typed.DoubleLinear;
@@ -65,6 +61,7 @@ public abstract class LSVM<X,H> implements Classifier<LatentRepresentation<X, H>
 //		H hp = optimizeH(rep.x);
 //		return linear.valueOf(w, psi(rep.x, hp));
 //	}
+	@Override
 	public double valueOf(LatentRepresentation<X,H> rep) {
 		H hp = optimizeH(rep.x);
 		return linear.valueOf(w, psi(rep.x, hp));
@@ -157,13 +154,10 @@ public abstract class LSVM<X,H> implements Classifier<LatentRepresentation<X, H>
 
 	}
 	
-	
-
-
 	protected void optimizeLatent(List<TrainingSample<LatentRepresentation<X,H>>> l){
 		for(TrainingSample<LatentRepresentation<X,H>> ts : l){
 			ts.sample.h = optimizeH(ts.sample.x);
-			}
+		}
 	}
 	
 	protected void optimizePositiveLatent(List<TrainingSample<LatentRepresentation<X,H>>> l){

@@ -203,7 +203,7 @@ public class MulticlassMantraBetaCuttingPlane1SlackBagImageRegion extends Mantra
 		double accuracy = 0;
 		int nb = 0;
 		for(STrainingSample<LatentRepresentation<BagImageRegion, Integer>,Integer> ts : l){
-			int ypredict = (int) prediction(ts.input);
+			int ypredict = prediction(ts.input);
 			if(ts.output == ypredict){	
 				nb++;
 			}

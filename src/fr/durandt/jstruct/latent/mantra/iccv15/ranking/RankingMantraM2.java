@@ -120,6 +120,7 @@ public abstract class RankingMantraM2<X,H> implements LatentStructuralClassifier
 	// Methods
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	@Override
 	public void train(List<STrainingSample<LatentRepresentation<X,H>,RankingOutput>> l) {
 		if(l.isEmpty())
 			return;
@@ -225,6 +226,7 @@ public abstract class RankingMantraM2<X,H> implements LatentStructuralClassifier
 		return prediction(x, y, w);
 	}
 
+	@Override
 	public RankingOutput prediction(LatentRepresentation<X,H> x) {
 		return prediction(x,w);
 	}
@@ -233,6 +235,7 @@ public abstract class RankingMantraM2<X,H> implements LatentStructuralClassifier
 		return lossAugmentedInference(ts, w);
 	}
 
+	@Override
 	public Object[] predictionOutputLatent(X x) {
 		return predictionOutputLatent(x, w);
 	}

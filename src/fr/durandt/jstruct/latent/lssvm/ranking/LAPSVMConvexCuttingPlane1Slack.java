@@ -68,7 +68,7 @@ public abstract class LAPSVMConvexCuttingPlane1Slack<X,H> extends LSSVMConvexCut
 		}
 
 		// Divide by the number of relevant examples * number of irrelevant examples
-		double c = (double)(x.getNpos()*x.getNneg());
+		double c = x.getNpos()*x.getNneg();
 		for(int d=0; d<dim; d++) {
 			psi[d] /= c;
 		}
@@ -114,7 +114,7 @@ public abstract class LAPSVMConvexCuttingPlane1Slack<X,H> extends LSSVMConvexCut
 				precisionAti = precisionAti + (double)posCount/(double)totalCount;
 			}
 		}
-		precisionAti = precisionAti/(double)posCount;
+		precisionAti = precisionAti/posCount;
 
 		double delta = 1 - precisionAti;
 
@@ -356,6 +356,7 @@ public abstract class LAPSVMConvexCuttingPlane1Slack<X,H> extends LSSVMConvexCut
 		return 1 - delta(l.get(0).output, prediction, null);
 	}
 	
+	@Override
 	public String toString() {
 		String s = "lapsvm_convex_cuttingplane1slack_lambda_" + lambda + "_epsilon_" + epsilon 
 				+ "_cpmax_" + cpmax + "_cpmin_" + cpmin;

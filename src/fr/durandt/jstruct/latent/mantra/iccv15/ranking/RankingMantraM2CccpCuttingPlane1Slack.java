@@ -81,6 +81,7 @@ public abstract class RankingMantraM2CccpCuttingPlane1Slack<X,H> extends Ranking
 	/**
 	 * Learning with cutting plane algorithm and 1 slack formulation
 	 */
+	@Override
 	protected void learning(List<STrainingSample<LatentRepresentation<X,H>,RankingOutput>> l) {
 		int el=0;
 		double decrement = 0;
@@ -264,6 +265,7 @@ public abstract class RankingMantraM2CccpCuttingPlane1Slack<X,H> extends Ranking
 		return s;
 	}
 
+	@Override
 	protected void showParameters() {
 		super.showParameters();
 		System.out.println("Optimization: CCCP + Cutting-Plane 1 Slack with Mosek solver");

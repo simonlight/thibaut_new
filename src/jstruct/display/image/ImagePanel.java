@@ -26,6 +26,7 @@ public class ImagePanel extends JPanel {
 	private Image image = null;
 	private Integer[] region = null;
 
+	@Override
 	public void paintComponent(Graphics g){
 
 		/*try {

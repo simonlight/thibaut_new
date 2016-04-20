@@ -66,7 +66,7 @@ public class BagLabel extends Bag {
 				proportion += 1;
 			}
 		}
-		labelProportion = proportion/(double)labels.size();
+		labelProportion = proportion/labels.size();
 	}
 
 	/**

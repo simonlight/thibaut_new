@@ -4,7 +4,6 @@
 package lsvmCCCPGazeVoc_Neg;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -65,6 +64,7 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 		}
 	}
 	
+	@Override
 	protected void learn(List<TrainingSample<LatentRepresentation<X,H>>> l, BufferedWriter trainingDetailFileOut) {
 		if(optim == 1) {
 			learnPegasos(l);

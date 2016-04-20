@@ -37,7 +37,8 @@ public class MosekSolver {
 			// Set the number of threads
 			task.putintparam(mosek.Env.iparam.num_threads, numThreads);
 			
-			task.set_Stream(mosek.Env.streamtype.log, new mosek.Stream() {public void stream(String msg) {}});
+			task.set_Stream(mosek.Env.streamtype.log, new mosek.Stream() {@Override
+			public void stream(String msg) {}});
 		
 			int numcon = 1;
 			task.appendcons(numcon); // number of constraints

@@ -244,7 +244,7 @@ public abstract class LatentML3<X,H> implements LatentStructuralClassifier<X,Int
 					System.out.println("i= " + i + "\tc= " + VectorOperations.dot(w[y][i], psi(x,h)));
 				}
 			}
-			double q = (double)p/(double)(p-1.);
+			double q = p/(p-1.);
 			if(verbose>2) {
 				System.out.println("y= " + y + "\th= " + h + "\tq= " + q + "\tc= " + Arrays.toString(c));
 			}
@@ -345,6 +345,7 @@ public abstract class LatentML3<X,H> implements LatentStructuralClassifier<X,Int
 		return obj;
 	}
 
+	@Override
 	public String toString() {
 		return "latentml3_lambda_" + lambda + "_m_" + m + "_p_" + p;
 	}

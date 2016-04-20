@@ -207,14 +207,14 @@ public class SSVMRankAP2 implements StructuralClassifier<List<double[]>, List<In
 		//List<Double> sortedPlusVal = new ArrayList<Double>();
 		//List<Double> sortedMinusVal = new ArrayList<Double>();
 
-		int nbPlus = ((RankingType)st).nbPlus;
+		int nbPlus = st.nbPlus;
 		int nbMinus = ts.input.size()-nbPlus;
 		
 		// Sorting + in descending order of <w ; xi>
 		List<Pair<Integer,Double>> pairsPlus = new ArrayList<Pair<Integer,Double>>();
 		
 		for(int i=0;i< ts.input.size() ; i++){
-			if(((RankingType)st).gtLabels.get(i)==1){
+			if(st.gtLabels.get(i)==1){
 				pairsPlus.add(new Pair<Integer,Double>( i , VectorOperations.dot(w, ts.input.get(i))));
 			}
 		}
@@ -230,7 +230,7 @@ public class SSVMRankAP2 implements StructuralClassifier<List<double[]>, List<In
 		// Sorting - in descending order of <w ; xi>
 		List<Pair<Integer,Double>> pairsMinus  = new ArrayList<Pair<Integer,Double>>();
 		for(int i=0;i< ts.input.size() ; i++){
-			if(((RankingType)st).gtLabels.get(i)==-1){
+			if(st.gtLabels.get(i)==-1){
 				pairsMinus.add(new Pair<Integer,Double>( i ,VectorOperations.dot(w, ts.input.get(i))));
 			}
 		}
@@ -264,7 +264,7 @@ public class SSVMRankAP2 implements StructuralClassifier<List<double[]>, List<In
 			for(int k=0;k<nbPlus;k++){
 				double skp = pairsPlus.get(k).getValue();
 				double sjn = pairsMinus.get(j).getValue();
-				double deltaij = val_optj( j, k, skp, sjn,(double)nbPlus,(double)nbMinus);
+				double deltaij = val_optj( j, k, skp, sjn,nbPlus,nbMinus);
 				deltasij.add(deltaij);
 				//sum+= deltaij;
 //				//System.out.println("j="+j+" sum "+sum+" skp="+skp+" sjn="+sjn);
@@ -348,7 +348,8 @@ public class SSVMRankAP2 implements StructuralClassifier<List<double[]>, List<In
 			env = new mosek.Env();
 			task = new mosek.Task(env,0,0);
 			
-			task.set_Stream(mosek.Env.streamtype.log, new mosek.Stream() {public void stream(String msg) {}});
+			task.set_Stream(mosek.Env.streamtype.log, new mosek.Stream() {@Override
+			public void stream(String msg) {}});
 		
 			int numcon = 1;
 			task.appendcons(numcon); // number of constraints
@@ -482,6 +483,7 @@ public class SSVMRankAP2 implements StructuralClassifier<List<double[]>, List<In
 		this.epsilon = epsilon;
 	}
 	
+	@Override
 	public String toString() {
 		return "ssvm_rankAP2_optim_" + optim + "_lambda_" + lambda + "_epsilon_" + epsilon + "_cpmax_" + cpmax + "_cpmin_" + cpmin;
 	}

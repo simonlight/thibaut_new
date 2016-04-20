@@ -39,6 +39,7 @@ public abstract class MantraPegasos<X,Y,H> extends Mantra<X,Y,H> {
 	 * Train SSVM with Pegasos
 	 * @param l
 	 */
+	@Override
 	protected void learning(List<STrainingSample<LatentRepresentation<X,H>,Y>> l) {
 		int s0 = 2*l.size();
 		for(int iter=0; iter<maxIter; iter++) {
@@ -142,11 +143,13 @@ public abstract class MantraPegasos<X,Y,H> extends Mantra<X,Y,H> {
 		}
 	}
 
+	@Override
 	protected void showParameters() {
 		super.showParameters();
 		System.out.println("Learning: Pegasos - max iterations= " + maxIter);
 	}
 
+	@Override
 	public String toString() {
 		String s = "mantra_pegasos_lambda_" + lambda + "_maxIter_" + maxIter;
 		return s;

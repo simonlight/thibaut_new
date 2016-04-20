@@ -39,6 +39,7 @@ public class Pair<K,V extends Comparable<V>> implements Comparable<Pair<K,V>> {
 		this.value = value;
 	}
 	
+	@Override
 	public String toString() {
 		return "(" + key + ", " + value + ")";
 	}

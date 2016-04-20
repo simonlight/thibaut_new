@@ -4,7 +4,6 @@
 package lsvmCCCPGazeVoc_PosNeg;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -43,7 +42,9 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 	protected boolean semiConvexity = true;
 	protected boolean stochastic = false;
 	
-	protected double tradeoff;
+	protected double postradeoff;
+	protected double negtradeoff;
+
 	protected String gazeType;
 	protected boolean hnorm;
 	protected String className;
@@ -65,6 +66,7 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 		}
 	}
 	
+	@Override
 	protected void learn(List<TrainingSample<LatentRepresentation<X,H>>> l, BufferedWriter trainingDetailFileOut) {
 		if(optim == 1) {
 			learnPegasos(l);
@@ -248,6 +250,7 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 		int iter = 0;
 		double[] lastW = new double[dim];
 		do {
+			
 			iter +=1;
 			oldPrimal_Objectif = newPrimal_Objectif;
 			if(verbose >= 1) {
@@ -324,10 +327,16 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 			ts.sample.h = optimizeH(ts.sample.x);
 			
 			//gaze gradient
-			if (ts.label==-1 || ts.label==1){
+			if (ts.label==1){
 				double[] gazePsi = getGazePsi(ts);
 				for(int d=0; d<dim; d++) {
-					w[d] -= gazePsi[d] * eta;
+					w[d] -= postradeoff*gazePsi[d] * eta;
+				}
+			}
+			if (ts.label==-1 ){
+				double[] gazePsi = getGazePsi(ts);
+				for(int d=0; d<dim; d++) {
+					w[d] -= negtradeoff*gazePsi[d] * eta;
 				}
 			}
 			
@@ -466,11 +475,17 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 		return hnorm;
 	}
 
-	public void setTradeOff(double tradeoff){
-		this.tradeoff = tradeoff;
+	public void setPosTradeOff(double postradeoff){
+		this.postradeoff = postradeoff;
 	}
-	public double getTradeOff(){
-		return tradeoff;
+	public double getPosTradeOff(){
+		return postradeoff;
+	}
+	public void setNegTradeOff(double negtradeoff){
+		this.negtradeoff = negtradeoff;
+	}
+	public double getNegTradeOff(){
+		return negtradeoff;
 	}
 	
 	public void setCurrentClass(String className){

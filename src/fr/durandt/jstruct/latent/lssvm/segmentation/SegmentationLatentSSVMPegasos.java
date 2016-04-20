@@ -39,6 +39,7 @@ public abstract class SegmentationLatentSSVMPegasos<X,Y,H> extends SegmentationL
 	 * Train SSVM with Pegasos
 	 * @param l
 	 */
+	@Override
 	protected void learning(List<STrainingSample<LatentRepresentation<X,H>,Y>> l) {
 		int s0 = 2*l.size();
 		for(int iter=0; iter<maxCCCPIter; iter++) {
@@ -140,11 +141,13 @@ public abstract class SegmentationLatentSSVMPegasos<X,Y,H> extends SegmentationL
 		}
 	}
 
+	@Override
 	protected void showParameters() {
 		super.showParameters();
 		System.out.println("Learning: Pegasos - max CCCP iterations= " + maxCCCPIter);
 	}
 
+	@Override
 	public String toString() {
 		String s = "segmentation_lssvm_pegasos_lambda_" + lambda + "_maxCCCPIter_" + maxCCCPIter;
 		return s;

@@ -258,6 +258,7 @@ public class SegmentationMulticlassSSVMPegasos extends SSVMPegasos<BagImageSeg,I
 
 	}
 
+	@Override
 	public String toString() {
 		String s = "segmentation_multiclass_" + super.toString();
 		return s;

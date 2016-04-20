@@ -106,7 +106,7 @@ public class Bag {
 				}
 			}
 
-			double n = (double)instances.size();
+			double n = instances.size();
 			for(int d=0; d<mean.length; d++) {
 				mean[d] /= n;
 			}
@@ -297,6 +297,7 @@ public class Bag {
 		}
 	}
 
+	@Override
 	public String toString() {
 		String s = "name: " + name + "\tnumber of instances: " + numberOfInstances();
 		return s;

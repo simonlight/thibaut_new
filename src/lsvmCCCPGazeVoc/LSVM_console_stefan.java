@@ -20,12 +20,8 @@ import java.util.Random;
 
 import fr.durandt.jstruct.data.io.BagReader;
 import fr.durandt.jstruct.latent.LatentRepresentation;
-import fr.durandt.jstruct.struct.STrainingSample;
-import fr.durandt.jstruct.variable.Bag;
 import fr.durandt.jstruct.variable.BagImage;
-import fr.durandt.jstruct.variable.BagLabel;
-import fr.lip6.jkernelmachines.type.TrainingSample;
-import fr.durandt.jstruct.util.AveragePrecision;;
+import fr.lip6.jkernelmachines.type.TrainingSample;;
 
 /**
  * @author Thibaut Durand - durand.tibo@gmail.com
@@ -36,14 +32,14 @@ public class LSVM_console_stefan {
 	
 	String dataSource= "local";//local or other things
 	String gazeType = "stefan";
-	String taskName = "lsvm_cccpgaze_positive_compare_symil/";
+	String taskName = "lsvm_cccpgaze_posneg_inverse_jumping/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
 //	String[] classes = {args[0]};
 //	int[] scaleCV = {Integer.valueOf(args[1])};
 //	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
     String[] classes = {"jumping"};
-    int[] scaleCV = {90};
+    int[] scaleCV = {50};
 	
     
 //    double[] tradeoffCV = {0.0, 0.0001,0.001,0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};

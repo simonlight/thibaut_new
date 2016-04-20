@@ -90,6 +90,7 @@ public class DoubleFastMulticlassSSVMFrankWolfe extends FastMulticlassSSVMFrankW
 		w = new double[listClass.size()][dim];
 	}
 
+	@Override
 	public String toString() {
 		return super.toString();
 	}

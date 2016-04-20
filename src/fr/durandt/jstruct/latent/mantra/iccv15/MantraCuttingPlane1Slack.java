@@ -73,6 +73,7 @@ public abstract class MantraCuttingPlane1Slack<X,Y,H> extends Mantra<X,Y,H> {
 	/**
 	 * Learning with cutting plane algorithm and 1 slack formulation
 	 */
+	@Override
 	protected void learning(List<STrainingSample<LatentRepresentation<X,H>,Y>> l) {
 		if(optim == 1) {
 			trainIterNonConvex1SlackCuttingPlane(l);
@@ -197,7 +198,7 @@ public abstract class MantraCuttingPlane1Slack<X,Y,H> extends Mantra<X,Y,H> {
 		// compute g(t) and c(t)
 		final double[] gt = new double[dim];
 		double ct = 0;
-		double n = (double)l.size();
+		double n = l.size();
 
 		long startTime = System.currentTimeMillis();
 
@@ -255,6 +256,7 @@ public abstract class MantraCuttingPlane1Slack<X,Y,H> extends Mantra<X,Y,H> {
 		return s;
 	}
 
+	@Override
 	protected void showParameters() {
 		super.showParameters();
 		if(optim == 1) {

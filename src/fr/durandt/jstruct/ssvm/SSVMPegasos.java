@@ -47,6 +47,7 @@ public abstract class SSVMPegasos<X,Y> extends SSVM<X,Y> {
 	 * Train SSVM with Pegasos
 	 * @param l
 	 */
+	@Override
 	protected void learning(List<STrainingSample<X, Y>> l) {
 		int s0 = 2*l.size();
 		for(int iter=0; iter<maxIterations; iter++) {
@@ -142,11 +143,13 @@ public abstract class SSVMPegasos<X,Y> extends SSVM<X,Y> {
 		}
 	}
 
+	@Override
 	protected void showParameters() {
 		super.showParameters();
 		System.out.println("Learning: Pegasos - max iterations= " + maxIterations);
 	}
 
+	@Override
 	public String toString() {
 		String s = "ssvm_pegasos_lambda_" + lambda + "_maxIter_" + maxIterations;
 		return s;

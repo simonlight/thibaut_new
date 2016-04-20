@@ -90,6 +90,7 @@ public class DoubleFastMulticlassSSVMCuttingPlane1Slack extends FastMulticlassSS
 		w = new double[listClass.size()][dim];
 	}
 
+	@Override
 	public String toString() {
 		return super.toString();
 	}

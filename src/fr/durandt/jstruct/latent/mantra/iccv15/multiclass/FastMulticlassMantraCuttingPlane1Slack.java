@@ -74,6 +74,7 @@ public abstract class FastMulticlassMantraCuttingPlane1Slack<X,H> extends FastMu
 	/**
 	 * Learning with cutting plane algorithm and 1 slack formulation
 	 */
+	@Override
 	protected void learning(List<STrainingSample<LatentRepresentation<X,H>,Integer>> l) {
 		if(optim == 1) {
 			trainIterNonConvex1SlackCuttingPlane(l);
@@ -215,7 +216,7 @@ public abstract class FastMulticlassMantraCuttingPlane1Slack<X,H> extends FastMu
 		// compute g(t) and c(t)
 		final double[][] gt = new double[w.length][dim];
 		double ct = 0;
-		double n = (double)l.size();
+		double n = l.size();
 
 		long startTime = System.currentTimeMillis();
 
@@ -283,6 +284,7 @@ public abstract class FastMulticlassMantraCuttingPlane1Slack<X,H> extends FastMu
 		return s;
 	}
 
+	@Override
 	protected void showParameters() {
 		super.showParameters();
 		if(optim == 1) {

@@ -66,6 +66,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		return hp;
 	}
 	
+	@Override
 	public double loss(TrainingSample<LatentRepresentation<BagImage, Integer>> ts) {
 		double v = valueOf(ts.sample.x, ts.sample.h);
 		return Math.max(0, 1 - ts.label*v);

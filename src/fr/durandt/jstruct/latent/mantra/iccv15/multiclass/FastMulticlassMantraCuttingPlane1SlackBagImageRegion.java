@@ -205,7 +205,7 @@ public class FastMulticlassMantraCuttingPlane1SlackBagImageRegion extends FastMu
 		double accuracy = 0;
 		int nb = 0;
 		for(STrainingSample<LatentRepresentation<BagImageRegion, Integer>,Integer> ts : l){
-			int ypredict = (int) prediction(ts.input);
+			int ypredict = prediction(ts.input);
 			if(ts.output == ypredict){	
 				nb++;
 			}
@@ -235,7 +235,7 @@ public class FastMulticlassMantraCuttingPlane1SlackBagImageRegion extends FastMu
 
 		double[] scores = new double[l.size()];
 		for(int i=0; i<l.size(); i++) {
-			int ypredict = (int) prediction(l.get(i).input);
+			int ypredict = prediction(l.get(i).input);
 			Object[] res = valueOfHPlusMinus(l.get(i).input.x, ypredict, w);
 			Integer hmax = (Integer) res[0];
 			double valmax = (Double) res[1];
@@ -267,7 +267,7 @@ public class FastMulticlassMantraCuttingPlane1SlackBagImageRegion extends FastMu
 			for(int i=0; i<l.size(); i++){
 				STrainingSample<LatentRepresentation<BagImageRegion, Integer>,Integer> ts = l.get(i);
 				bw.write(ts.input.x.getName() + "\t" + ts.output + "\t");
-				int ypredict = (int) prediction(ts.input);
+				int ypredict = prediction(ts.input);
 				Object[] res = valueOfHPlusMinus(ts.input.x, ypredict, w);
 				Integer hmax = (Integer) res[0];
 				double valmax = (Double) res[1];
@@ -342,7 +342,7 @@ public class FastMulticlassMantraCuttingPlane1SlackBagImageRegion extends FastMu
 			for(int i=0; i<l.size(); i++){
 				STrainingSample<LatentRepresentation<BagImageRegion, Integer>,Integer> ts = l.get(i);
 				bw.write(ts.input.x.getName() + "\t" + ts.output + "\t");
-				int ypredict = (int) prediction(ts.input);
+				int ypredict = prediction(ts.input);
 				Object[] res = valueOfHPlusMinus(ts.input.x, ypredict, w);
 				Integer hmin = (Integer) res[2];
 				double valmin = (Double) res[3];

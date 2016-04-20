@@ -259,7 +259,7 @@ public abstract class ML3 implements StructuralClassifier<double[], Integer> {
 			for(int i=0; i<c.length; i++) {
 				c[i] = Math.max(0, VectorOperations.dot(w[y][i], x));
 			}
-			double q = (double)p/(double)(p-1.);
+			double q = p/(p-1.);
 			return VectorOp.pnorm(c, q);
 		}
 		else {
@@ -313,6 +313,7 @@ public abstract class ML3 implements StructuralClassifier<double[], Integer> {
 		return obj;
 	}
 
+	@Override
 	public String toString() {
 		return "ml3_lambda_" + lambda + "_m_" + m + "_p_" + p;
 	}

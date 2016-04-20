@@ -125,6 +125,7 @@ public abstract class FastMulticlassMantra<X,H> implements LatentStructuralClass
 	// Methods
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	@Override
 	public void train(List<STrainingSample<LatentRepresentation<X,H>,Integer>> l) {
 		if(l.isEmpty())
 			return;
@@ -332,6 +333,7 @@ public abstract class FastMulticlassMantra<X,H> implements LatentStructuralClass
 		return prediction(x, y, w);
 	}
 
+	@Override
 	public Integer prediction(LatentRepresentation<X,H> x) {
 		return prediction(x,w);
 	}
@@ -384,6 +386,7 @@ public abstract class FastMulticlassMantra<X,H> implements LatentStructuralClass
 		return res;
 	}
 
+	@Override
 	public Object[] predictionOutputLatent(X x) {
 		return predictionOutputLatent(x, w);
 	}

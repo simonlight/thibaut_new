@@ -175,7 +175,7 @@ public class RankingOutput {
 				precisionAti = precisionAti + (double)posCount/(double)totalCount;
 			}
 		}
-		precisionAti = precisionAti/(double)posCount;
+		precisionAti = precisionAti/posCount;
 
 		return precisionAti;
 	}
@@ -218,7 +218,7 @@ public class RankingOutput {
 				precisionAti = precisionAti + (double)posCount/(double)totalCount;
 			}
 		}
-		precisionAti = precisionAti/(double)posCount;
+		precisionAti = precisionAti/posCount;
 
 		return precisionAti;
 	}
@@ -249,7 +249,7 @@ public class RankingOutput {
 			}
 		}
 		//return 100.0-100.0*swappedPairs/((double)numn)/((double)nump);
-		return 1.0 - 1.0*swappedPairs/((double)numn)/((double)nump);
+		return 1.0 - 1.0*swappedPairs/(numn)/(nump);
 	}
 
 	/**

@@ -73,6 +73,7 @@ public abstract class FastMulticlassMantraCVPRCuttingPlane1Slack<X,H> extends Fa
 	/**
 	 * Learning with cutting plane algorithm and 1 slack formulation
 	 */
+	@Override
 	protected void learning(List<STrainingSample<LatentRepresentation<X,H>,Integer>> l) {
 		if(optim == 1) {
 			trainIterNonConvex1SlackCuttingPlane(l);
@@ -214,7 +215,7 @@ public abstract class FastMulticlassMantraCVPRCuttingPlane1Slack<X,H> extends Fa
 		// compute g(t) and c(t)
 		final double[][] gt = new double[w.length][dim];
 		double ct = 0;
-		double n = (double)l.size();
+		double n = l.size();
 
 		long startTime = System.currentTimeMillis();
 
@@ -284,6 +285,7 @@ public abstract class FastMulticlassMantraCVPRCuttingPlane1Slack<X,H> extends Fa
 		return s;
 	}
 
+	@Override
 	protected void showParameters() {
 		super.showParameters();
 		if(optim == 1) {

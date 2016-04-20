@@ -130,6 +130,7 @@ public class BagImageSeg extends BagImageRegion {
 		this.neigbhorsFile = neigbhorsFile;
 	}
 
+	@Override
 	public String toString() {
 		String s = super.toString();
 		if(gtMaskFile != null) {
@@ -245,6 +246,7 @@ public class BagImageSeg extends BagImageRegion {
 		return accuracy;
 	}
 
+	@Override
 	public void readXMLFile(File file, int dim, int verbose) {
 
 		if(file.exists()) {
@@ -400,6 +402,7 @@ public class BagImageSeg extends BagImageRegion {
 		return neigbhors;
 	}
 
+	@Override
 	public void print() {
 		super.print();
 		if(superpixelsFile != null) {

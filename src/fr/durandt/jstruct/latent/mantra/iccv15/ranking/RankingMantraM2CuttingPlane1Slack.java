@@ -76,6 +76,7 @@ public abstract class RankingMantraM2CuttingPlane1Slack<X,H> extends RankingMant
 	/**
 	 * Learning with cutting plane algorithm and 1 slack formulation
 	 */
+	@Override
 	protected void learning(List<STrainingSample<LatentRepresentation<X,H>,RankingOutput>> l) {
 		if(optim == 1) {
 			trainIterNonConvex1SlackCuttingPlane(l.get(0));
@@ -244,6 +245,7 @@ public abstract class RankingMantraM2CuttingPlane1Slack<X,H> extends RankingMant
 		return s;
 	}
 
+	@Override
 	protected void showParameters() {
 		super.showParameters();
 		if(optim == 1) {

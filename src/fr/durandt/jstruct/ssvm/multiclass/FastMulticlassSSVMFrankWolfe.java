@@ -30,11 +30,12 @@ public abstract class FastMulticlassSSVMFrankWolfe<X> extends FastMulticlassSSVM
 	 * Train SSVM with Block-Coordinate Primal-Dual Frank-Wolfe
 	 * @param l
 	 */
+	@Override
 	protected void learning(List<STrainingSample<X, Integer>> l) {
 
 		// init
 		double lk = 0;
-		double n = (double)l.size();
+		double n = l.size();
 
 		for(int k=0; k<maxIter; k++) {
 
@@ -53,7 +54,7 @@ public abstract class FastMulticlassSSVMFrankWolfe<X> extends FastMulticlassSSVM
 				ls += delta(ts.output, yp);
 			}
 
-			VectorOp.mul(ws, (double)1/(double)(lambda*n));
+			VectorOp.mul(ws, 1/(lambda*n));
 			ls /= n;
 
 			double[][] diff = VectorOp.sub(w, ws);
@@ -80,11 +81,13 @@ public abstract class FastMulticlassSSVMFrankWolfe<X> extends FastMulticlassSSVM
 	}
 
 
+	@Override
 	protected void showParameters() {
 		super.showParameters();
 		System.out.println("Learning: Primal-Dual Frank-Wolfe - maxIter= " + maxIter);
 	}
 
+	@Override
 	public String toString() {
 		String s = "fast_multiclass_ssvm_FrankWolfe_lambda_" + lambda + "_maxIter_" + maxIter;
 		return s;

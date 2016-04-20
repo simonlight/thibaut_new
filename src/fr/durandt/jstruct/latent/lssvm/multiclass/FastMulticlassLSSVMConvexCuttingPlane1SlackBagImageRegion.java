@@ -197,7 +197,7 @@ public class FastMulticlassLSSVMConvexCuttingPlane1SlackBagImageRegion extends F
 		double accuracy = 0;
 		int nb = 0;
 		for(STrainingSample<LatentRepresentation<BagImageRegion, Integer>,Integer> ts : l){
-			int ypredict = (int) prediction(ts.input);
+			int ypredict = prediction(ts.input);
 			if(ts.output == ypredict){	
 				nb++;
 			}
@@ -211,7 +211,7 @@ public class FastMulticlassLSSVMConvexCuttingPlane1SlackBagImageRegion extends F
 
 		double[] scores = new double[l.size()];
 		for(int i=0; i<l.size(); i++) {
-			int ypredict = (int) prediction(l.get(i).input);
+			int ypredict = prediction(l.get(i).input);
 			int hpredict = prediction(l.get(i).input.x, ypredict, w);
 			double score = valueOf(l.get(i).input.x, ypredict, hpredict, w);
 			scores[i] = (ypredict==0 ? -1 : 1) * score;
@@ -226,6 +226,7 @@ public class FastMulticlassLSSVMConvexCuttingPlane1SlackBagImageRegion extends F
 		return ap;
 	}
 
+	@Override
 	public String toString() {
 		return "fast_multiclass_" + super.toString();
 	}
@@ -243,7 +244,7 @@ public class FastMulticlassLSSVMConvexCuttingPlane1SlackBagImageRegion extends F
 			for(int i=0; i<l.size(); i++){
 				STrainingSample<LatentRepresentation<BagImageRegion, Integer>,Integer> ts = l.get(i);
 				bw.write(ts.input.x.getName() + "\t" + ts.output + "\t");
-				int ypredict = (int) prediction(ts.input);
+				int ypredict = prediction(ts.input);
 				Integer hmax = prediction(l.get(i).input.x, ypredict, w);
 				double score = valueOf(l.get(i).input.x, ypredict, hmax, w);
 				bw.write(ypredict + "\t" + score + "\t" + hmax + "\t" + ts.input.x.getRegion(hmax)[0]

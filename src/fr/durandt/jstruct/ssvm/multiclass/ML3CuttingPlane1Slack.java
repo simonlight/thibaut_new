@@ -35,6 +35,7 @@ public class ML3CuttingPlane1Slack extends ML3 {
 	/**
 	 * Learning with cutting plane algorithm and 1 slack formulation
 	 */
+	@Override
 	protected void learning(List<STrainingSample<double[], Integer>> l) {
 
 		double c = 1/lambda;
@@ -129,7 +130,7 @@ public class ML3CuttingPlane1Slack extends ML3 {
 		// compute g(t) and c(t)
 		double[][][] gt = new double[c][m][d];
 		double ct = 0;
-		double n = (double)l.size();
+		double n = l.size();
 
 		for(STrainingSample<double[], Integer> ts : l){
 			// Compute the optimal beta for yi
@@ -218,6 +219,7 @@ public class ML3CuttingPlane1Slack extends ML3 {
 		return ypredict;
 	}
 
+	@Override
 	protected void showParametersLearning() {
 		System.out.println("Learning: Cutting-Plane 1 Slack - Mosek");
 		System.out.println("epsilon= " + epsilon + "\t\tcpmax= " + cpmax + "\tcpmin= " + cpmin);
@@ -265,6 +267,7 @@ public class ML3CuttingPlane1Slack extends ML3 {
 		this.epsilon = epsilon;
 	}
 
+	@Override
 	public String toString() {
 		return "ml3_cuttingplane1slack_lambda_" + lambda + "_epsilon_" + epsilon + "_cpmax_" + cpmax + "_cpmin_" + cpmin + "_m_" + m + "_p_" + p;
 	}

@@ -72,7 +72,7 @@ public class ML3Pegasos extends ML3 {
 		double eta = 0;
 		for(int s=0; s<l.size(); s++) {
 
-			eta = 1./(lambda*(double)(s+1+s0));
+			eta = 1./(lambda*(s+1+s0));
 
 
 			// Compute the optimal beta for yi
@@ -166,6 +166,7 @@ public class ML3Pegasos extends ML3 {
 		this.maxCCCPIter = maxCCCPIter;
 	}
 
+	@Override
 	public String toString() {
 		return "ml3_pegasos_lambda_" + lambda + "_maxCCCPIter_" + maxCCCPIter + "_m_" + m + "_p_" + p;
 	}

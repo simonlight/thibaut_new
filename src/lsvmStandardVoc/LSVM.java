@@ -52,6 +52,7 @@ public abstract class LSVM<X,H> implements Classifier<LatentRepresentation<X, H>
 //		H hp = optimizeH(rep.x);
 //		return linear.valueOf(w, psi(rep.x, hp));
 //	}
+	@Override
 	public double valueOf(LatentRepresentation<X,H> rep) {
 		H hp = optimizeH(rep.x);
 		return linear.valueOf(w, psi(rep.x, hp));

@@ -3,13 +3,10 @@
  */
 package lsvmCCCPMusk;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import fr.durandt.jstruct.variable.BagImage;
 import fr.durandt.jstruct.latent.LatentRepresentation;
-import fr.durandt.jstruct.util.Pair;
-import fr.durandt.jstruct.util.AveragePrecision;
 import fr.lip6.jkernelmachines.classifier.Classifier;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 
@@ -62,6 +59,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 	}
 	
 	
+	@Override
 	public double loss(TrainingSample<LatentRepresentation<BagImage, Integer>> ts) {
 		double v = valueOf(ts.sample.x, ts.sample.h);
 		if (ts.label == -1){
@@ -70,7 +68,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		else if(ts.label == 1){
 			return Math.max(1, v) - v;
 		}
-		return (Double) null;
+		return null;
 
 	}
 	

@@ -128,7 +128,7 @@ public class DoubleRankROCAreaSSVMCuttingPlane1Slack extends SSVMCuttingPlane1Sl
 		}
 
 		// Divide by the number of relevant examples * number of irrelevant examples
-		double c = (double)(x.getNpos()*x.getNneg());
+		double c = x.getNpos()*x.getNneg();
 		for(int d=0; d<dim; d++) {
 			psi[d] /= c;
 		}

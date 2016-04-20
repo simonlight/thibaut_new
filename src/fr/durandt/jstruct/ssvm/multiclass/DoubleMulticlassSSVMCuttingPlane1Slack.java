@@ -159,6 +159,7 @@ public class DoubleMulticlassSSVMCuttingPlane1Slack extends SSVMCuttingPlane1Sla
 		w = new double[dim];
 	}
 
+	@Override
 	public String toString() {
 		return "multiclass_" + super.toString();
 	}

@@ -70,7 +70,7 @@ public class SegmentationSSVMCuttingPlane1Slack extends SSVMCuttingPlane1Slack<B
 		int[] neighbors = new int[nbSuperPixels * nbSuperPixels];
 		for(int p=0; p<nbSuperPixels; p++) {
 			for(int q=0; q<nbSuperPixels; q++) {
-				neighbors[p*nbSuperPixels + q] = (int)graph[p][q];
+				neighbors[p*nbSuperPixels + q] = graph[p][q];
 			}
 		}
 
@@ -172,7 +172,7 @@ public class SegmentationSSVMCuttingPlane1Slack extends SSVMCuttingPlane1Slack<B
 		int[] neighbors = new int[nbSuperPixels * nbSuperPixels];
 		for(int p=0; p<nbSuperPixels; p++) {
 			for(int q=0; q<nbSuperPixels; q++) {
-				neighbors[p*nbSuperPixels + q] = (int)graph[p][q];
+				neighbors[p*nbSuperPixels + q] = graph[p][q];
 			}
 		}
 

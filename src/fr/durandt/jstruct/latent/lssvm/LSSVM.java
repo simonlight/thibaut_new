@@ -129,6 +129,7 @@ public abstract class LSSVM<X,Y,H> implements LatentStructuralClassifier<X,Y,H> 
 	// Methods
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	@Override
 	public void train(List<STrainingSample<LatentRepresentation<X,H>,Y>> l) {
 		if(l.isEmpty())
 			return;
@@ -338,6 +339,7 @@ public abstract class LSSVM<X,Y,H> implements LatentStructuralClassifier<X,Y,H> 
 		return prediction(x, y, w);
 	}
 
+	@Override
 	public Y prediction(LatentRepresentation<X,H> x) {
 		return prediction(x,w);
 	}
@@ -346,6 +348,7 @@ public abstract class LSSVM<X,Y,H> implements LatentStructuralClassifier<X,Y,H> 
 		return lossAugmentedInference(ts, w);
 	}
 
+	@Override
 	public Object[] predictionOutputLatent(X x) {
 		return predictionOutputLatent(x, w);
 	}

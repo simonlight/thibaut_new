@@ -104,7 +104,7 @@ public abstract class ROCAreaMantraCuttingPlane1Slack<X,H> extends MantraCVPRCut
 		}
 
 		// Divide by the number of relevant examples * number of irrelevant examples
-		double c = (double)(x.getNpos()*x.getNneg());
+		double c = x.getNpos()*x.getNneg();
 		for(int d=0; d<dim; d++) {
 			psi[d] /= c;
 		}
@@ -496,6 +496,7 @@ public abstract class ROCAreaMantraCuttingPlane1Slack<X,H> extends MantraCVPRCut
 		return inferPrediction(yij, hmaxi, maxi, hmini, mini, hmaxj, maxj, hminj, minj);
 	}*/
 	
+	@Override
 	public String toString() {
 		String s = super.toString();
 		s = "ranking_rocarea_" + s;

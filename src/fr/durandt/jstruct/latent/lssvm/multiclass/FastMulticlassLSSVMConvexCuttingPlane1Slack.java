@@ -68,6 +68,7 @@ public abstract class FastMulticlassLSSVMConvexCuttingPlane1Slack<X,H> extends F
 	/**
 	 * Learning with cutting plane algorithm and 1 slack formulation
 	 */
+	@Override
 	protected void learning(List<STrainingSample<LatentRepresentation<X,H>,Integer>> l) {
 
 		double c = lambda != 0 ? 1./lambda : 0.0;
@@ -173,7 +174,7 @@ public abstract class FastMulticlassLSSVMConvexCuttingPlane1Slack<X,H> extends F
 		// compute g(t) and c(t)
 		final double[][] gt = new double[w.length][dim];
 		double ct = 0;
-		double n = (double)l.size();
+		double n = l.size();
 
 		long startTime = System.currentTimeMillis();
 		if(nThreads > 1) {
@@ -272,12 +273,14 @@ public abstract class FastMulticlassLSSVMConvexCuttingPlane1Slack<X,H> extends F
 		return s;
 	}
 
+	@Override
 	protected void showParameters() {
 		super.showParameters();
 		System.out.println("Learning: Convex Cutting-Plane 1 Slack - Mosek");
 		System.out.println("epsilon= " + epsilon + "\t\tcpmax= " + cpmax + "\tcpmin= " + cpmin);
 	}
 
+	@Override
 	public String toString() {
 		String s = "lssvm_convex_cuttingplane1slack_lambda_" + lambda + "_epsilon_" + epsilon 
 				+ "_cpmax_" + cpmax + "_cpmin_" + cpmin;

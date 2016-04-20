@@ -219,6 +219,7 @@ public class DoubleRankAPSSVMCuttingPlane1Slack extends SSVMCuttingPlane1Slack<R
 	/* (non-Javadoc)
 	 * @see fr.durandt.jstruct.ssvm.SSVM#psi(java.lang.Object, java.lang.Object)
 	 */
+	@Override
 	protected double[] psi(RankingInput x, RankingOutput y) {
 		double[] psi = new double[dim];
 
@@ -252,7 +253,7 @@ public class DoubleRankAPSSVMCuttingPlane1Slack extends SSVMCuttingPlane1Slack<R
 		}
 
 		// Divide by the number of relevant examples * number of irrelevant examples
-		double c = (double)(x.getNpos()*x.getNneg());
+		double c = x.getNpos()*x.getNneg();
 		for(int d=0; d<dim; d++) {
 			psi[d] /= c;
 		}

@@ -273,6 +273,7 @@ public abstract class FastMulticlassSSVM<X> implements StructuralClassifier<X, I
 		return lossAugmentedInference(ts, w);
 	}
 
+	@Override
 	public Integer prediction(X x) {
 		return prediction(x,w);
 	}

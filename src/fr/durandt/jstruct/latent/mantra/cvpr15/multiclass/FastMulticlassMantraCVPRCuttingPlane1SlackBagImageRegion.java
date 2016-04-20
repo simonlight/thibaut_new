@@ -198,7 +198,7 @@ public class FastMulticlassMantraCVPRCuttingPlane1SlackBagImageRegion extends Fa
 		double accuracy = 0;
 		int nb = 0;
 		for(STrainingSample<LatentRepresentation<BagImageRegion, Integer>,Integer> ts : l){
-			int ypredict = (int) prediction(ts.input);
+			int ypredict = prediction(ts.input);
 			if(ts.output == ypredict){	
 				nb++;
 			}
@@ -221,7 +221,7 @@ public class FastMulticlassMantraCVPRCuttingPlane1SlackBagImageRegion extends Fa
 			for(int i=0; i<l.size(); i++){
 				STrainingSample<LatentRepresentation<BagImageRegion, Integer>,Integer> ts = l.get(i);
 				bw.write(ts.input.x.getName() + "\t" + ts.output + "\t");
-				int ypredict = (int) prediction(ts.input);
+				int ypredict = prediction(ts.input);
 				Object[] res = valueOfHPlusMinus(ts.input.x, ypredict, w);
 				Integer hmax = (Integer) res[0];
 				double score = valueOf(l.get(i).input.x, ypredict, w);

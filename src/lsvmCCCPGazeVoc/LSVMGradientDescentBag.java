@@ -17,7 +17,6 @@ import fr.durandt.jstruct.latent.LatentRepresentation;
 import fr.durandt.jstruct.util.Pair;
 import fr.durandt.jstruct.util.AveragePrecision;
 import fr.lip6.jkernelmachines.classifier.Classifier;
-import fr.lip6.jkernelmachines.evaluation.Evaluation;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 
 public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer> {
@@ -148,7 +147,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		}
 		else {
 			System.err.println("error gazeType");
-			return (Double) null;
+			return null;
 		}
 	}
 	
@@ -178,7 +177,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		}
 		else {
 			System.err.println("error gazeType");
-			return (Double) null;
+			return null;
 		}
 	}
 	
@@ -222,6 +221,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		return lai;
 	}
 	
+	@Override
 	public HashMap<String , Integer> GroundTruthGazeRegion(List<TrainingSample<LatentRepresentation<BagImage, Integer>>> l) {
 		
 
@@ -253,6 +253,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		return lossMap;
 	}
 	
+	@Override
 	public double[] getGazePsi(TrainingSample<LatentRepresentation<BagImage, Integer>> ts){
 		double[] gazePsi= new double[dim];
 		double[] laiPsi= psi(ts.sample.x, (Integer)LAI(ts)[0]);
@@ -264,6 +265,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		return gazePsi;
 	}
 	
+	@Override
 	public double[] loss(TrainingSample<LatentRepresentation<BagImage, Integer>> ts) {
 		double v = valueOf(ts.sample.x, ts.sample.h);
 		Object[] lai = LAI(ts);
@@ -287,6 +289,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 
 	}
 	
+	@Override
 	public double getLoss(List<TrainingSample<LatentRepresentation<BagImage, Integer>>> l) {
 		double loss = 0;
 		double classfication_loss = 0;
@@ -312,6 +315,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 	}
 
 	
+	@Override
 	public double getLoss(List<TrainingSample<LatentRepresentation<BagImage, Integer>>> l, BufferedWriter trainingDetailFileOut) {
 		double loss = 0;
 		double classfication_loss = 0;

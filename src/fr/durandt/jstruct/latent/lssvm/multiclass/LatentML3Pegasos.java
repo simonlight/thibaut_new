@@ -23,6 +23,7 @@ public abstract class LatentML3Pegasos<X,H> extends LatentML3<X,H> {
 	 */
 	private static final long serialVersionUID = 3733838105784158135L;
 
+	@Override
 	protected void learn(List<STrainingSample<LatentRepresentation<X,H>,Integer>> l) {
 		int s0 = 2*l.size();
 		for(int iter=0; iter<maxCCCPIter; iter++) {
@@ -63,7 +64,7 @@ public abstract class LatentML3Pegasos<X,H> extends LatentML3<X,H> {
 
 			STrainingSample<LatentRepresentation<X,H>,Integer> ts = l.get(s);
 
-			eta = 1./(lambda*(double)(s+1+s0));
+			eta = 1./(lambda*(s+1+s0));
 
 			// Compute the optimal beta for yi
 			H hStaryi = prediction(ts.input.x, ts.output, wt);
@@ -144,6 +145,7 @@ public abstract class LatentML3Pegasos<X,H> extends LatentML3<X,H> {
 		}
 	}
 
+	@Override
 	public String toString() {
 		return "latent_ml3_pegasos_lambda_" + lambda + "_maxCCCPIter_" + maxCCCPIter + "_m_" + m + "_p_" + p;
 	}

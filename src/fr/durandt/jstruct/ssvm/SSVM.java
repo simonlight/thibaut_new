@@ -287,6 +287,7 @@ public abstract class SSVM<X,Y> implements StructuralClassifier<X, Y> {
 	/**
 	 * Compute the prediction for a given input x
 	 */
+	@Override
 	public Y prediction(X x) {
 		return prediction(x,w);
 	}

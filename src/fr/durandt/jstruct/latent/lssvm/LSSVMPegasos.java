@@ -38,6 +38,7 @@ public abstract class LSSVMPegasos<X,Y,H> extends LSSVM<X,Y,H> {
 	 * Train SSVM with Pegasos
 	 * @param l
 	 */
+	@Override
 	protected void learning(List<STrainingSample<LatentRepresentation<X,H>,Y>> l) {
 		int s0 = 2*l.size();
 		for(int iter=0; iter<maxCCCPIter; iter++) {
@@ -139,11 +140,13 @@ public abstract class LSSVMPegasos<X,Y,H> extends LSSVM<X,Y,H> {
 		}
 	}
 	
+	@Override
 	protected void showParameters() {
 		super.showParameters();
 		System.out.println("Learning: Pegasos - max CCCP iterations= " + maxCCCPIter);
 	}
 
+	@Override
 	public String toString() {
 		String s = "lssvm_pegasos_lambda_" + lambda + "_maxCCCPIter_" + maxCCCPIter;
 		return s;

@@ -80,6 +80,7 @@ public abstract class FastMulticlassLSSVMCuttingPlane1Slack<X,H> extends FastMul
 	 * Each iteration of the CCCP is solved with a cutting plane (1 slack formulation)
 	 * @param l list of training samples
 	 */
+	@Override
 	protected void learning(List<STrainingSample<LatentRepresentation<X,H>,Integer>> l) {
 		int el=0;
 		double decrement = 0;
@@ -209,7 +210,7 @@ public abstract class FastMulticlassLSSVMCuttingPlane1Slack<X,H> extends FastMul
 		// compute g(t) and c(t)
 		final double[][] gt = new double[w.length][dim];
 		double ct = 0;
-		double n = (double)l.size();
+		double n = l.size();
 
 		long startTime = System.currentTimeMillis();
 		if(nThreads > 1) {
@@ -304,12 +305,14 @@ public abstract class FastMulticlassLSSVMCuttingPlane1Slack<X,H> extends FastMul
 		return s;
 	}
 
+	@Override
 	protected void showParameters() {
 		super.showParameters();
 		System.out.println("Learning: Cutting-Plane 1 Slack - Mosek");
 		System.out.println("epsilon= " + epsilon + "\t\tcpmax= " + cpmax + "\tcpmin= " + cpmin);
 	}
 
+	@Override
 	public String toString() {
 		String s = "lssvm_cuttingplane1slack_lambda_" + lambda + "_epsilon_" + epsilon 
 				+ "_cpmax_" + cpmax + "_cpmin_" + cpmin;
