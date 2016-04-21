@@ -112,7 +112,7 @@ public abstract class LSVM<X,H> implements Classifier<LatentRepresentation<X, H>
 		accuracy(l);
 
 	}
-	public void train(List<TrainingSample<LatentRepresentation<X,H>>> l, List<TrainingSample<LatentRepresentation<X,H>>> testSet,BufferedWriter trainingDetailFileOut){
+	public void train(List<TrainingSample<LatentRepresentation<X,H>>> l, BufferedWriter trainingDetailFileOut){
 		
 		if(l.isEmpty())
 			return;
@@ -132,7 +132,6 @@ public abstract class LSVM<X,H> implements Classifier<LatentRepresentation<X, H>
 
 		// initialize latent variables and dim
 		init(l);
-		init(testSet);
 
 		// initialize w
 		w = new double[dim];

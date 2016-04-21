@@ -207,7 +207,7 @@ public class LSVM_console_stefan {
 							trainingDetailFile.getAbsoluteFile().getParentFile().mkdirs();
 							try {
 								BufferedWriter trainingDetailFileOut = new BufferedWriter(new FileWriter(trainingDetailFile));
-								classifier.train(exampleTrain, exampleVal, trainingDetailFileOut);
+								classifier.train(exampleTrain, trainingDetailFileOut);
 								trainingDetailFileOut.close();
 							}	
 							
