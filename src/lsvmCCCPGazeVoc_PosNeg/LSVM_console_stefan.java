@@ -200,7 +200,6 @@ public class LSVM_console_stefan {
 //								ts.input.h = lsvm.getGazeInitRegion(ts, scale, initializedType);
 //							}
 							
-
 							File trainingDetailFile = new File(trainingDetailFolder + "/" + className + "/"+ 
 									className + "_" + scale + "_"+epsilon+"_"+lambda + 
 									"_"+postradeoff+"_"+negtradeoff+"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+
@@ -208,7 +207,7 @@ public class LSVM_console_stefan {
 							trainingDetailFile.getAbsoluteFile().getParentFile().mkdirs();
 							try {
 								BufferedWriter trainingDetailFileOut = new BufferedWriter(new FileWriter(trainingDetailFile));
-								classifier.train(exampleTrain, trainingDetailFileOut);
+								classifier.train(exampleTrain, exampleTest, trainingDetailFileOut);
 								trainingDetailFileOut.close();
 							}	
 							
