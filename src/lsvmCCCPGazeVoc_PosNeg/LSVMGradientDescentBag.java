@@ -60,6 +60,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 //			ts.sample.h = groundTruthGazeMap.get(ts.sample.x.getName());
 		}
 	}
+	
 
 	@Override
 	protected Integer optimizeH(BagImage x) {

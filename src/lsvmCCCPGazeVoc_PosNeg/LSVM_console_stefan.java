@@ -251,6 +251,8 @@ public class LSVM_console_stefan {
 
 						double ap_train = classifier.testAPRegion(exampleTrain, trainMetricFile);
 	    				
+						classifier.init(exampleVal);
+						
 	    				classifier.optimizeLatent(exampleVal);
 						File valMetricFile=new File(metricFolder+"/metric_val_"+scale+"_"+postradeoff+"_"+negtradeoff+"_"+epsilon+"_"+lambda+"_"+className+"_"+i+".txt");
 						valMetricFile.getAbsoluteFile().getParentFile().mkdirs();
