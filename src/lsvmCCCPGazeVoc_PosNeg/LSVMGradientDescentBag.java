@@ -419,7 +419,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 				Integer yp = score > 0 ? 1 : -1;
 	        	Integer hp = l.get(i).sample.h;
 	        	Integer yi = l.get(i).label;
-				out.write(Double.valueOf(score) + ","+Integer.valueOf(yp) +","+Integer.valueOf(yi) +","+ Integer.valueOf(hp)+","+l.get(i).sample.x.getName()+"\n");
+				out.write(Double.valueOf(score) + ","+Integer.valueOf(yp) +","+Integer.valueOf(yi) +","+ Integer.valueOf(hp)+","+Integer.valueOf(groundTruthGazeMap.get(l.get(i).sample.x.getName()))+","+l.get(i).sample.x.getName()+"\n");
 				out.flush();
 	        	eval.add(new Pair<Integer,Double>((l.get(i).label), score)); //
 	        }

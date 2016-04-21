@@ -44,7 +44,7 @@ public class LSVM_console_stefan {
 //    int[] scaleCV = {50};
     
 //    double[] tradeoffCV = {0.0,  0.0001,0.0005, 0.001,0.005, 0.01,0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
-    double[] posTradeoffCV = {0, 0.001, 0.01, 0.1 ,0.2,0.5,1.0};
+    double[] posTradeoffCV = {0.1 ,0.2,0.5,1.0};
     double[] negTradeoffCV = {0, 0.001, 0.01, 0.1 ,0.2,0.5, 1.0};
     
 	String sourceDir = new String();
@@ -129,7 +129,9 @@ public class LSVM_console_stefan {
 						Collections.shuffle(apListIndex, seed);
 		    			
     					for (int i=0;i<foldNum; i++){
-
+    						if (i!=0){
+    							break;
+    						}
     						int fromIndex = listsize * i/foldNum;
     						int toIndex = listsize * (i+1)/foldNum;
     						List<Integer> trainList_1 = apListIndex.subList(0, fromIndex);
