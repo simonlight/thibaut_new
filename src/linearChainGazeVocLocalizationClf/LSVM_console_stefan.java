@@ -32,7 +32,7 @@ public class LSVM_console_stefan {
 	
 	String dataSource= "local";//local or other things
 	String gazeType = "stefan";
-	double[] lambdaCV = {1e-10};
+	double[] lambdaCV = {1e-4};
 	String taskName = "test_chain_glsvm_linear_jumping_50_1e-4/";
     double[] epsilonCV = {0};
     ArrayList<Double> clfCCV=new ArrayList<Double>();
@@ -40,13 +40,13 @@ public class LSVM_console_stefan {
     	clfCCV.add(cc);
     	cc*=10;
     }
-    boolean classify=true;
+    boolean classify=false;
     
 //	String[] classes = {args[0]};
 //	int[] scaleCV = {Integer.valueOf(args[1])};
 //	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
 //    String[] classes = {"ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
-    int[] scaleCV = {90};
+    int[] scaleCV = {50};
     String[] classes = {"jumping"};
     
 //    double[] tradeoffCV = {0.0, 0.0001,0.001,0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};

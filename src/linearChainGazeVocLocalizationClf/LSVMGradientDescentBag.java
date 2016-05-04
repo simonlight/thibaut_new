@@ -48,8 +48,8 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		setGroundTruthGazeMap(GroundTruthGazeRegion(l));
 
 		for(TrainingSample<LatentRepresentation<BagImage, Integer>> ts : l) {
-//			ts.sample.h = (int)(Math.random()*ts.sample.x.getInstances().size());
-			ts.sample.h = 0;
+			ts.sample.h = (int)(Math.random()*ts.sample.x.getInstances().size());
+//			ts.sample.h = 0;
 //			ts.sample.h = groundTruthGazeMap.get(ts.sample.x.getName());
 		}
 	}
@@ -339,6 +339,7 @@ public HashMap<String , Integer> GroundTruthGazeRegion(List<TrainingSample<Laten
 			if (ts.label == 1){
 				positive_gaze_loss_bound += example_loss[0];
 				positive_gaze_loss+=getPositiveGazeLoss(ts, ts.sample.h);
+				
 			}
 			if (ts.label == -1){
 				negative_gaze_loss_bound += example_loss[0];
@@ -350,7 +351,7 @@ public HashMap<String , Integer> GroundTruthGazeRegion(List<TrainingSample<Laten
 		System.out.format("classification loss:%f, positive_gaze_loss_bound: %f, negative_gaze_loss_bound: %f,"
 						+ " gaze_loss_bound:%f, positive_gaze_loss:%f, negative_gaze_loss:%f, gaze_loss:%f",
 						classfication_loss, positive_gaze_loss_bound, negative_gaze_loss_bound, 
-						gaze_loss_bound, positive_gaze_loss, negative_gaze_loss, positive_gaze_loss+negative_gaze_loss);
+						gaze_loss_bound, positive_gaze_loss, negative_gaze_loss, (positive_gaze_loss+negative_gaze_loss)/(nb[0]+nb[1]));
 		try {
 			trainingDetailFileOut.write("classification_loss:"+classfication_loss+
 										" positive_gaze_loss_bound:"+positive_gaze_loss_bound+

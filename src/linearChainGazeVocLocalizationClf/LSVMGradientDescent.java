@@ -94,7 +94,7 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 		double[] lastWl = new double[dim];
 		for (int innerloop=0;innerloop<20;innerloop++){
 //		do {
-			System.out.println(getPrimalObjective(l, trainingDetailFileOut));
+			System.out.println("regularised loss"+getPrimalObjective(l, trainingDetailFileOut));
 			iter +=1;
 			//oldPrimal_Objectif = newPrimal_Objectif;
 			if(verbose >= 1) {
