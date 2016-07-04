@@ -31,12 +31,12 @@ public class LSVM_console_ufood {
 	String taskName = "lsvm_cccpgaze_apple-pie/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
-//	String[] classes = {args[0]};
-//	int[] scaleCV = {Integer.valueOf(args[1])};
+	String[] classes = {args[0]};
+	int[] scaleCV = {Integer.valueOf(args[1])};
 //	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
 //    String[] classes={
 //			"apple-pie",};
-    String[] classes={
+//    String[] classes={
 //			"apple-pie",
 //			"bread-pudding",
 //			"beef-carpaccio",
@@ -49,7 +49,7 @@ public class LSVM_console_ufood {
 //			"croque-madame",
 //			"gnocchi",
 //			"shrimp-and-grits",
-			"grilled-salmon",
+//			"grilled-salmon",
 //			"pork-chop",
 //			"lasagna",
 //			"ravioli",
@@ -57,8 +57,8 @@ public class LSVM_console_ufood {
 //			"french-toast",
 //			"spaghetti-bolognese",
 //			"pad-thai"		
-			};
-    int[] scaleCV = {50};
+//			};
+//    int[] scaleCV = {50};
     
 //    double[] tradeoffCV = {0.0, 0.0001,0.001,0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
     double[] tradeoffCV = {0,0.2};
