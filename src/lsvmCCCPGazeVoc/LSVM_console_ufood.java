@@ -73,7 +73,7 @@ public class LSVM_console_ufood {
 	}
 	else if (dataSource=="big"){
 		sourceDir = "/home/wangxin/Data/UPMC_Food_Gaze_20/";
-		resDir = "/home/wang/results/upmc_food/";
+		resDir = "/home/wangxin/results/upmc_food/";
 	}
 
 	String initializedType = ".";//+0,+-,or other things
