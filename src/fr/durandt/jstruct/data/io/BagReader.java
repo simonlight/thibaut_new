@@ -571,10 +571,10 @@ public class BagReader {
 				for(int j=0; j<nbInstances; j++) {
 					// Read the file of the (j+1)-th instance
 					String fileInstance = st.nextToken();
-					if (dataSource == "local"){
-					fileInstance =fileInstance.replace("home", "local");}
-					fileInstance =fileInstance.replace("matconvnet_m_2048_features", "m_2048_trainval_features");
-					bag.addInstanceFile(fileInstance);
+					if (dataSource == "big"){
+						fileInstance =fileInstance.replace("local", "home");}
+//						fileInstance =fileInstance.replace("matconvnet_m_2048_features", "m_2048_trainval_features");
+						bag.addInstanceFile(fileInstance);
 					if(verbose>0) {
 						System.out.println(i + " - read instance " + j + "\t" + fileInstance);
 					}
