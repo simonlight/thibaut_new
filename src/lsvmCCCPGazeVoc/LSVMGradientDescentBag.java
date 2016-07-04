@@ -47,8 +47,8 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		dim = l.get(0).sample.x.getInstance(0).length;
 		setGroundTruthGazeMap(GroundTruthGazeRegion(l));
 		for(TrainingSample<LatentRepresentation<BagImage, Integer>> ts : l) {
-//			ts.sample.h = (int)(Math.random()*ts.sample.x.getInstances().size());
-			ts.sample.h = 0;
+			ts.sample.h = (int)(Math.random()*ts.sample.x.getInstances().size());
+//			ts.sample.h = 0;
 //			ts.sample.h = groundTruthGazeMap.get(ts.sample.x.getName());
 		}
 	}
@@ -129,7 +129,6 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		} 
 	}
 	
-	
 	protected double getPositiveGazeRatio(BagImage x, Integer h, String gazeType){
 		if (gazeType.equals("ferrari")){
 			String featurePath[] = x.getInstanceFile(h).split("/");
@@ -145,30 +144,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 
 			return gaze_ratio;
 		}
-		else {
-			System.err.println("error gazeType");
-			return null;
-		}
-	}
-	
-	protected double getNegativeGazeRatio(BagImage x, Integer h, String gazeType){
-		if (gazeType.equals("ferrari")){
-			
-			String featurePath[] = x.getInstanceFile(h).split("/");
-			String ETLossFileName = featurePath[featurePath.length - 1];
-			String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
-			double gaze_ratio=0;
-			for (String c: classes){
-				if (lossMap.containsKey(c+"_"+ETLossFileName)){
-					if (lossMap.get(c+"_"+ETLossFileName)>gaze_ratio){
-						gaze_ratio =lossMap.get(c+"_"+ETLossFileName);
-					} 
-					
-				}
-			}
-			return gaze_ratio;
-		}
-		else if (gazeType.equals("stefan")){
+		else if (gazeType.equals("ufood")){
 			String featurePath[] = x.getInstanceFile(h).split("/");
 			String ETLossFileName = featurePath[featurePath.length - 1];
 			double gaze_ratio = lossMap.get(ETLossFileName);
@@ -176,9 +152,13 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 			return gaze_ratio;
 		}
 		else {
-			System.err.println("error gazeType");
-			return null;
+			System.out.println("error gazeType:"+gazeType);
+			return (Double)null;
 		}
+	}
+	
+	protected double getNegativeGazeRatio(BagImage x, Integer h, String gazeType){
+		return 0;
 	}
 	
 	public double getPositiveGazeLoss(TrainingSample<LatentRepresentation<BagImage, Integer>> ts, Integer h){
@@ -187,9 +167,8 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 	}
 
 	public double getNegativeGazeLoss(TrainingSample<LatentRepresentation<BagImage, Integer>> ts, Integer h){
-		return 1 - getNegativeGazeRatio(ts.sample.x, h, gazeType)
-					/getNegativeGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType);
-	}
+		return 0;
+}
 
 	
 	public Object[] LAI(TrainingSample<LatentRepresentation<BagImage, Integer>> ts) {

@@ -36,7 +36,7 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 
 	protected int optim = 2	;
 	protected int verbose;
-
+	protected int batchNum=128;
 
 	protected int maxCCCPIter = 100;
 	protected double epsilon = 1e-4;
@@ -103,37 +103,40 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 		
 		/* Learning */
 		int patchNum = convertScale(scale);
+
+		//build data for feeding network
+		double[][][] input = new double[l.size()][patchNum][dim];
+		double[][] gazeLossVector = new double[l.size()][patchNum];
+		for(Integer imageID=0; imageID<l.size();imageID++){
+			for (Integer instanceID=0; instanceID<patchNum; instanceID++){
+				input[imageID][instanceID] = psi(l.get(imageID).sample.x, (H)instanceID);
+				if (l.get(imageID).label==1){
+					gazeLossVector[imageID][instanceID] = getPositiveGazeLoss(l.get(imageID), (H)instanceID);
+				}
+				else if(l.get(imageID).label==-1){
+					gazeLossVector[imageID][instanceID] = getNegativeGazeLoss(l.get(imageID), (H)instanceID);
+				}
+			}
+		}
+		
+		
 		for(int iteration_time = 0; iteration_time < 1000; iteration_time++){
-			
-			double totalerror=0;
+		
+			double empiricalError=0;
 			Collections.shuffle(l);
+			
 			for(int i = 0; i < l.size(); i++){
-				
-				
+				for(int i = 0; i < l.size(); i++){
+					for (Integer instanceID=0; instanceID<patchNum; instanceID++){
+						double[] gazeloss = new double[1];
+						gazeloss[0] = gazeLossVector[instanceID];
+	//					long startTime2 = System.currentTimeMillis();
+						net.train(input[instanceID], gazeloss);
+	//					long endTime2 = System.currentTimeMillis();
+	//					System.out.println("training one - Time learning= "+ (endTime2-startTime2)/1000 + "s");
 
-				double[][] input = new double[patchNum][dim];
-				double[] gazeLossVector = new double[patchNum];
-				for (Integer instanceID=0; instanceID<patchNum; instanceID++){
-					input[instanceID] = psi(l.get(i).sample.x, (H)instanceID);
-					if (l.get(i).label==1){
-						gazeLossVector[instanceID] = getPositiveGazeLoss(l.get(i), (H)instanceID);
 					}
-					else if(l.get(i).label==-1){
-						gazeLossVector[instanceID] = getNegativeGazeLoss(l.get(i), (H)instanceID);
-					}
-					
 				}
-			
-				for (Integer instanceID=0; instanceID<patchNum; instanceID++){
-					double[] gazeloss = new double[1];
-					gazeloss[0] = gazeLossVector[instanceID];
-//					long startTime2 = System.currentTimeMillis();
-					net.train(input[instanceID], gazeloss);
-//					long endTime2 = System.currentTimeMillis();
-//					System.out.println("training one - Time learning= "+ (endTime2-startTime2)/1000 + "s");
-
-				}
-			
 //				Integer gt_region = (Integer)getGroundGazeH(l.get(i));
 //				net.train(input, gt_region, gazeLossVector);
 			}
@@ -173,11 +176,11 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 //				System.out.println(gazeLossVector[gt_region]);
 //				System.out.println(gazeLossVector[minH]);
 //				System.out.println("-----------");
-				totalerror+=gazeLossVector[minH];						
+				empiricalError+=gazeLossVector[minH];						
 				long endTime1 = System.currentTimeMillis();	
 
 			}
-			System.out.println("iteration time:"+iteration_time+" total error is: "+totalerror);
+			System.out.println("iteration time:"+iteration_time+" total error is: "+empiricalError);
 		}
 	}
 	
