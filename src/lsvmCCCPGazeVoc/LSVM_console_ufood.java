@@ -28,7 +28,7 @@ public class LSVM_console_ufood {
 	
 	String dataSource= "big";//local or other things
 	String gazeType = "ufood";
-	String taskName = "lsvm_cccpgaze_ufood/";
+	String taskName = "lsvm_cccpgaze_ufood_908070/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
 	String[] classes = {args[0]};
