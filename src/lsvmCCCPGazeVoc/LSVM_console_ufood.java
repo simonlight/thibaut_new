@@ -96,8 +96,8 @@ public class LSVM_console_ufood {
     
 	int optim = 2;
 	int numWords = 2048;
-	boolean saveClassifier = true;
-    boolean loadClassifier = false;
+	boolean saveClassifier = false;
+    boolean loadClassifier = true;
     
 	System.out.println("experiment detail: "
 			+ "\nsourceDir:\t "+sourceDir
@@ -287,7 +287,7 @@ public class LSVM_console_ufood {
 	    				
 	    				try {
 							BufferedWriter out = new BufferedWriter(new FileWriter(resultFilePath, true));
-							out.write("category:"+className+" scale:"+scale+" tradeoff:"+tradeoff+" index:"+i+" ap_test:"+ap_test+" ap_train"+ap_train+"\n");
+							out.write("category:"+className+" scale:"+scale+" tradeoff:"+tradeoff+" index:"+i+" ap_test:"+ap_test+" ap_train:"+ap_train+"\n");
 							out.flush();
 							out.close();
 							
