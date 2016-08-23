@@ -30,7 +30,7 @@ import fr.lip6.jkernelmachines.type.TrainingSample;;
 public class LSVM_console_stefan {
 	public static void main(String[] args) {
 	
-	String dataSource= "local";//local or other things
+	String dataSource= "big";//local or other things
 	String gazeType = "stefan";
 	String taskName = "py_deep_gaze_split_glsvm/";
 	double[] lambdaCV = {1e-4};
