@@ -147,7 +147,7 @@ public class LSVM_console_stefan {
 //						}
 						
 						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleTrain = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
-						for(int j=0;j<listVal.size();j++) {
+						for(int j=0;j<listTrain.size();j++) {
 							exampleTrain.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTrain.get(j).sample.x,0), listTrain.get(j).label));
 						}
 						

@@ -28,14 +28,13 @@ public class LSVM_console_ufood {
 	
 	String dataSource= "big";//local or other things
 	String gazeType = "ufood";
-	String taskName = "lsvm_cccpgaze_ufood_908070/";
+	String taskName = "py_deep_gaze_split_glsvm/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
-	String[] classes = {args[0]};
-	int[] scaleCV = {Integer.valueOf(args[1])};
+//	String[] classes = {args[0]};
+//	int[] scaleCV = {Integer.valueOf(args[1])};
 //	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
-//    String[] classes={
-//			"apple-pie",};
+    String[] classes={"apple-pie"};
 //    String[] classes={
 //			"apple-pie",
 //			"bread-pudding",
@@ -58,10 +57,10 @@ public class LSVM_console_ufood {
 //			"spaghetti-bolognese",
 //			"pad-thai"		
 //			};
-//    int[] scaleCV = {90};
+    int[] scaleCV = {90};
     
 //    double[] tradeoffCV = {0.0, 0.0001,0.001,0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
-    double[] tradeoffCV = {0,0.1,0.2,0.5,1.0};
+    double[] tradeoffCV = {0,0.2};
     
 	String sourceDir = new String();
 	String resDir = new String();
@@ -123,10 +122,9 @@ public class LSVM_console_ufood {
 	
 	 for(String className: classes){
 	    for(int scale : scaleCV) {
-			String listTrainPath =  sourceDir+"example_files/"+scale+"/"+className+"_train_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
-//			String listTestPath =  sourceDir+"example_files/"+scale+"/"+className+"_val_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
-			String listValPath =  sourceDir+"example_files/"+scale+"/"+className+"_val_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
-			System.out.println(listValPath);
+	    	String listTrainPath =  sourceDir+"example_files_with_gaze_annotation/"+scale+"/"+className+"_train_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
+//			String listTrainPath =  sourceDir+"example_files/"+scale+"/"+className+"_train_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
+			String listValPath =  sourceDir+"example_files_with_gaze_annotation/"+scale+"/"+className+"_valtest_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
 	    	List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listTrain = BagReader.readBagImageLatent(listTrainPath, numWords, true, true, null, true, 0, dataSource);
 	    	List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listVal = BagReader.readBagImageLatent(listValPath, numWords, true, true, null, true, 0, dataSource);
 
