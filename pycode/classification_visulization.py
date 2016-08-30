@@ -567,6 +567,9 @@ def plot_3_methods(ap_res1, ap_res2, ap_res3, res_typ):
     plt.legend(loc='best',fancybox=True,framealpha=0.5)
     plt.show()
 
+def load_food_ap_files(ap_results):
+    f= open (ap_results)
+    collections.defaultdict()
 
 
 if __name__=='__main__':
@@ -581,19 +584,19 @@ if __name__=='__main__':
     ap_results = open("/local/wangxin/results/full_stefan_gaze/glsvm_pos_neg/lsvm_cccpgaze_posneg_cv_single_split_loss_divised_by_nb_of_examples_1-negloss_full_params_4/ap_summary.txt")
     ap_results = open("/local/wangxin/results/full_stefan_gaze/lsvm_et/lsvm_cccpgaze_positive_cv/ap_summary.txt")
     ap_results = open("/local/wangxin/results/full_stefan_gaze/glsvm_pos_neg/lsvm_cccpgaze_posneg_cv_single_split_loss_1-negloss_full_params/ap_summary.txt")
-    
+    ap_results = open("/local/wangxin/results/upmc_food/glsvm_food/ap_summary_ecarttype_seed1_detail.txt")
     td_folder = "/local/wangxin/results/full_stefan_gaze/lsvm_et/lsvm_cccpgaze_positive_cv/trainingdetail"
 # multi 
 
 #     ap_results = open("/local/wangxin/results/ferrari_gaze/std_et/lsvm_cccpgaze_positive_cv/ap_summary_ecarttype.txt")
 #     td_folder = "/local/wangxin/results/ferrari_gaze/std_et/lsvm_cccpgaze_positive_cv/trainingdetail"
 #     res_tradeoff, ap_baseline = res_tradeoff_file_2_dict_ecarttype(ap_results, td_folder)
-
-    ap_res = res_file_2_multi_c_dict(ap_results)
-    plot_1_methods_x_tradeoff_multi_c(ap_res, 'mAP')
-
+    
+#     ap_res = res_file_2_multi_c_dict(ap_results)
+#     plot_1_methods_x_tradeoff_multi_c(ap_res, 'mAP')
+    
 #     res_cv_every_category, res_baseline, res_tradeoff, loss, loss_baseline = res_tradeoff_file_2_dict(ap_results, td_folder)
-#     plot_1_methods_x_tradeoff(res_tradeoff, "mAP")
+    plot_1_methods_x_tradeoff(res_tradeoff, "mAP")
 
 
 #     ap_results = open("/local/wangxin/results/ferrari_gaze/std_et/lsvm_cccp/ap_summary.txt")
