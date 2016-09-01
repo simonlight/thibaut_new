@@ -28,7 +28,7 @@ public class LSVM_console_ufood {
 	
 	String dataSource= "big";//local or other things
 	String gazeType = "ufood";
-	String taskName = "glsvm_food_40/";
+	String taskName = "glsvm_food_traintrainlist_testtestlist/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
 	String[] classes = {args[0]};
@@ -56,10 +56,10 @@ public class LSVM_console_ufood {
 //			"spaghetti-bolognese",
 //			"pad-thai"		
 //			};
-//    int[] scaleCV = {70};
+//    int[] scaleCV = {50};
     
 //    double[] tradeoffCV = {0.0, 0.0001,0.001,0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
-    double[] tradeoffCV = {0.05};
+    double[] tradeoffCV = {0.0,0.1, 0.2 , 0.5,1.0};
     
 	String sourceDir = new String();
 	String resDir = new String();
@@ -123,7 +123,7 @@ public class LSVM_console_ufood {
 	    for(int scale : scaleCV) {
 	    	String listTrainPath =  sourceDir+"example_files/"+scale+"/"+className+"_train_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
 //			String listTrainPath =  sourceDir+"example_files/"+scale+"/"+className+"_train_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
-			String listValPath =  sourceDir+"example_files/"+scale+"/"+className+"_val_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
+			String listValPath =  sourceDir+"example_files/"+scale+"/"+className+"_test_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
 	    	List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listTrain = BagReader.readBagImageLatent(listTrainPath, numWords, true, true, null, true, 0, dataSource);
 	    	List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listVal = BagReader.readBagImageLatent(listValPath, numWords, true, true, null, true, 0, dataSource);
 
@@ -284,7 +284,7 @@ public class LSVM_console_ufood {
 	    				
 	    				try {
 							BufferedWriter out = new BufferedWriter(new FileWriter(resultFilePath, true));
-							out.write("category:"+className+" scale:"+scale+" tradeoff:"+tradeoff+" index:"+i+" ap_test:"+ap_test+" ap_train:"+ap_train+"\n");
+							out.write("category:"+className+" lambda:"+lambda+" scale:"+scale+" tradeoff:"+tradeoff+" index:"+i+" ap_test:"+ap_test+" ap_train:"+ap_train+"\n");
 							out.flush();
 							out.close();
 							
