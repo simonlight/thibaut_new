@@ -28,8 +28,8 @@ public class LSVM_console_ufood {
 	
 	String dataSource= "big";//local or other things
 	String gazeType = "ufood";
-	String taskName = "glsvm_food_traintrainlist_testtestlist/";
-	double[] lambdaCV = {1e-4};
+	String taskName = "glsvm_food_traintrainlist_testtestlist_70/";
+	double[] lambdaCV = {1e-3};
     double[] epsilonCV = {0};
 	String[] classes = {args[0]};
 	int[] scaleCV = {Integer.valueOf(args[1])};
@@ -56,10 +56,10 @@ public class LSVM_console_ufood {
 //			"spaghetti-bolognese",
 //			"pad-thai"		
 //			};
-//    int[] scaleCV = {50};
+//    int[] scaleCV = {100};
     
 //    double[] tradeoffCV = {0.0, 0.0001,0.001,0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
-    double[] tradeoffCV = {0.0,0.1, 0.2 , 0.5,1.0};
+    double[] tradeoffCV = {0.0,0.1,0.2,0.5,1.0};
     
 	String sourceDir = new String();
 	String resDir = new String();
