@@ -82,7 +82,7 @@ if __name__=="__main__":
     root = "/local/wangxin/results/full_stefan_gaze/lsvm_et/lsvm_cccpgaze_positive_cv_5fold_allscale_random_init_finaltest/metric/"
     
     root = "/local/wangxin/results/ferrari_gaze/std_et/lsvm_cccpgaze_positive_cv_5fold_allscale_random_init_finaltest/metric/"
-    root = "/local/wangxin/results/upmc_food/glsvm_food_traintrainlist_testtestlist/metric"
+    root = "/local/wangxin/results/upmc_food/glsvm_food_traintrainlist_testtestlist_70/full_metric"
     categories = ["jumping", "phoning", "playinginstrument", "reading", "ridingbike", "ridinghorse", "running", "takingphoto", "usingcomputer", "walking"]
     categories = ["dog", "cat", "motorbike", "boat", "aeroplane", "horse" ,"cow", "sofa", "diningtable", "bicycle"]
     
@@ -111,6 +111,7 @@ if __name__=="__main__":
     
 # lsvm_cccpgaze_positive_cv
     total_ap=[]
+    cible_tradeoff="0.1"
     for split in [0]:
         average_ap=0
         average_acc=0
@@ -124,11 +125,13 @@ if __name__=="__main__":
                     f = open(op.join(root, '_'.join(['metric','train',scale,'0.0','0.0_1.0E-4',category,str(split)+'.txt'])))
 #                     f = open(op.join(root, '_'.join(['metric','train',scale,'0.0_1.0E-4',category,str(split)+'.txt'])))
                     get_100x(f, feature_train, label_train)
-                       
+                elif scale=="70":
+                    for tradeoff in [cible_tradeoff]:
+                        f = open(op.join(root, '_'.join(['metric','train',scale,'0.0','0.0_0.001',category,str(split)+'.txt'])))
+                        get_x(f, feature_train, scale)     
                 else:  
-                    for tradeoff in ['0.0']:
+                    for tradeoff in [cible_tradeoff]:
                         f = open(op.join(root, '_'.join(['metric','train',scale,tradeoff, '0.0_1.0E-4',category,str(split)+'.txt'])))
-#                         f = open(op.join(root, '_'.join(['metric','train',scale, '0.0_1.0E-4',category,str(split)+'.txt'])))
                         get_x(f, feature_train,scale)
             from sklearn import svm
             clf = svm.SVC(C=0.001)
@@ -148,9 +151,13 @@ if __name__=="__main__":
                     f = open(op.join(root, '_'.join(['metric','val',scale,'0.0','0.0_1.0E-4',category,str(split)+'.txt'])))
 #                     f = open(op.join(root, '_'.join(['metric','val',scale,'0.0_1.0E-4',category,str(split)+'.txt'])))
                     get_100x(f, feature_test, label_test)
+                elif scale=="70":
+                    for tradeoff in [cible_tradeoff]:
+                        f = open(op.join(root, '_'.join(['metric','val',scale,'0.0','0.0_0.001',category,str(split)+'.txt'])))
+                        get_x(f, feature_train, scale)     
                        
                 else:  
-                    for tradeoff in ['0.0']:
+                    for tradeoff in [cible_tradeoff]:
                         f = open(op.join(root, '_'.join(['metric','val',scale, tradeoff,'0.0_1.0E-4',category,str(split)+'.txt'])))
 #                         f = open(op.join(root, '_'.join(['metric','val',scale,'0.0_1.0E-4',category,str(split)+'.txt'])))
                         get_x(f, feature_test,scale)
@@ -161,7 +168,7 @@ if __name__=="__main__":
             total_ap.append(getAP(g))
         average_ap =sum(total_ap)/20
         
-    print "ap: "+str(average_ap)
+    print "average ap: "+str(average_ap)
         
             
          

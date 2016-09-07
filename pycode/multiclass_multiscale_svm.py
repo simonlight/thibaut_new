@@ -82,7 +82,7 @@ if __name__=="__main__":
     root = "/local/wangxin/results/full_stefan_gaze/lsvm_et/lsvm_cccpgaze_positive_cv_5fold_allscale_random_init_finaltest/metric/"
     
     root = "/local/wangxin/results/ferrari_gaze/std_et/lsvm_cccpgaze_positive_cv_5fold_allscale_random_init_finaltest/metric/"
-    root = "/local/wangxin/results/upmc_food/glsvm_food_traintrainlist_testtestlist/metric"
+    root = "/local/wangxin/results/upmc_food/glsvm_food_traintrainlist_testtestlist_70/full_metric"
     categories = ["jumping", "phoning", "playinginstrument", "reading", "ridingbike", "ridinghorse", "running", "takingphoto", "usingcomputer", "walking"]
     categories = ["dog", "cat", "motorbike", "boat", "aeroplane", "horse" ,"cow", "sofa", "diningtable", "bicycle"]
     
@@ -113,6 +113,7 @@ if __name__=="__main__":
     feature_train = np.zeros([1600,8*20])
     label_train = np.zeros([1600, 20])               
     ap=[]
+    cible_tradeoff="0.0"
     for split in [0]:
         average_ap=0
         average_acc=0
@@ -123,9 +124,12 @@ if __name__=="__main__":
                     f = open(op.join(root, '_'.join(['metric','train',scale,'0.0','0.0_1.0E-4',category,str(split)+'.txt'])))
 #                     f = open(op.join(root, '_'.join(['metric','train',scale,'0.0_1.0E-4',category,str(split)+'.txt'])))
                     get_100x(f, feature_train, label_train,cat_cnt)
-                       
+                elif scale=="70":
+                    for tradeoff in [cible_tradeoff]:
+                        f = open(op.join(root, '_'.join(['metric','train',scale,'0.0','0.0_0.001',category,str(split)+'.txt'])))
+                        get_x(f, feature_train, scale,cat_cnt) 
                 else:  
-                    for tradeoff in ['0.0']:
+                    for tradeoff in [cible_tradeoff]:
 
 
                         f = open(op.join(root, '_'.join(['metric','train',scale,tradeoff, '0.0_1.0E-4',category,str(split)+'.txt'])))
@@ -137,29 +141,32 @@ if __name__=="__main__":
         label_train=np.argmax(label_train,axis=1)
         print label_train
         from sklearn import svm
-        clf = svm.SVC(C=0.1)
-        
-        clf.fit(feature_train, label_train) 
-        print accuracy_score(clf.predict(feature_train),label_train)
-
-        feature_test = np.zeros([200,8*20])
-        
-        label_test = np.zeros([200,20])               
-        for cat_cnt,category in enumerate(categories):
-            for scale in ['100','30','40','50','60','70','80','90']:
-                if scale == '100':
-                    f = open(op.join(root, '_'.join(['metric','val',scale,'0.0','0.0_1.0E-4',category,str(split)+'.txt'])))
-                    get_100x(f, feature_test, label_test,cat_cnt)
-                            
-                else:  
-                    for tradeoff in ['0.0']:
-                        f = open(op.join(root, '_'.join(['metric','val',scale, tradeoff,'0.0_1.0E-4',category,str(split)+'.txt'])))
-                        get_x(f, feature_test,scale,cat_cnt)
-                
-        label_test=np.argmax(label_test,axis=1)
-        print label_test
-        print accuracy_score(clf.predict(feature_test),label_test)
-                
+        for c in [0.001,0.1,0.1,1]:
+            clf = svm.SVC(C=c)
+            
+            clf.fit(feature_train, label_train) 
+            print accuracy_score(clf.predict(feature_train),label_train)
+    
+            feature_test = np.zeros([200,8*20])
+            
+            label_test = np.zeros([200,20])               
+            for cat_cnt,category in enumerate(categories):
+                for scale in ['100','30','40','50','60','70','80','90']:
+                    if scale == '100':
+                        f = open(op.join(root, '_'.join(['metric','val',scale,'0.0','0.0_1.0E-4',category,str(split)+'.txt'])))
+                        get_100x(f, feature_test, label_test,cat_cnt)
+                    elif scale=="70":
+                        for tradeoff in [cible_tradeoff]:
+                            f = open(op.join(root, '_'.join(['metric','val',scale,'0.0','0.0_0.001',category,str(split)+'.txt'])))
+                            get_x(f, feature_train, scale,cat_cnt)            
+                    else:  
+                        for tradeoff in [cible_tradeoff]:
+                            f = open(op.join(root, '_'.join(['metric','val',scale, tradeoff,'0.0_1.0E-4',category,str(split)+'.txt'])))
+                            get_x(f, feature_test,scale,cat_cnt)
+                    
+            label_test=np.argmax(label_test,axis=1)
+            print accuracy_score(clf.predict(feature_test),label_test)
+                    
          
              
         

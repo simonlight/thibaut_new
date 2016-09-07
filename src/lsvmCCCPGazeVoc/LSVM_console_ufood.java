@@ -28,7 +28,7 @@ public class LSVM_console_ufood {
 	
 	String dataSource= "big";//local or other things
 	String gazeType = "ufood";
-	String taskName = "glsvm_food_traintrainlist_testtestlist_70/";
+	String taskName = "glsvm_food_traintrainlist_testtestlist_80/";
 	double[] lambdaCV = {1e-3};
     double[] epsilonCV = {0};
 	String[] classes = {args[0]};
