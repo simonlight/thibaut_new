@@ -28,8 +28,8 @@ public class LSVM_console_ufood {
 	
 	String dataSource= "big";//local or other things
 	String gazeType = "ufood";
-	String taskName = "glsvm_food_traintrainlist_testtestlist_80/";
-	double[] lambdaCV = {1e-3};
+	String taskName = "glsvm_food_traintrainlist_testtestlist_5split_test/";
+	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
 	String[] classes = {args[0]};
 	int[] scaleCV = {Integer.valueOf(args[1])};
@@ -58,7 +58,7 @@ public class LSVM_console_ufood {
 //			};
 //    int[] scaleCV = {100};
     
-//    double[] tradeoffCV = {0.0, 0.0001,0.001,0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+//    double[] tradeoffCV = {0.0};
     double[] tradeoffCV = {0.0,0.1,0.2,0.5,1.0};
     
 	String sourceDir = new String();
@@ -121,58 +121,58 @@ public class LSVM_console_ufood {
 	
 	 for(String className: classes){
 	    for(int scale : scaleCV) {
-	    	String listTrainPath =  sourceDir+"example_files/"+scale+"/"+className+"_train_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
+	    	String listTrainPath =  sourceDir+"example_files/"+scale+"/"+className+"_full_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
 //			String listTrainPath =  sourceDir+"example_files/"+scale+"/"+className+"_train_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
-			String listValPath =  sourceDir+"example_files/"+scale+"/"+className+"_test_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
+//			String listValPath =  sourceDir+"example_files/"+scale+"/"+className+"_test_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
 	    	List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listTrain = BagReader.readBagImageLatent(listTrainPath, numWords, true, true, null, true, 0, dataSource);
-	    	List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listVal = BagReader.readBagImageLatent(listValPath, numWords, true, true, null, true, 0, dataSource);
+//	    	List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listVal = BagReader.readBagImageLatent(listValPath, numWords, true, true, null, true, 0, dataSource);
 
 	    	for(double epsilon : epsilonCV) {
 		    	for(double lambda : lambdaCV) {
 		    		for(double tradeoff : tradeoffCV) {
-//		    			int listsize = listTrain.size();
-//
-//		    			List<Integer> apListIndex = new ArrayList<Integer>();
-//		    			for (int m=0;m<listTrain.size();m++){
-//		    				apListIndex.add(m);
-//		    			}
-//		    			Random seed = new Random(1);
-//						Collections.shuffle(apListIndex, seed);
+		    			int listsize = listTrain.size();
+
+		    			List<Integer> apListIndex = new ArrayList<Integer>();
+		    			for (int m=0;m<listTrain.size();m++){
+		    				apListIndex.add(m);
+		    			}
+		    			Random seed = new Random(1);
+						Collections.shuffle(apListIndex, seed);
 //		    			
     					for (int i=0;i<foldNum; i++){
-    	    				if (i==1){
-    	    					break;
-    	    				}
-//    						int fromIndex = listsize * i/foldNum;
-//    						int toIndex = listsize * (i+1)/foldNum;
-//    						List<Integer> trainList_1 = apListIndex.subList(0, fromIndex);
-//    						List<Integer> trainList_2 = apListIndex.subList(toIndex, listsize);
-//    						List<Integer> leftOutList = apListIndex.subList(fromIndex, toIndex);
-//    						
-//    						List<Integer> trainList = new ArrayList<Integer>();
-//    						trainList.addAll(trainList_1);
-//    						trainList.addAll(trainList_2);
+//    	    				if (i==1){
+//    	    					break;
+//    	    				}
+    						int fromIndex = listsize * i/foldNum;
+    						int toIndex = listsize * (i+1)/foldNum;
+    						List<Integer> trainList_1 = apListIndex.subList(0, fromIndex);
+    						List<Integer> trainList_2 = apListIndex.subList(toIndex, listsize);
+    						List<Integer> leftOutList = apListIndex.subList(fromIndex, toIndex);
+    						
+    						List<Integer> trainList = new ArrayList<Integer>();
+    						trainList.addAll(trainList_1);
+    						trainList.addAll(trainList_2);
 		    			
 		    			
-//						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleTrain = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
-//						for(int j:listTrain) {
-//							exampleTrain.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTrain.get(j).sample.x,0), listTrain.get(j).label));
-//						}
-						
 						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleTrain = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
-						for(int j=0;j<listTrain.size();j++) {
+						for(int j:trainList) {
 							exampleTrain.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTrain.get(j).sample.x,0), listTrain.get(j).label));
 						}
 						
-//						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleVal = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
-//						for(int j:leftOutList) {
-//							exampleVal.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTrain.get(j).sample.x,0), listTrain.get(j).label));
+//						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleTrain = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
+//						for(int j=0;j<listTrain.size();j++) {
+//							exampleTrain.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTrain.get(j).sample.x,0), listTrain.get(j).label));
 //						}
-//						
+						
 						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleVal = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
-						for(int j=0;j<listVal.size();j++) {
-							exampleVal.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listVal.get(j).sample.x,0), listVal.get(j).label));
+						for(int j:leftOutList) {
+							exampleVal.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTrain.get(j).sample.x,0), listTrain.get(j).label));
 						}
+//						
+//						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleVal = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
+//						for(int j=0;j<listVal.size();j++) {
+//							exampleVal.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listVal.get(j).sample.x,0), listVal.get(j).label));
+//						}
 
 						LSVMGradientDescentBag classifier = new LSVMGradientDescentBag(); 
 					
