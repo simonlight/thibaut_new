@@ -149,6 +149,12 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 			String featurePath[] = x.getInstanceFile(h).split("/");
 			String ETLossFileName = featurePath[featurePath.length - 1];
 			double gaze_ratio = lossMap.get(ETLossFileName);
+			return gaze_ratio;
+		}
+		else if (gazeType.equals("ufood")){
+			String featurePath[] = x.getInstanceFile(h).split("/");
+			String ETLossFileName = featurePath[featurePath.length - 1];
+			double gaze_ratio = lossMap.get(ETLossFileName);
 
 			return gaze_ratio;
 		}
@@ -175,6 +181,13 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 			return gaze_ratio;
 		}
 		else if (gazeType.equals("stefan")){
+			String featurePath[] = x.getInstanceFile(h).split("/");
+			String ETLossFileName = featurePath[featurePath.length - 1];
+			double gaze_ratio = lossMap.get(ETLossFileName);
+
+			return gaze_ratio;
+		}
+		else if (gazeType.equals("ufood")){
 			String featurePath[] = x.getInstanceFile(h).split("/");
 			String ETLossFileName = featurePath[featurePath.length - 1];
 			double gaze_ratio = lossMap.get(ETLossFileName);
