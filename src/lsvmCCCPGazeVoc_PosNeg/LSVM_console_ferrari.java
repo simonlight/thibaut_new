@@ -14,7 +14,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import fr.durandt.jstruct.data.io.BagReader;
 import fr.durandt.jstruct.latent.LatentRepresentation;
@@ -34,8 +36,8 @@ public class LSVM_console_ferrari {
 	
 	String dataSource= "big";//local or other things
 	String gazeType = "ferrari";
-	String taskName = "lsvm_cccpgaze_posneg_cv_single_split_loss_divised_by_nb_of_examples_1-negloss_full_params/";
-	double[] lambdaCV = {1e-5, 1e-4,1e-3};
+	String taskName = "npglsvm_ferrari_traintrainlist_testtestlist_5split/";
+	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
     String[] classes = {args[0]};
 	int[] scaleCV = {Integer.valueOf(args[1])};
@@ -45,8 +47,8 @@ public class LSVM_console_ferrari {
 //	int[] scaleCV = {50};
 //	String[] classes = {"bicycle"};
 //    double[] tradeoffCV = {0, 0.5, 1};
-    double[] tradeoffCV = {0.0,  0.0001,0.001,0.01,0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
-//    double[] negativeTradeoffCV = {0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+    double[] posTradeoffCV = {0, 0.1, 0.2, 0.5, 1.0};
+    double[] negTradeoffCV = {0, 0.001, 0.01, 0.1 ,0.2,0.5, 1.0};
 
     String sourceDir = new String();
 	String resDir = new String();
@@ -71,8 +73,8 @@ public class LSVM_console_ferrari {
 	String scoreFolder = resultFolder + "score/";
 	String trainingDetailFolder = resultFolder + "trainingdetail/";
 	
-	int maxCCCPIter = 100;
-	int minCCCPIter = 1;
+	int maxCCCPIter = 1000;
+	int minCCCPIter = 5;
 
 	int maxSGDEpochs = 100;
 	
@@ -95,7 +97,8 @@ public class LSVM_console_ferrari {
 			+ "\nlambda CV:\t" + Arrays.toString(lambdaCV)
 			+ "\nepsilon CV:\t" + Arrays.toString(epsilonCV)
 			+ "\noptim:\t"+optim
-			+ "\ntradeoff:\t"+Arrays.toString(tradeoffCV)
+			+ "\npostradeoff CV:\t"+Arrays.toString(posTradeoffCV)
+			+ "\nnegtradeoff CV:\t"+Arrays.toString(negTradeoffCV)
 			+ "\nmaxCCCPIter:\t"+maxCCCPIter
 			+ "\nminCCCPIter:\t"+minCCCPIter
 			+ "\nmaxSGDEpochs:\t"+maxSGDEpochs
@@ -103,151 +106,178 @@ public class LSVM_console_ferrari {
 			+ "\nsaveClassifier:\t"+Boolean.toString(saveClassifier)
 		    + "\nloadClassifier:\t"+Boolean.toString(loadClassifier)
 		    );
-	
+		int foldNum=5;
+
 	 for(String className: classes){
 	    for(int scale : scaleCV) {
-			String listTrainPath =  sourceDir+"example_files/"+scale+"/"+className+"_train_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
-			String listValPath =  sourceDir+"example_files/"+scale+"/"+className+"_valtest_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
+			String listTrainPath =  sourceDir+"example_files/"+scale+"/"+className+"_trainval_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
+//			String listValPath =  sourceDir+"example_files/"+scale+"/"+className+"_valtest_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
 
 	    	List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listTrain = BagReader.readBagImageLatent(listTrainPath, numWords, true, true, null, true, 0, dataSource);
-	    	List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listVal = BagReader.readBagImageLatent(listValPath, numWords, true, true, null, true, 0, dataSource);
+//	    	List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listVal = BagReader.readBagImageLatent(listValPath, numWords, true, true, null, true, 0, dataSource);
 
 	    	for(double epsilon : epsilonCV) {
 		    	for(double lambda : lambdaCV) {
-		    		for(double tradeoff : tradeoffCV) {
-						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleTrain = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
-						for(int i=0; i<listTrain.size(); i++) {
-							exampleTrain.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTrain.get(i).sample.x,0), listTrain.get(i).label));
-						}
-						
-						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleVal = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
-						for(int i=0; i<listVal.size(); i++) {
-							exampleVal.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listVal.get(i).sample.x,0), listVal.get(i).label));
-						}
+		    		for(double postradeoff : posTradeoffCV) {
+		    			for(double negtradeoff : negTradeoffCV) {
+		    				int listsize = listTrain.size();
 
-						LSVMGradientDescentBag classifier = new LSVMGradientDescentBag(); 
-					
-						File fileClassifier = new File(classifierFolder + "/" + className + "/"+ 
-								className + "_" + scale + "_"+epsilon+"_"+lambda + 
-								"_"+tradeoff+"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+
-								"_"+optim+"_"+numWords+".lsvm");
-						fileClassifier.getAbsoluteFile().getParentFile().mkdirs();
-						
-						if (loadClassifier && fileClassifier.exists()){
-							ObjectInputStream ois;
-							System.out.println("\nread classifier " + fileClassifier.getAbsolutePath());
-							try {
-								ois = new ObjectInputStream(new FileInputStream(fileClassifier.getAbsolutePath()));
-								classifier = (LSVMGradientDescentBag) ois.readObject();
-							} catch (FileNotFoundException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							} catch (ClassNotFoundException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+			    			List<Integer> apListIndex = new ArrayList<Integer>();
+			    			for (int m=0;m<listTrain.size();m++){
+			    				apListIndex.add(m);
+			    			}
+			    			Random seed = new Random(1);
+							Collections.shuffle(apListIndex, seed);
+			    			
+	    					for (int i=0;i<foldNum; i++){
+//	    						if (i!=0){
+//	    							break;
+//	    						}
+	    						int fromIndex = listsize * i/foldNum;
+	    						int toIndex = listsize * (i+1)/foldNum;
+	    						List<Integer> trainList_1 = apListIndex.subList(0, fromIndex);
+	    						List<Integer> trainList_2 = apListIndex.subList(toIndex, listsize);
+	    						List<Integer> leftOutList = apListIndex.subList(fromIndex, toIndex);
+	    						
+	    						List<Integer> trainList = new ArrayList<Integer>();
+	    						trainList.addAll(trainList_1);
+	    						trainList.addAll(trainList_2);
+			    			
+			    			
+							List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleTrain = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
+							for(int j:trainList) {
+								exampleTrain.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTrain.get(j).sample.x,0), listTrain.get(j).label));
 							}
-						}
-						
-						else {
-							System.out.println("\ntraining classifier " + fileClassifier.getAbsolutePath());
-							classifier.setOptim(optim);
-							classifier.setMaxCCCPIter(maxCCCPIter);
-							classifier.setMinCCCPIter(minCCCPIter);
-							classifier.setEpsilon(epsilon);
-							classifier.setLambda(lambda);
-							classifier.setStochastic(stochastic);
-							classifier.setVerbose(0);
-							classifier.setTradeOff(tradeoff);
-							classifier.setMaxEpochs(maxSGDEpochs);
-							classifier.setGazeType(gazeType);								
-							classifier.setLossDict(sourceDir+"ETLoss_dict/"+"ETLOSS+_"+scale+".loss");
-							classifier.setHnorm(hnorm);
-							classifier.setCurrentClass(className);
-							//Initialize the region by fixations
-//							for(STrainingSample<LatentRepresentation<BagMIL, Integer>,Integer> ts : exampleTrain){
-//								ts.input.h = lsvm.getGazeInitRegion(ts, scale, initializedType);
-//							}
 							
+							List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleVal = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
+							for(int j:leftOutList) {
+								exampleVal.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTrain.get(j).sample.x,0), listTrain.get(j).label));
+							}
 
-							File trainingDetailFile = new File(trainingDetailFolder + "/" + className + "/"+ 
+							LSVMGradientDescentBag classifier = new LSVMGradientDescentBag(); 
+						
+							File fileClassifier = new File(classifierFolder + "/" + className + "/"+ 
 									className + "_" + scale + "_"+epsilon+"_"+lambda + 
-									"_"+tradeoff+"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+
-									"_"+optim+"_"+numWords+".traindetail");
-							trainingDetailFile.getAbsoluteFile().getParentFile().mkdirs();
-							try {
-								BufferedWriter trainingDetailFileOut = new BufferedWriter(new FileWriter(trainingDetailFile));
-								classifier.train(exampleTrain, trainingDetailFileOut);
-								trainingDetailFileOut.close();
-							}	
+									"_"+postradeoff+"_"+negtradeoff+"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+
+									"_"+optim+"_"+numWords+".lsvm");
+							fileClassifier.getAbsoluteFile().getParentFile().mkdirs();
 							
-						 catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						
-						}
-						
-													
-	    				if (saveClassifier){
-		    				// save classifier
-							
-		    				ObjectOutputStream oos = null;
-							try {
-								oos = new ObjectOutputStream(new FileOutputStream(fileClassifier.getAbsolutePath()));
-								oos.writeObject(classifier);
-							} 
-							catch (FileNotFoundException e) {
-								e.printStackTrace();
-							} 
-							catch (IOException e) {
-								e.printStackTrace();
-							}
-							finally {
+							if (loadClassifier && fileClassifier.exists()){
+								ObjectInputStream ois;
+								System.out.println("\nread classifier " + fileClassifier.getAbsolutePath());
 								try {
-									if(oos != null) {
-										oos.flush();
-										oos.close();
-									}
+									ois = new ObjectInputStream(new FileInputStream(fileClassifier.getAbsolutePath()));
+									classifier = (LSVMGradientDescentBag) ois.readObject();
+								} catch (FileNotFoundException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
 								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								} catch (ClassNotFoundException e) {
+									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
 							}
-							System.out.println("wrote classifier successfully!");
-						}
-
-	    				classifier.optimizeLatent(exampleTrain);
-						File trainMetricFile=new File(metricFolder+"/metric_train_"+scale+"_"+tradeoff+"_"+epsilon+"_"+lambda+"_"+className+".txt");
-						trainMetricFile.getAbsoluteFile().getParentFile().mkdirs();
-
-						double ap_test = classifier.testAPRegion(exampleTrain, trainMetricFile);
-	    				
-	    				classifier.optimizeLatent(exampleVal);
-						File valMetricFile=new File(metricFolder+"/metric_val_"+scale+"_"+tradeoff+"_"+epsilon+"_"+lambda+"_"+className+".txt");
-						valMetricFile.getAbsoluteFile().getParentFile().mkdirs();
-
-						ap_test = classifier.testAPRegion(exampleVal, valMetricFile);
-//						double ap_test = classifier.testAP(exampleVal);
-	    				
-	    				try {
-							BufferedWriter out = new BufferedWriter(new FileWriter(resultFilePath, true));
-							out.write("category:"+className+" scale:"+scale+" tradeoff:"+tradeoff+" index:0"+" ap_test:"+ap_test+"\n");
-							out.flush();
-							out.close();
 							
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-				
-		//System.out.println(Arrays.toString())
+							else {
+								System.out.println("\ntraining classifier " + fileClassifier.getAbsolutePath());
+								classifier.setOptim(optim);
+								classifier.setMaxCCCPIter(maxCCCPIter);
+								classifier.setMinCCCPIter(minCCCPIter);
+								classifier.setEpsilon(epsilon);
+								classifier.setLambda(lambda);
+								classifier.setStochastic(stochastic);
+								classifier.setVerbose(0);
+								classifier.setPosTradeOff(postradeoff);
+								classifier.setNegTradeOff(negtradeoff);
+								classifier.setMaxEpochs(maxSGDEpochs);
+								classifier.setGazeType(gazeType);								
+								classifier.setLossDict(sourceDir+"ETLoss_dict/"+"ETLOSS+_"+scale+".loss");
+								classifier.setHnorm(hnorm);
+								classifier.setCurrentClass(className);
+								//Initialize the region by fixations
+//								for(STrainingSample<LatentRepresentation<BagMIL, Integer>,Integer> ts : exampleTrain){
+//									ts.input.h = lsvm.getGazeInitRegion(ts, scale, initializedType);
+//								}
+								
+								File trainingDetailFile = new File(trainingDetailFolder + "/" + className + "/"+ 
+										className + "_" + scale + "_"+epsilon+"_"+lambda + 
+										"_"+postradeoff+"_"+negtradeoff+"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+
+										"_"+optim+"_"+numWords+".traindetail");
+								trainingDetailFile.getAbsoluteFile().getParentFile().mkdirs();
+								try {
+									BufferedWriter trainingDetailFileOut = new BufferedWriter(new FileWriter(trainingDetailFile));
+									classifier.train(exampleTrain, trainingDetailFileOut);
+									trainingDetailFileOut.close();
+								}	
+								
+							 catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							
+							}
+														
+		    				if (saveClassifier){
+			    				// save classifier
+								
+			    				ObjectOutputStream oos = null;
+								try {
+									oos = new ObjectOutputStream(new FileOutputStream(fileClassifier.getAbsolutePath()));
+									oos.writeObject(classifier);
+								} 
+								catch (FileNotFoundException e) {
+									e.printStackTrace();
+								} 
+								catch (IOException e) {
+									e.printStackTrace();
+								}
+								finally {
+									try {
+										if(oos != null) {
+											oos.flush();
+											oos.close();
+										}
+									} catch (IOException e) {
+										e.printStackTrace();
+									}
+								}
+								System.out.println("wrote classifier successfully!");
+							}
 
-//		for(STrainingSample<LatentRepresentation<BagImage, Integer>,Integer> ex : exampleTrain) {
-//			Object[] res = classifier.predictionOutputLatent(ex.input.x);
-//			Integer h = (Integer)res[1];
-//			System.out.println(h);
-//		}
-	}}}}}}
+		    				classifier.optimizeLatent(exampleTrain);
+							File trainMetricFile=new File(metricFolder+"/metric_train_"+scale+"_"+postradeoff+"_"+negtradeoff+"_"+epsilon+"_"+lambda+"_"+className+"_"+i+".txt");
+							trainMetricFile.getAbsoluteFile().getParentFile().mkdirs();
 
-}
+							double ap_train = classifier.testAPRegion(exampleTrain, trainMetricFile);
+		    				
+							classifier.init(exampleVal);
+							
+		    				classifier.optimizeLatent(exampleVal);
+							File valMetricFile=new File(metricFolder+"/metric_val_"+scale+"_"+postradeoff+"_"+negtradeoff+"_"+epsilon+"_"+lambda+"_"+className+"_"+i+".txt");
+							valMetricFile.getAbsoluteFile().getParentFile().mkdirs();
+							 	             
+							double ap_test = classifier.testAPRegion(exampleVal, valMetricFile);
+//							double ap_test = classifier.testAP(exampleVal);
+		    				
+		    				try {
+								BufferedWriter out = new BufferedWriter(new FileWriter(resultFilePath, true));
+								out.write("category:"+className+" scale:"+scale+" tradeoff:"+postradeoff+"_"+negtradeoff+" index:"+i+" ap_test:"+ap_test+" ap_train:"+ap_train+"\n");
+								out.flush();
+								out.close();
+								
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+					
+			//System.out.println(Arrays.toString())
+
+//			for(STrainingSample<LatentRepresentation<BagImage, Integer>,Integer> ex : exampleTrain) {
+//				Object[] res = classifier.predictionOutputLatent(ex.input.x);
+//				Integer h = (Integer)res[1];
+//				System.out.println(h);
+//			}
+		}}}}}}}}
+
+	}
