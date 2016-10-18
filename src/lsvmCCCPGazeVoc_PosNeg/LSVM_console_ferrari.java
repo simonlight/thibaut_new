@@ -263,7 +263,7 @@ public class LSVM_console_ferrari {
 		    				
 		    				try {
 								BufferedWriter out = new BufferedWriter(new FileWriter(resultFilePath, true));
-								out.write("category:"+className+" scale:"+scale+" tradeoff:"+postradeoff+"_"+negtradeoff+" index:"+i+" ap_test:"+ap_test+" ap_train:"+ap_train+"\n");
+								out.write("category:"+className+" lambda:"+lambda+" scale:"+scale+" ptradeoff:"+postradeoff+" ntradeoff:"+negtradeoff+" index:"+i+" ap_test:"+ap_test+" ap_train:"+ap_train+"\n");
 								out.flush();
 								out.close();
 								
