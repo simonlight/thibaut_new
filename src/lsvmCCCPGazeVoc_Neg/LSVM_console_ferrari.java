@@ -41,7 +41,7 @@ public class LSVM_console_ferrari {
 //	int[] scaleCV = {50};
 //	String[] classes = {"bicycle"};
 //    double[] tradeoffCV = {0, 0.5, 1};
-    double[] tradeoffCV = {0.0, 0.0001,0.001,0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+    double[] tradeoffCV = {0.0, 0.1, 0.2, 0.5, 1.0};
 	
     String sourceDir = new String();
 	String resDir = new String();
