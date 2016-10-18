@@ -36,7 +36,7 @@ public class LSVM_console_ferrari {
 	
 	String dataSource= "big";//local or other things
 	String gazeType = "ferrari";
-	String taskName = "npglsvm_ferrari_traintrainlist_testtestlist_5split/";
+	String taskName = "npglsvm_ferrari_traintrainlist_testtestlist_5split_weighted_gaze/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
     String[] classes = {args[0]};
@@ -44,11 +44,11 @@ public class LSVM_console_ferrari {
 //	String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
 //	String[] classes = {"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
 //	int[] scaleCV = {90,80,70,60,50,40,30};
-//	int[] scaleCV = {50};
+//	int[] scaleCV = {90};
 //	String[] classes = {"bicycle"};
 //    double[] tradeoffCV = {0, 0.5, 1};
     double[] posTradeoffCV = {0, 0.1, 0.2, 0.5, 1.0};
-    double[] negTradeoffCV = {0, 0.001, 0.01, 0.1 ,0.2,0.5, 1.0};
+    double[] negTradeoffCV = {0, 0.001, 0.01, 0.1 ,0.5, 1.0};
 
     String sourceDir = new String();
 	String resDir = new String();
@@ -193,7 +193,7 @@ public class LSVM_console_ferrari {
 								classifier.setNegTradeOff(negtradeoff);
 								classifier.setMaxEpochs(maxSGDEpochs);
 								classifier.setGazeType(gazeType);								
-								classifier.setLossDict(sourceDir+"ETLoss_dict/"+"ETLOSS+_"+scale+".loss");
+								classifier.setLossDict(sourceDir+"gaze_ratio_weighted_jmap/"+"ETNB+_"+scale+".map");
 								classifier.setHnorm(hnorm);
 								classifier.setCurrentClass(className);
 								//Initialize the region by fixations
