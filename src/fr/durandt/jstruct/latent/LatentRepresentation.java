@@ -1,5 +1,6 @@
 package fr.durandt.jstruct.latent;
 
+
 public class LatentRepresentation<X,H> {
 
 	public X x;

@@ -26,14 +26,14 @@ import fr.lip6.jkernelmachines.type.TrainingSample;;
 public class LSVM_console_ufood {
 	public static void main(String[] args) {
 	
-	String dataSource= "big";//local or other things
+	String dataSource= "local";//local or other things
 	String gazeType = "ufood";
-	String taskName = "glsvm_food_traintrainlist_testtestlist_5split/";
+	String taskName = "test_glsvm_food_traintrainlist_testtestlist_5split/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
-	String[] classes = {args[0]};
-	int[] scaleCV = {Integer.valueOf(args[1])};
-//    String[] classes={"apple-pie"};
+//	String[] classes = {args[0]};
+//	int[] scaleCV = {Integer.valueOf(args[1])};
+    String[] classes={"bread-pudding"};
 //    String[] classes={
 //			"apple-pie",
 //			"bread-pudding",
@@ -56,10 +56,10 @@ public class LSVM_console_ufood {
 //			"spaghetti-bolognese",
 //			"pad-thai"		
 //			};
-//    int[] scaleCV = {100};
+    int[] scaleCV = {100};
     
-//    double[] tradeoffCV = {0.0};
-    double[] tradeoffCV = {0.0,0.1,0.2,0.5,1.0};
+    double[] tradeoffCV = {0.0};
+//    double[] tradeoffCV = {0.0,0.1,0.2,0.5,1.0};
     
 	String sourceDir = new String();
 	String resDir = new String();
@@ -140,9 +140,9 @@ public class LSVM_console_ufood {
 						Collections.shuffle(apListIndex, seed);
 //		    			
     					for (int i=0;i<foldNum; i++){
-//    	    				if (i==1){
-//    	    					break;
-//    	    				}
+    	    				if (i==1){
+    	    					break;
+    	    				}
     						int fromIndex = listsize * i/foldNum;
     						int toIndex = listsize * (i+1)/foldNum;
     						List<Integer> trainList_1 = apListIndex.subList(0, fromIndex);
@@ -153,7 +153,7 @@ public class LSVM_console_ufood {
     						trainList.addAll(trainList_1);
     						trainList.addAll(trainList_2);
 		    			
-		    			
+						System.exit(0);	    			
 						List<TrainingSample<LatentRepresentation<BagImage,Integer>>> exampleTrain = new ArrayList<TrainingSample<LatentRepresentation<BagImage,Integer>>>();
 						for(int j:trainList) {
 							exampleTrain.add(new TrainingSample<LatentRepresentation<BagImage, Integer>>(new LatentRepresentation<BagImage, Integer>(listTrain.get(j).sample.x,0), listTrain.get(j).label));

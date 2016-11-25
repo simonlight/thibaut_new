@@ -30,16 +30,16 @@ import fr.lip6.jkernelmachines.type.TrainingSample;;
 public class LSVM_console_ufood {
 	public static void main(String[] args) {
 	
-	String dataSource= "big";//local or other things
+	String dataSource= "local";//local or other things
 	String gazeType = "stefan";
 //	String taskName = "lsvm_cccpgaze_posneg_cv_single_split_loss_divised_by_nb_of_examples_1-negloss_full_params_4/";
 	String taskName = "npglsvm_food_traintrainlist_testtestlist_5split/";
 	double[] lambdaCV = {1e-4};
     double[] epsilonCV = {0};
-	String[] classes = {args[0]};
-	int[] scaleCV = {Integer.valueOf(args[1])};
+//	String[] classes = {args[0]};
+//	int[] scaleCV = {Integer.valueOf(args[1])};
 //    int[] scaleCV = {90,80,70,60,50,40,30};
-//  String[] classes={"apple-pie"};
+  String[] classes={"apple-pie"};
 //  String[] classes={
 //			"apple-pie",
 //			"bread-pudding",
@@ -62,13 +62,13 @@ public class LSVM_console_ufood {
 //			"spaghetti-bolognese",
 //			"pad-thai"		
 //			};
-//    int[] scaleCV = {90};
+    int[] scaleCV = {90};
     
 //    double[] tradeoffCV = {0.0,  0.0001,0.0005, 0.001,0.005, 0.01,0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
-    double[] posTradeoffCV = {0,0.1,0.2,0.5,1.0};
-    double[] negTradeoffCV = {0, 0.001, 0.01, 0.1 ,0.2,0.5, 1.0};
-//    double[] posTradeoffCV = {0.001};
-//    double[] negTradeoffCV = {0.001};
+    double[] posTradeoffCV = {0.1};
+    double[] negTradeoffCV = {0.1};
+//    double[] posTradeoffCV = {0.0};
+//    double[] negTradeoffCV = {0.0};
     
 	String sourceDir = new String();
 	String resDir = new String();
@@ -152,6 +152,8 @@ public class LSVM_console_ufood {
 						Collections.shuffle(apListIndex, seed);
 		    			
     					for (int i=0;i<foldNum; i++){
+    						if (i==1){break;}
+
     						int fromIndex = listsize * i/foldNum;
     						int toIndex = listsize * (i+1)/foldNum;
     						List<Integer> trainList_1 = apListIndex.subList(0, fromIndex);
@@ -178,7 +180,7 @@ public class LSVM_console_ufood {
 						File fileClassifier = new File(classifierFolder + "/" + className + "/"+ 
 								className + "_" + scale + "_"+epsilon+"_"+lambda + 
 								"_"+postradeoff+"_"+negtradeoff+"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+
-								"_"+optim+"_"+numWords+".lsvm");
+								"_"+optim+"_"+numWords+"_"+i+".lsvm");
 						fileClassifier.getAbsoluteFile().getParentFile().mkdirs();
 						
 						if (loadClassifier && fileClassifier.exists()){
@@ -223,7 +225,7 @@ public class LSVM_console_ufood {
 							File trainingDetailFile = new File(trainingDetailFolder + "/" + className + "/"+ 
 									className + "_" + scale + "_"+epsilon+"_"+lambda + 
 									"_"+postradeoff+"_"+negtradeoff+"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+
-									"_"+optim+"_"+numWords+".traindetail");
+									"_"+optim+"_"+numWords+"_"+i+".traindetail");
 							trainingDetailFile.getAbsoluteFile().getParentFile().mkdirs();
 							try {
 								BufferedWriter trainingDetailFileOut = new BufferedWriter(new FileWriter(trainingDetailFile));

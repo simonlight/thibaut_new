@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.DoubleStream;
@@ -19,21 +20,10 @@ import fr.durandt.jstruct.util.AveragePrecision;
 import fr.lip6.jkernelmachines.classifier.Classifier;
 import fr.lip6.jkernelmachines.type.TrainingSample;
 
-/**
- * @author Thibaut Durand - durand.tibo@gmail.com
- *
- */
 public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -3428682753907137329L;
 
-
-	/* (non-Javadoc)
-	 * @see fr.lip6.jkernelmachines.classifier.Classifier#copy()
-	 */
 	@Override
 	public Classifier<LatentRepresentation<BagImage, Integer>> copy()
 			throws CloneNotSupportedException {
@@ -43,8 +33,6 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 
 	@Override
 	protected double[] psi(BagImage x, Integer h) {
-		
-		
 		return x.getInstance(h);
 	}
 
@@ -221,11 +209,13 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 //		/(getNegativeGazeRatio(ts.sample.x, h, gazeType)+0.00001));
 //		System.out.println("----------");
 //		}
-//add 0.00001 to avoid NaN
+//**********CURRENTLY USING. add 0.00001 to avoid NaN
 		double gtratio = getNegativeGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType);
 		double thisRatio = getNegativeGazeRatio(ts.sample.x, h, gazeType);
-//		return Math.max(0, -0.1+ (thisRatio/gtratio));
 		return 1 - (gtratio/(thisRatio+0.0000000001));
+//**********
+//		return getPositiveGazeRatio(ts.sample.x, h, gazeType)
+//				/getPositiveGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType);		
 //		return (( 1-gtratio)/ (1-thisRatio));
 //		return 1-( getNegativeGazeRatio(ts.sample.x, h, gazeType) / getNegativeGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType) );
 //		System.out.println(getNegativeGazeRatio(ts.sample.x,groundTruthGazeMap.get(ts.sample.x.getName()) , gazeType) );
@@ -237,19 +227,17 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 
 	@Override
 	public HashMap<String , Integer> GroundTruthGazeRegion(List<TrainingSample<LatentRepresentation<BagImage, Integer>>> l) {
-		
-
 		HashMap<String , Integer> groundTruthGazeMap = new HashMap<String , Integer>(); 
-		
 		for(TrainingSample<LatentRepresentation<BagImage, Integer>> ts : l) {
-			// ground truth gaze region of negative image is the one with the least gazes
+			// ground truth gaze region of positive image is the one with the most gazes
 
 			if (ts.label == 1){
 				Integer maxH = -1;
 				double maxGazeRatio = -1;
 				for(int h=0; h<ts.sample.x.getInstances().size(); h++) {
 					double gazeRatio = getPositiveGazeRatio(ts.sample.x, h, gazeType);
-					if (gazeRatio>=maxGazeRatio){
+					//NOTICE: to be compatible with TopK, < can not be <=
+					if (gazeRatio>maxGazeRatio){
 						maxH=h;
 						maxGazeRatio = gazeRatio;
 					}
@@ -266,13 +254,17 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 //						maxH=h;
 //						maxGazeRatio = negGazeRatio;
 //					}
+//				groundTruthGazeMap.put(ts.sample.x.getName(), maxH);
+//
 //				}
+//			}
 			else if (ts.label == -1){
 				Integer minH = -1;
 				double minGazeRatio = 2;
 				for(int h=0; h<ts.sample.x.getInstances().size(); h++) {
 					double negGazeRatio = getNegativeGazeRatio(ts.sample.x, h, gazeType);
-					if (negGazeRatio<=minGazeRatio){
+					//NOTICE: to be compatible with TopK, < can not be <=
+					if (negGazeRatio<minGazeRatio){
 						minH=h;
 						minGazeRatio = negGazeRatio;
 					}
@@ -280,7 +272,6 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 //				System.out.println(minGazeRatio);
 //				System.out.println(minH);
 				groundTruthGazeMap.put(ts.sample.x.getName(), minH);
-				
 			}
 		}
 		return groundTruthGazeMap;
@@ -293,10 +284,6 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		if (ts.label == 1){
 			for(int h=0; h<ts.sample.x.getInstances().size(); h++) {
 				double val = getPositiveGazeLoss(ts, h)	+ valueOf(ts.sample.x, h);
-//				System.out.println("______");
-//				System.out.println(getPositiveGazeLoss(ts, h) );
-//				System.out.println(valueOf(ts.sample.x, h));
-//				System.out.println("______");
 				if(val>valmax){
 					valmax = val;
 					hpredict = h;
@@ -306,10 +293,6 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		else if (ts.label == -1){
 			for(int h=0; h<ts.sample.x.getInstances().size(); h++) {
 				double val = getNegativeGazeLoss(ts, h) + valueOf(ts.sample.x, h);
-//				System.out.println("______");
-//				System.out.println(getNegativeGazeLoss(ts, h) );
-//				System.out.println(valueOf(ts.sample.x, h));
-//				System.out.println("______");
 				if(val>valmax){
 					valmax = val;
 					hpredict = h;
@@ -325,11 +308,13 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 	public double[] getGazePsi(TrainingSample<LatentRepresentation<BagImage, Integer>> ts){
 		double[] gazePsi= new double[dim];
 		double[] laiPsi= psi(ts.sample.x, (Integer)LAI(ts)[0]);
+
 		double[] gtGazePsi= psi(ts.sample.x, groundTruthGazeMap.get(ts.sample.x.getName()));
 		
 		for (int i =0; i<dim;i++){
 			gazePsi[i] = (laiPsi[i] - gtGazePsi[i]);
 		}
+
 		return gazePsi;
 	}
 	
@@ -388,6 +373,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 				loss += DoubleStream.of(example_loss).sum() ;
 //				loss += DoubleStream.of(example_loss).sum() * nb[0] /( nb[0]+ nb[1]);
 			}
+//			System.out.println("npg cls loss:"+classfication_loss+"gaze loss bound:"+gaze_loss_bound);
 		}
 		System.out.format("classification loss:%f, positive_gaze_loss_bound: %f, negative_gaze_loss_bound: %f,"
 						+ " gaze_loss_bound:%f, positive_gaze_loss:%f, negative_gaze_loss:%f, gaze_loss:%f",

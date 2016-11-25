@@ -159,7 +159,7 @@ public class LSVM_console_ferrari {
 							File fileClassifier = new File(classifierFolder + "/" + className + "/"+ 
 									className + "_" + scale + "_"+epsilon+"_"+lambda + 
 									"_"+postradeoff+"_"+negtradeoff+"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+
-									"_"+optim+"_"+numWords+".lsvm");
+									"_"+optim+"_"+numWords+"_"+i+".lsvm");
 							fileClassifier.getAbsoluteFile().getParentFile().mkdirs();
 							
 							if (loadClassifier && fileClassifier.exists()){
@@ -204,7 +204,7 @@ public class LSVM_console_ferrari {
 								File trainingDetailFile = new File(trainingDetailFolder + "/" + className + "/"+ 
 										className + "_" + scale + "_"+epsilon+"_"+lambda + 
 										"_"+postradeoff+"_"+negtradeoff+"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+
-										"_"+optim+"_"+numWords+".traindetail");
+										"_"+optim+"_"+numWords+"_"+i+".traindetail");
 								trainingDetailFile.getAbsoluteFile().getParentFile().mkdirs();
 								try {
 									BufferedWriter trainingDetailFileOut = new BufferedWriter(new FileWriter(trainingDetailFile));

@@ -13,6 +13,7 @@ import java.util.StringTokenizer;
 
 import fr.durandt.jstruct.extern.pca.PrincipalComponentAnalysis;
 import fr.durandt.jstruct.latent.LatentRepresentation;
+import fr.durandt.jstruct.latent.LatentRepresentationTopK;
 import fr.durandt.jstruct.struct.STrainingSample;
 import fr.durandt.jstruct.util.VectorOp;
 import fr.durandt.jstruct.variable.BagImage;
@@ -180,6 +181,10 @@ public class BagReader {
 	
 	public static List<TrainingSample<LatentRepresentation<BagImage,Integer>>> readBagImageLatent(String file, int dim, boolean norm2, boolean bias, PrincipalComponentAnalysis pca, boolean withFeatures, int verbose, String dataSource) {
 		return readBagImageLatent(new File(file), dim, norm2, bias, pca, withFeatures, verbose, dataSource);
+	}
+	
+	public static List<TrainingSample<LatentRepresentationTopK<BagImage,Integer>>> readBagImageLatentTopK(String file, int dim, boolean norm2, boolean bias, PrincipalComponentAnalysis pca, boolean withFeatures, int verbose, String dataSource) {
+		return readBagImageLatentTopK(new File(file), dim, norm2, bias, pca, withFeatures, verbose, dataSource);
 	}
 		
 
@@ -618,6 +623,131 @@ public class BagReader {
 
 		// Pre-treatment of the instances
 		for(TrainingSample<LatentRepresentation<BagImage, Integer>> ts : list) {
+			for(int i=0; i<ts.sample.x.numberOfInstances(); i++) {
+				// L2 normalization of the instance
+				if(norm2) {
+					VectorOp.normL2(ts.sample.x.getInstance(i));
+				}
+				// PCA
+				if(pca != null) {
+					ts.sample.x.setInstance(i, pca.sampleToEigenSpace(ts.sample.x.getInstance(i)));
+				}
+				// Add a constant 1 feature for the bias
+				if(bias) {
+					ts.sample.x.setInstance(i,VectorOp.addValeur(ts.sample.x.getInstance(i),1));
+				}
+			}
+		}
+
+		return list;
+	}
+	
+	public static List<TrainingSample<LatentRepresentationTopK<BagImage, Integer>>> readBagImageLatentTopK(File file, int dim, boolean norm2, boolean bias, PrincipalComponentAnalysis pca, boolean withFeatures, int verbose, String dataSource) {
+		List<TrainingSample<LatentRepresentationTopK<BagImage, Integer>>> list = null;
+		try {
+			// Read the file
+			System.out.println("read bag: " + file.getAbsolutePath() + "\tdim= " + dim);
+			InputStream ips = new FileInputStream(file); 
+			InputStreamReader ipsr = new InputStreamReader(ips);
+			BufferedReader br = new BufferedReader(ipsr);
+
+			// Initialize the list of bags
+			list = new ArrayList<TrainingSample<LatentRepresentationTopK<BagImage, Integer>>>();
+			int nbInstancesAll = 0;
+
+			// Read the number of bags nbBags
+			String ligne=br.readLine();
+			int nbBags = Integer.parseInt(ligne);
+//			//test!!!!!!!!!!!!!
+//			nbBags=2;
+//			//
+			// Read nbBags bags
+			for(int i=0; i<nbBags; i++) {
+				System.out.print(".");
+				if(i>0 && i % 100 == 0) System.out.print(i);
+
+				// Read a new line
+				ligne=br.readLine();
+				if(verbose > 0) {
+					System.out.println(i + " - read: " + ligne);
+				}
+
+				// Break the string in tokens
+				StringTokenizer st = new StringTokenizer(ligne);
+
+				// Read the name of the bag (usually the name of the image)
+				String name = st.nextToken();
+				
+				// Read the label of the bag
+				int label = Integer.parseInt(st.nextToken());
+				if (label==0){
+					label = -1;
+				}
+				else if (label==1){
+					label = 1;
+				}
+				// Read the number of instances
+				int nbInstances = Integer.parseInt(st.nextToken());
+				if(verbose>0) {
+					System.out.println(i + " - name: " + name + "\tlabel: " + label + "\tnbInstances: " + nbInstances);
+				}
+
+				// Create a new object BagImage and set the name
+				BagImage bag = new BagImage();
+				bag.setName(name);
+
+				// Read nbInstances
+				for(int j=0; j<nbInstances; j++) {
+					// Read the file of the (j+1)-th instance
+					String fileInstance = st.nextToken();
+					if (dataSource == "big"){
+//						System.out.println(fileInstance);
+						fileInstance =fileInstance.replace("local", "home");
+					}
+					if (dataSource == "local"){
+//						System.out.println(fileInstance);
+						fileInstance =fileInstance.replace("home", "local");
+					}
+					fileInstance =fileInstance.replace("matconvnet_m_2048_features", "m_2048_trainval_features");
+						bag.addInstanceFile(fileInstance);
+					if(verbose>0) {
+						System.out.println(i + " - read instance " + j + "\t" + fileInstance);
+					}
+
+					if(withFeatures) {
+						// Read the feature in the given file
+						double[] feature = readFeature(new File(fileInstance));
+						if(feature.length != dim) {
+							System.out.println("ERROR read features - dim= " + feature.length + " != " + dim);
+							System.out.println("file " + fileInstance);
+							feature = null;
+							System.exit(0);
+						}
+						// Add the feature to the bag
+						bag.addInstance(feature);
+					}
+				}
+
+				// Add the new bag to the list
+				//bags are not initialized
+				list.add(new TrainingSample<LatentRepresentationTopK<BagImage, Integer>>(new LatentRepresentationTopK<BagImage,Integer>(bag, null), label));
+				nbInstancesAll += bag.numberOfInstances();
+			}
+			br.close();
+			System.out.println("\nnumber of bags= " + list.size() + "\tnumber of instances= " + nbInstancesAll + "\taverage number of instances per bag= " + ((double)nbInstancesAll/(double)list.size()));
+		}
+		catch (FileNotFoundException e) {
+			System.out.println("File " + file.getAbsolutePath() + " not found");
+			return null;
+		}
+		catch (IOException e) {
+			System.out.println("Error parsing file " + file.getAbsolutePath());
+			e.printStackTrace();
+			return null;
+		}
+
+		// Pre-treatment of the instances
+		for(TrainingSample<LatentRepresentationTopK<BagImage, Integer>> ts : list) {
 			for(int i=0; i<ts.sample.x.numberOfInstances(); i++) {
 				// L2 normalization of the instance
 				if(norm2) {

@@ -19,14 +19,7 @@ import fr.lip6.jkernelmachines.util.algebra.VectorOperations;
  */
 public abstract class LSVM<X,H> implements Classifier<LatentRepresentation<X, H>> , Serializable  {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -742534151257155346L;
-
-	/**
-	 * 
-	 */
 
 	protected double lambda;
 

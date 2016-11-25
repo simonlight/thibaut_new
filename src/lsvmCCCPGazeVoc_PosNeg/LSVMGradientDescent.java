@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -268,6 +269,7 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 			}
 			// update latent variables
 			optimizeLatent(l);
+
 			newPrimal_Objectif = getPrimalObjective(l, trainingDetailFileOut);
 		}while((oldPrimal_Objectif - newPrimal_Objectif> epsilon || iter < minCCCPIter) && (iter < maxCCCPIter));
 		
@@ -325,7 +327,7 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 			
 			TrainingSample<LatentRepresentation<X,H>> ts = l.get(i);
 			ts.sample.h = optimizeH(ts.sample.x);
-			
+
 			//gaze gradient
 			if (ts.label==1){
 				double[] gazePsi = getGazePsi(ts);
@@ -341,6 +343,7 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 			}
 			
 			double[] innerX = psi(ts.sample.x, ts.sample.h);
+
 			double y = ts.label;
 			double z = y * linear.valueOf(w, innerX);
 			
@@ -363,6 +366,13 @@ public abstract class LSVMGradientDescent<X,H> extends LSVM<X,H> {
 				}
 			}
 			t += 1;
+//			if (i==39){
+//				System.out.println(Arrays.toString(innerX));
+//				System.out.println(Arrays.toString(cp2BatchPsi[39]));
+//				System.out.println(Arrays.toString(w));
+//				System.exit(0);
+//			}			
+
 		}
 	}
 
