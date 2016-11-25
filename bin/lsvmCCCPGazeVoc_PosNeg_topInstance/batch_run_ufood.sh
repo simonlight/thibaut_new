@@ -2,7 +2,7 @@ cls_arr=("apple-pie" "bread-pudding" "beef-carpaccio" "beet-salad" "chocolate-ca
 #cls_arr=("beignets")
 #scale_arr=("100" "90" "80" "70" "60" "50" "40" "30")
 scale_arr=("100" "90")
-k='oarsub -p "host='"'"'big20'"'"'  or host='"'"'big30'"'"' or host='"'"'big31'"'"' or host='"'"'big19'"'"' or host='"'"'big16'"'"' or host='"'"'big17'"'"' " -l "nodes=1/core=1,walltime=1000:0:0" --notify "mail:biglip666@gmail.com" "/home/wangxin/lib/jdk1.8.0_25/bin/java -Xms30g -Xmx30g -XX:-UseGCOverheadLimit -classpath /home/wangxin/mosek/7/tools/platform/linux64x86/bin/mosek.jar:/home/wangxin/lib/commons-cli-1.2.jar:/home/wangxin/lib/jkernelmachines.jar:/home/wangxin/code/thibaut_new/bin:. 
+k='oarsub -p "host='"'"'big20'"'"'  or host='"'"'big30'"'"' or host='"'"'big31'"'"' or host='"'"'big19'"'"' or host='"'"'big16'"'"' or host='"'"'big17'"'"' " -l "nodes=1/core=1,walltime=1000:0:0" --notify "mail:biglip666@gmail.com" "/home/wangxin/lib/jdk1.8.0_25/bin/java -Xms1m -Xmx1m -XX:-UseGCOverheadLimit -classpath /home/wangxin/mosek/7/tools/platform/linux64x86/bin/mosek.jar:/home/wangxin/lib/commons-cli-1.2.jar:/home/wangxin/lib/jkernelmachines.jar:/home/wangxin/code/thibaut_new/bin:. 
 lsvmCCCPGazeVoc_PosNeg_topInstance/LSVM_console_ufood'
 end='"'
 space=' '
