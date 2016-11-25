@@ -47,7 +47,7 @@ public class LSVM_console_ufood {
 		boolean stochastic = true;
 		boolean saveClassifier = true;
 		boolean loadClassifier = false;
-	    
+	    //
 		//Variables we do not change
 		int optim = 2;
 		int foldNum=10;
