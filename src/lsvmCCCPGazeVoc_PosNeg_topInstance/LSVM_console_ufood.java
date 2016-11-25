@@ -38,8 +38,8 @@ public class LSVM_console_ufood {
 	//			"pad-thai"		
 //				};
 	    
-	    double[] posTradeoffCV = {0.0,0.1,0.2,0.5,1.0};
-	    double[] negTradeoffCV = {0.0,0.001,0.01,0.1,0.2,0.5,1.0};
+	    double[] posTradeoffCV = {0.0,0.1,0.2,0.5};
+	    double[] negTradeoffCV = {0.0,0.001,0.01,0.1,0.2};
 	    //Variables we may change
 	    int minCCCPIter = 5;
 		int maxCCCPIter = 100;
