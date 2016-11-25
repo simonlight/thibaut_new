@@ -8,13 +8,13 @@ public class LSVM_console_ufood {
 		String taskName = "topk_ICIP_loss_weighted_food_10split_full/";
 		double[] lambdaCV = {1e-4};
 	    double[] epsilonCV = {0};
-//	    int[] scaleCV = {90};
+//	    int[] scaleCV = {100};
 	    int maxK=10;
 
 		String[] classes = {args[0]};
 		int[] scaleCV = {Integer.valueOf(args[1])};
 	//    int[] scaleCV = {90,80,70,60,50,40,30};
-	//    String[] classes={"apple-pie"};
+//	    String[] classes={"apple-pie"};
 //	    String[] classes={
 	//			"apple-pie",
 //				"bread-pudding",
