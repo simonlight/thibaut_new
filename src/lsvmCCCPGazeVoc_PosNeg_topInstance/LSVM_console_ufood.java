@@ -3,7 +3,7 @@ package lsvmCCCPGazeVoc_PosNeg_topInstance;
 public class LSVM_console_ufood {
 	public static void main(String[] args) {
 	
-		String dataSource= "big";//local or other things
+		String dataSource= "local";//local or other things
 		String gazeType = "ufood";
 		String taskName = "topk_ICIP_loss_weighted_food_10split_full/";
 		double[] lambdaCV = {1e-4};
@@ -11,10 +11,10 @@ public class LSVM_console_ufood {
 //	    int[] scaleCV = {100};
 	    int maxK=10;
 
-		String[] classes = {args[0]};
-		int[] scaleCV = {Integer.valueOf(args[1])};
-	//    int[] scaleCV = {90,80,70,60,50,40,30};
-//	    String[] classes={"apple-pie"};
+//		String[] classes = {args[0]};
+//		int[] scaleCV = {Integer.valueOf(args[1])};
+	    int[] scaleCV = {60};
+	    String[] classes={"apple-pie"};
 //	    String[] classes={
 	//			"apple-pie",
 //				"bread-pudding",
