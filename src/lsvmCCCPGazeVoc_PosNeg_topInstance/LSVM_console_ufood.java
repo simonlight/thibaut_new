@@ -39,7 +39,7 @@ public class LSVM_console_ufood {
 //				};
 	    
 	    double[] posTradeoffCV = {0.0,0.1,0.2};
-	    double[] negTradeoffCV = {0.001};
+	    double[] negTradeoffCV = {0.01};
 	    //Variables we may change
 	    int minCCCPIter = 5;
 		int maxCCCPIter = 100;
