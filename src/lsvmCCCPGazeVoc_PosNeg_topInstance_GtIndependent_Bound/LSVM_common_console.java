@@ -1,4 +1,4 @@
-package lsvmCCCPGazeVoc_PosNeg_topInstance;
+package lsvmCCCPGazeVoc_PosNeg_topInstance_GtIndependent_Bound;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -65,7 +65,7 @@ public class LSVM_common_console {
 				K.add(KElement);
 			}
 			String listTrainPath;
-
+			System.out.println(gazeType);
 			if (gazeType.equals("ufood")){
 				listTrainPath=  sourceDir+"example_files/"+scale+"/"+className+"_full_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
 			}
@@ -93,7 +93,9 @@ public class LSVM_common_console {
 			    			}
 			    			Random seed = new Random(randomSeed);
 							Collections.shuffle(apListIndex, seed);
-			    			for (int i=0;i<foldNum; i++){
+			    			
+	    					for (int i=0;i<foldNum; i++){
+	    						if (i==1)break;
 	    						int fromIndex = listsize * i/foldNum;
 	    						int toIndex = listsize * (i+1)/foldNum;
 	    						List<Integer> trainList_1 = apListIndex.subList(0, fromIndex);

@@ -1,5 +1,14 @@
-package lsvmCCCPGazeVoc_PosNeg_topInstance;
+package lsvmCCCPGazeVoc_PosNeg_topInstance_complement;
 
+//category:apple-pie, k:1, p+:0.2, p-:0.0, index:5
+//category:bread-pudding, k:3, p+:0.2, p-:0.0, index:7
+//category:bread-pudding, k:8, p+:0.2, p-:0.01, index:8
+//category:chocolate-cake, k:2, p+:0.2, p-:0.0, index:7
+//category:chocolate-cake, k:7, p+:0.2, p-:0.01, index:0
+//category:chocolate-mousse, k:2, p+:0.2, p-:0.0, index:3
+//category:donuts, k:8, p+:0.2, p-:0.0, index:1
+
+//only for completing some errors in large scale tests
 public class LSVM_console_ufood {
 	public static void main(String[] args) {
 	
@@ -9,11 +18,13 @@ public class LSVM_console_ufood {
 		double[] lambdaCV = {1e-4};
 	    double[] epsilonCV = {0};
 //	    int[] scaleCV = {100};
-	    int maxK=1;
-
+	    int maxK=9;	
 //		String[] classes = {args[0]};
 //		int[] scaleCV = {Integer.valueOf(args[1])};
-	    int[] scaleCV = {50};
+	    int[] scaleCV = {30};
+	    double[] posTradeoffCV = {0.2};
+	    double[] negTradeoffCV = {0.001};
+	    int index=2;
 //	    String[] classes={"apple-pie"};
 	    String[] classes={
 //				"apple-pie",
@@ -25,21 +36,20 @@ public class LSVM_console_ufood {
 //				"donuts",
 //				"beignets",
 //				"eggs-benedict",
-//				"croque-madame",
+				"croque-madame",
 //				"gnocchi",
 //				"shrimp-and-grits",
 //				"grilled-salmon",
 //				"pork-chop",
 //				"lasagna",
-				"ravioli",
-				"pancakes",
-				"french-toast",
-				"spaghetti-bolognese",
-				"pad-thai"		
+//				"ravioli",
+//				"pancakes",
+//				"french-toast",
+//				"spaghetti-bolognese",
+//				"pad-thai"		
 				};
 	    
-	    double[] posTradeoffCV = {0.0,0.1,0.2};
-	    double[] negTradeoffCV = {0.0,0.001,0.01,0.1};
+
 	    //Variables we may change
 	    int minCCCPIter = 5;
 		int maxCCCPIter = 100;
@@ -68,7 +78,7 @@ public class LSVM_console_ufood {
 			resDir = "/home/wangxin/results/upmc_food/";
 		}
 		
-		LSVM_common_console.console(dataSource, gazeType, taskName, sourceDir, resDir, gazeJmapFolder, maxCCCPIter, minCCCPIter, maxSGDEpochs, optim, numWords, foldNum, randomSeed, stochastic, saveClassifier, loadClassifier, hnorm, lambdaCV, epsilonCV, posTradeoffCV, negTradeoffCV, classes, scaleCV, maxK);
+		LSVM_common_console.console(dataSource, gazeType, taskName, sourceDir, resDir, gazeJmapFolder, maxCCCPIter, minCCCPIter, maxSGDEpochs, optim, numWords, foldNum, randomSeed, stochastic, saveClassifier, loadClassifier, hnorm, lambdaCV, epsilonCV, posTradeoffCV, negTradeoffCV, classes, scaleCV, maxK,index);
 		
 	}
 	

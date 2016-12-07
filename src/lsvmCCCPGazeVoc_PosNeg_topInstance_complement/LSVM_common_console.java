@@ -1,4 +1,4 @@
-package lsvmCCCPGazeVoc_PosNeg_topInstance;
+package lsvmCCCPGazeVoc_PosNeg_topInstance_complement;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -27,7 +27,7 @@ public class LSVM_common_console {
 						int optim, int numWords, int foldNum, int randomSeed,
 						boolean stochastic, boolean saveClassifier, boolean loadClassifier, boolean hnorm,
 						double[] lambdaCV, double[] epsilonCV, double[] posTradeoffCV, double[] negTradeoffCV,
-						String[] classes, int[] scaleCV, int maxK
+						String[] classes, int[] scaleCV, int maxK, int index
 						) {
 		String resultFolder = resDir+taskName;
 		String resultFilePath = resultFolder + "ap_summary_ecarttype_seed1_detail.txt";
@@ -61,8 +61,9 @@ public class LSVM_common_console {
 	    for(int scale : scaleCV) {
 			//generate K, we can set the maximum number of k
 	    	ArrayList<Integer> K = new ArrayList<Integer>();
-			for (int KElement=1; KElement<=Math.min(maxK,convertScale(scale));KElement++){
+			for (int KElement=maxK; KElement<=Math.min(maxK,convertScale(scale));KElement++){
 				K.add(KElement);
+				break;
 			}
 			String listTrainPath;
 
@@ -94,7 +95,10 @@ public class LSVM_common_console {
 			    			Random seed = new Random(randomSeed);
 							Collections.shuffle(apListIndex, seed);
 			    			for (int i=0;i<foldNum; i++){
-	    						int fromIndex = listsize * i/foldNum;
+			    				if (i!=index){
+	    							continue;
+	    						}
+			    				int fromIndex = listsize * i/foldNum;
 	    						int toIndex = listsize * (i+1)/foldNum;
 	    						List<Integer> trainList_1 = apListIndex.subList(0, fromIndex);
 	    						List<Integer> trainList_2 = apListIndex.subList(toIndex, listsize);
