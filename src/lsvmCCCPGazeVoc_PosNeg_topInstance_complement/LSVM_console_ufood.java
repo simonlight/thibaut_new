@@ -21,19 +21,19 @@ package lsvmCCCPGazeVoc_PosNeg_topInstance_complement;
 public class LSVM_console_ufood {
 	public static void main(String[] args) {
 	
-		String dataSource= "big";//local or other things
+		String dataSource= "local";//local or other things
 		String gazeType = "ufood";
 		String taskName = "complement_topk_ICIP_loss_weighted_food_10split_full/";
 		double[] lambdaCV = {1e-4};
 	    double[] epsilonCV = {0};
 //	    int[] scaleCV = {100};
-	    int maxK=4;	
+	    int maxK=9;	
 //		String[] classes = {args[0]};
 //		int[] scaleCV = {Integer.valueOf(args[1])};
 	    int[] scaleCV = {50};
 	    double[] posTradeoffCV = {0.2};
-	    double[] negTradeoffCV = {0.0};
-	    int index=4;
+	    double[] negTradeoffCV = {0.01};
+	    int index=7;
 //	    String[] classes={"apple-pie"};
 	    String[] classes={
 //				"apple-pie",
@@ -53,8 +53,8 @@ public class LSVM_console_ufood {
 //				"lasagna",
 //				"ravioli",
 //				"pancakes",
-//				"french-toast",
-				"spaghetti-bolognese",
+				"french-toast",
+//				"spaghetti-bolognese",
 //				"pad-thai"		
 				};
 	    
