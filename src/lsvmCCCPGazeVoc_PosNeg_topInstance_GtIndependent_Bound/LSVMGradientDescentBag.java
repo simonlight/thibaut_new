@@ -177,7 +177,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		Integer hpredict2 = -1;
 		double valmax1 = -Double.MAX_VALUE;
 		double valmax2 = -Double.MAX_VALUE;
-
+ 
 		Object[] lai = new Object[3];
 		for(int h=0; h<ts.sample.x.getInstances().size(); h++) {
 			double val1 = (ts.label == 1?getPositiveGazeLoss(ts, h):getNegativeGazeLoss(ts, h))	+ valueOf(ts.sample.x, h);
