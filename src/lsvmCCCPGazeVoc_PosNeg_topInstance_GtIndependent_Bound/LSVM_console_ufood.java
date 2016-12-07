@@ -5,7 +5,7 @@ public class LSVM_console_ufood {
 	
 		String dataSource= "local";//local or other things
 		String gazeType = "ufood";
-		String taskName = "test_gtindependent_topk_ICIP_loss_weighted_food_10split_full/";
+		String taskName = "test_gtindependent_tighter_topk_ICIP_loss_weighted_food_10split_full/";
 		double[] lambdaCV = {1e-4};
 	    double[] epsilonCV = {0};
 //	    int[] scaleCV = {100};
@@ -16,11 +16,11 @@ public class LSVM_console_ufood {
 	    int[] scaleCV = {50};
 //	    String[] classes={"apple-pie"};
 	    String[] classes={
-//				"apple-pie",
-//				"bread-pudding",
-//				"beef-carpaccio",
-//				"beet-salad",
-//				"chocolate-cake",
+				"apple-pie",
+				"bread-pudding",
+				"beef-carpaccio",
+				"beet-salad",
+				"chocolate-cake",
 //				"chocolate-mousse",
 //				"donuts",
 //				"beignets",
@@ -31,11 +31,11 @@ public class LSVM_console_ufood {
 //				"grilled-salmon",
 //				"pork-chop",
 //				"lasagna",
-				"ravioli",
-				"pancakes",
-				"french-toast",
-				"spaghetti-bolognese",
-				"pad-thai"		
+//				"ravioli",
+//				"pancakes",
+//				"french-toast",
+//				"spaghetti-bolognese",
+//				"pad-thai"		
 				};
 	    
 	    double[] posTradeoffCV = {0.0,0.1,0.2};
