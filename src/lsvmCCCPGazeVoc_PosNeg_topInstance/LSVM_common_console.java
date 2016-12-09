@@ -62,7 +62,9 @@ public class LSVM_common_console {
 			//generate K, we can set the maximum number of k
 	    	ArrayList<Integer> K = new ArrayList<Integer>();
 			for (int KElement=1; KElement<=Math.min(maxK,convertScale(scale));KElement++){
-				K.add(KElement);
+				if (KElement==1 ||KElement==2 ||KElement==5 ||KElement==10){
+					K.add(KElement);
+				}
 			}
 			String listTrainPath;
 
@@ -83,6 +85,9 @@ public class LSVM_common_console {
 		    	for(double lambda : lambdaCV) {
 		    		for(double postradeoff : posTradeoffCV) {
 		    			for(double negtradeoff : negTradeoffCV) {
+		    				if (postradeoff!=0.2 && negtradeoff!=0.0){
+		    					break;
+		    				}
 		    				for(int k : K){
 				    			
 			    			int listsize = listTrain.size();

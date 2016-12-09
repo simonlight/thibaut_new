@@ -3,19 +3,6 @@ package lsvmCCCPGazeVoc_PosNeg_topInstance_complement;
 //category:bread-pudding, k:6, p+:0.2, p-:0.01, index:7
 //category:chocolate-cake, k:7, p+:0.2, p-:0.01, index:5
 //category:donuts, k:3, p+:0.2, p-:0.01, index:8
-//category:shrimp-and-grits, k:1, p+:0.2, p-:0.01, index:3
-//category:shrimp-and-grits, k:8, p+:0.2, p-:0.0, index:9
-//category:shrimp-and-grits, k:8, p+:0.2, p-:0.01, index:3
-//category:grilled-salmon, k:4, p+:0.2, p-:0.001, index:2
-//category:pork-chop, k:1, p+:0.2, p-:0.001, index:2
-//category:pork-chop, k:4, p+:0.2, p-:0.001, index:5
-//category:lasagna, k:1, p+:0.2, p-:0.0, index:8
-//category:lasagna, k:1, p+:0.2, p-:0.001, index:0
-//category:lasagna, k:10, p+:0.2, p-:0.01, index:2
-//category:ravioli, k:5, p+:0.2, p-:0.001, index:7
-//category:french-toast, k:1, p+:0.2, p-:0.001, index:4
-//category:french-toast, k:3, p+:0.2, p-:0.01, index:1
-//category:french-toast, k:9, p+:0.2, p-:0.01, index:7
 
 //only for completing some errors in large scale tests
 public class LSVM_console_ufood {
@@ -27,7 +14,7 @@ public class LSVM_console_ufood {
 		double[] lambdaCV = {1e-4};
 	    double[] epsilonCV = {0};
 //	    int[] scaleCV = {100};
-	    int maxK=9;	
+	    int maxK=6;	
 //		String[] classes = {args[0]};
 //		int[] scaleCV = {Integer.valueOf(args[1])};
 	    int[] scaleCV = {50};
@@ -37,7 +24,7 @@ public class LSVM_console_ufood {
 //	    String[] classes={"apple-pie"};
 	    String[] classes={
 //				"apple-pie",
-//				"bread-pudding",
+				"bread-pudding",
 //				"beef-carpaccio",
 //				"beet-salad",
 //				"chocolate-cake",
@@ -53,7 +40,7 @@ public class LSVM_console_ufood {
 //				"lasagna",
 //				"ravioli",
 //				"pancakes",
-				"french-toast",
+//				"french-toast",
 //				"spaghetti-bolognese",
 //				"pad-thai"		
 				};

@@ -3,27 +3,27 @@ package lsvmCCCPGazeVoc_PosNeg_topInstance;
 public class LSVM_console_stefan {
 	public static void main(String[] args) {
 	
-		String dataSource= "local";//local or other things
+		String dataSource= "big";//local or other things
 		String gazeType = "stefan";
-		String taskName = "test_positivegroundtruth_npglsvm_stefan_traintrainlist_testtestlist_5split/";
+		String taskName = "test_topk_ICIP_loss_weighted_food_5split_full/";
 		double[] lambdaCV = {1e-4};
 	    double[] epsilonCV = {0};
 	    int maxK=10;
 
-	//	String[] classes = {args[0]};
-	//	int[] scaleCV = {Integer.valueOf(args[1])};
+		String[] classes = {args[0]};
+		int[] scaleCV = {Integer.valueOf(args[1])};
 	//	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
-	    String[] classes = {"jumping"};
+//	    String[] classes = {"jumping"};
 	//    int[] scaleCV = {90,80,70,60,50,40,30};
-	    int[] scaleCV = {100};
+//	    int[] scaleCV = {90};
 	    
-	    double[] posTradeoffCV = {0.2};
-	    double[] negTradeoffCV = {0, 0.001, 0.01, 0.1 ,0.2,0.5, 1.0};
+	    double[] posTradeoffCV = {0.0,0.1,0.2};
+	    double[] negTradeoffCV = {0, 0.001, 0.01};
 	    
 	    //Variables we may change
 		int foldNum=5;
 	    int minCCCPIter = 5;
-		int maxCCCPIter = 1000;
+		int maxCCCPIter = 100;
 		int maxSGDEpochs = 100;
 		boolean stochastic = true;
 		boolean saveClassifier = true;
