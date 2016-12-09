@@ -15,7 +15,7 @@ public class LSVM_console_stefan {
 	//	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
 //	    String[] classes = {"jumping"};
 	//    int[] scaleCV = {90,80,70,60,50,40,30};
-//	    int[] scaleCV = {90};
+//	    int[] scaleCV = {50};
 	    
 	    double[] posTradeoffCV = {0.0,0.1,0.2};
 	    double[] negTradeoffCV = {0, 0.001, 0.01};
