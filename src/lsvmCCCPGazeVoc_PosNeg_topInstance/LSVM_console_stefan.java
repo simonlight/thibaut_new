@@ -5,17 +5,17 @@ public class LSVM_console_stefan {
 	
 		String dataSource= "big";//local or other things
 		String gazeType = "stefan";
-		String taskName = "test_topk_ICIP_loss_weighted_food_5split_full/";
+		String taskName = "topk_ICIP_loss_weighted_food_5split_full/";
 		double[] lambdaCV = {1e-4};
 	    double[] epsilonCV = {0};
 	    int maxK=10;
 
 		String[] classes = {args[0]};
 		int[] scaleCV = {Integer.valueOf(args[1])};
-	//	String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
+//		String[] classes = {"jumping", "phoning", "playinginstrument", "reading" ,"ridingbike", "ridinghorse" ,"running" ,"takingphoto" ,"usingcomputer", "walking"};
 //	    String[] classes = {"jumping"};
 	//    int[] scaleCV = {90,80,70,60,50,40,30};
-//	    int[] scaleCV = {50};
+//	    int[] scaleCV = {100};
 	    
 	    double[] posTradeoffCV = {0.0,0.1,0.2};
 	    double[] negTradeoffCV = {0, 0.001, 0.01};
