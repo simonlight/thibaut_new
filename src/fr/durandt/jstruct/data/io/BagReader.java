@@ -112,7 +112,6 @@ public class BagReader {
 				InputStream ips = new FileInputStream(file); 
 				InputStreamReader ipsr = new InputStreamReader(ips);
 				BufferedReader br = new BufferedReader(ipsr);
-
 				while ((ligne=br.readLine()) != null){
 					l.add(Double.parseDouble(ligne));
 				}
