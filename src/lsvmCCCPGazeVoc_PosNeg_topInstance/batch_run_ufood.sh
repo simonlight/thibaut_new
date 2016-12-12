@@ -12,5 +12,6 @@ do
 	for cls in ${cls_arr[@]}
     do
         eval $k$space$cls$space$scale$end
+        sleep 3
     done
 done
