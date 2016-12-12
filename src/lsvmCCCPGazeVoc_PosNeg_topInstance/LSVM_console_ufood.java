@@ -5,11 +5,11 @@ public class LSVM_console_ufood {
 	
 		String dataSource= "big";//local or other things
 		String gazeType = "ufood";
-		String taskName = "complement_pad_thai_topk_ICIP_loss_weighted_food_10split_full/";
+		String taskName = "topk_k15_k20_ICIP_loss_weighted_food_10split_full/";
 		double[] lambdaCV = {1e-4};
 	    double[] epsilonCV = {0};
 //	    int[] scaleCV = {100};
-	    int maxK=10;
+	    int maxK=20;
 
 		String[] classes = {args[0]};
 		int[] scaleCV = {Integer.valueOf(args[1])};
