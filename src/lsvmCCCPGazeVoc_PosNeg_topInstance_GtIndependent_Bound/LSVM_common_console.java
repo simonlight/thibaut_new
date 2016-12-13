@@ -61,8 +61,11 @@ public class LSVM_common_console {
 	    for(int scale : scaleCV) {
 			//generate K, we can set the maximum number of k
 	    	ArrayList<Integer> K = new ArrayList<Integer>();
-			for (int KElement=1; KElement<=Math.min(maxK,convertScale(scale));KElement++){
-				K.add(KElement);
+			
+	    	for (int KElement=1; KElement<=Math.min(maxK,convertScale(scale));KElement++){
+				if (KElement==1 ||KElement==2 ||KElement==5 ||KElement==10){
+					K.add(KElement);
+	    		}
 			}
 			String listTrainPath;
 			System.out.println(gazeType);
@@ -83,6 +86,9 @@ public class LSVM_common_console {
 		    	for(double lambda : lambdaCV) {
 		    		for(double postradeoff : posTradeoffCV) {
 		    			for(double negtradeoff : negTradeoffCV) {
+		    				if (postradeoff!=0.2 && negtradeoff!=0.0){
+		    					break;
+		    				}
 		    				for(int k : K){
 				    			
 			    			int listsize = listTrain.size();
@@ -95,7 +101,6 @@ public class LSVM_common_console {
 							Collections.shuffle(apListIndex, seed);
 			    			
 	    					for (int i=0;i<foldNum; i++){
-	    						if (i==1)break;
 	    						int fromIndex = listsize * i/foldNum;
 	    						int toIndex = listsize * (i+1)/foldNum;
 	    						List<Integer> trainList_1 = apListIndex.subList(0, fromIndex);
