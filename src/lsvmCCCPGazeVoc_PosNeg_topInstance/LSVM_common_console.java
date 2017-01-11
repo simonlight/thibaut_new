@@ -62,48 +62,54 @@ public class LSVM_common_console {
 			//generate K, we can set the maximum number of k
 	    	ArrayList<Integer> K = new ArrayList<Integer>();
 			for (int KElement=1; KElement<=Math.min(maxK,convertScale(scale));KElement++){
-				if (KElement==15 ||KElement==20 ){
+				if (KElement==1 ||KElement==10)
+				{
 					K.add(KElement);
 				}
 			}
 			String listTrainPath;
+			String listValPath;
 
 			if (gazeType.equals("ufood")){
 				listTrainPath=  sourceDir+"example_files/"+scale+"/"+className+"_full_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
+				listValPath=  sourceDir+"example_files/"+scale+"/"+className+"_val_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
 			}
 			else{
-				listTrainPath=  sourceDir+"example_files/"+scale+"/"+className+"_trainval_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
+				listTrainPath=  sourceDir+"example_files/"+scale+"/"+className+"_train_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
+				listValPath=  sourceDir+"example_files/"+scale+"/"+className+"_val_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
 
 			}
 //			String listTrainPath =  sourceDir+"example_files/"+scale+"/"+className+"_train_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
 //			String listValPath =  sourceDir+"example_files/"+scale+"/"+className+"_valtest_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
 
 	    	List<TrainingSample<LatentRepresentationTopK<BagImage,Integer>>> listTrain = BagReader.readBagImageLatentTopK(listTrainPath, numWords, true, true, null, true, 0, dataSource);
-//	    	List<TrainingSample<LatentRepresentation<BagImage,Integer>>> listVal = BagReader.readBagImageLatent(listValPath, numWords, true, true, null, true, 0, dataSource);
+	    	List<TrainingSample<LatentRepresentationTopK<BagImage,Integer>>> listVal = BagReader.readBagImageLatentTopK(listValPath, numWords, true, true, null, true, 0, dataSource);
 
 	    	for(double epsilon : epsilonCV) {
 		    	for(double lambda : lambdaCV) {
 		    		for(double postradeoff : posTradeoffCV) {
 		    			for(double negtradeoff : negTradeoffCV) {
-		    				if (postradeoff!=0.2 && negtradeoff!=0.0){
-		    					break;
-		    				}
 		    				for(int k : K){
 				    			
-			    			int listsize = listTrain.size();
-	
-			    			List<Integer> apListIndex = new ArrayList<Integer>();
-			    			for (int m=0;m<listTrain.size();m++){
-			    				apListIndex.add(m);
+			    			int listTrainsize = listTrain.size();
+			    			int listValsize = listVal.size();
+			    			
+			    			List<Integer> apTrainListIndex = new ArrayList<Integer>();
+			    			for (int m=0;m<listTrainsize;m++){
+			    				apTrainListIndex.add(m);
+			    			}
+			    			List<Integer> apValListIndex = new ArrayList<Integer>();
+			    			for (int m=0;m<listValsize;m++){
+			    				apValListIndex.add(m);
 			    			}
 			    			Random seed = new Random(randomSeed);
-							Collections.shuffle(apListIndex, seed);
+							Collections.shuffle(apTrainListIndex, seed);
 			    			for (int i=0;i<foldNum; i++){
-	    						int fromIndex = listsize * i/foldNum;
-	    						int toIndex = listsize * (i+1)/foldNum;
-	    						List<Integer> trainList_1 = apListIndex.subList(0, fromIndex);
-	    						List<Integer> trainList_2 = apListIndex.subList(toIndex, listsize);
-	    						List<Integer> leftOutList = apListIndex.subList(fromIndex, toIndex);
+	    						int fromIndex = listTrainsize * i/foldNum;
+	    						int toIndex = listTrainsize * (i+1)/foldNum;
+	    						List<Integer> trainList_1 = apTrainListIndex.subList(0, fromIndex);
+	    						List<Integer> trainList_2 = apTrainListIndex.subList(toIndex, listTrainsize);
+	    						List<Integer> leftOutList = apTrainListIndex.subList(fromIndex, toIndex);
 	    						
 	    						List<Integer> trainList = new ArrayList<Integer>();
 	    						trainList.addAll(trainList_1);
@@ -111,13 +117,20 @@ public class LSVM_common_console {
 			    			
 			    			
 							List<TrainingSample<LatentRepresentationTopK<BagImage,Integer>>> exampleTrain = new ArrayList<TrainingSample<LatentRepresentationTopK<BagImage,Integer>>>();
-							for(int j:trainList) {
+//							for(int j:trainList) {
+//								exampleTrain.add(new TrainingSample<LatentRepresentationTopK<BagImage, Integer>>(new LatentRepresentationTopK<BagImage, Integer>(listTrain.get(j).sample.x,new ArrayList<Integer>()), listTrain.get(j).label));
+//							}
+							for(int j:apTrainListIndex) {
 								exampleTrain.add(new TrainingSample<LatentRepresentationTopK<BagImage, Integer>>(new LatentRepresentationTopK<BagImage, Integer>(listTrain.get(j).sample.x,new ArrayList<Integer>()), listTrain.get(j).label));
 							}
 							
 							List<TrainingSample<LatentRepresentationTopK<BagImage,Integer>>> exampleVal = new ArrayList<TrainingSample<LatentRepresentationTopK<BagImage,Integer>>>();
-							for(int j:leftOutList) {
-								exampleVal.add(new TrainingSample<LatentRepresentationTopK<BagImage, Integer>>(new LatentRepresentationTopK<BagImage, Integer>(listTrain.get(j).sample.x,new ArrayList<Integer>()), listTrain.get(j).label));
+//							for(int j:leftOutList) {
+//								exampleVal.add(new TrainingSample<LatentRepresentationTopK<BagImage, Integer>>(new LatentRepresentationTopK<BagImage, Integer>(listTrain.get(j).sample.x,new ArrayList<Integer>()), listTrain.get(j).label));
+//							}
+							for(int j:apValListIndex) {
+//								exampleVal.add(new TrainingSample<LatentRepresentationTopK<BagImage, Integer>>(new LatentRepresentationTopK<BagImage, Integer>(listTrain.get(j).sample.x,new ArrayList<Integer>()), listTrain.get(j).label));
+								exampleVal.add(new TrainingSample<LatentRepresentationTopK<BagImage, Integer>>(new LatentRepresentationTopK<BagImage, Integer>(listVal.get(j).sample.x,new ArrayList<Integer>()), listVal.get(j).label));
 							}
 	
 							LSVMGradientDescentBag classifier = new LSVMGradientDescentBag(); 

@@ -5,7 +5,7 @@ public class LSVM_console_ferrari {
 	
 		String dataSource= "big";//local or other things
 		String gazeType = "ferrari";
-		String taskName = "topk_ICIP_loss_weighted_food_5split_full//";
+		String taskName = "top1_train_on_train_test_on_val//";
 		double[] lambdaCV = {1e-4};
 	    double[] epsilonCV = {0};
 	    int maxK=10;
@@ -17,8 +17,8 @@ public class LSVM_console_ferrari {
 //		int[] scaleCV = {50};
 //		String[] classes = {"bicycle"};
 	//    double[] tradeoffCV = {0, 0.5, 1};
-	    double[] posTradeoffCV = {0, 0.1, 0.2};
-	    double[] negTradeoffCV = {0, 0.001, 0.01};
+	    double[] posTradeoffCV = {0, 0.2};
+	    double[] negTradeoffCV = {0};
 	    
 	    //Variables we may change
 		int foldNum=5;

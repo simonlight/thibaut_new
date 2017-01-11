@@ -5,7 +5,7 @@ public class LSVM_console_stefan {
 	
 		String dataSource= "big";//local or other things
 		String gazeType = "stefan";
-		String taskName = "topk_ICIP_loss_weighted_food_5split_full/";
+		String taskName = "top1_train_on_train_test_on_val/";
 		double[] lambdaCV = {1e-4};
 	    double[] epsilonCV = {0};
 	    int maxK=10;
@@ -17,11 +17,11 @@ public class LSVM_console_stefan {
 	//    int[] scaleCV = {90,80,70,60,50,40,30};
 //	    int[] scaleCV = {100};
 	    
-	    double[] posTradeoffCV = {0.0,0.1,0.2};
-	    double[] negTradeoffCV = {0, 0.001, 0.01};
+	    double[] posTradeoffCV = {0.0,0.2};
+	    double[] negTradeoffCV = {0};
 	    
 	    //Variables we may change
-		int foldNum=5;
+		int foldNum=2;
 	    int minCCCPIter = 5;
 		int maxCCCPIter = 100;
 		int maxSGDEpochs = 100;
