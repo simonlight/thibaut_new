@@ -5,7 +5,7 @@ public class LSVM_console_stefan {
 	
 		String dataSource= "big";//local or other things
 		String gazeType = "stefan";
-		String taskName = "top1_train_on_train_test_on_val/";
+		String taskName = "top1_10_train_on_train_test_on_val/";
 		double[] lambdaCV = {1e-4};
 	    double[] epsilonCV = {0};
 	    int maxK=10;
@@ -18,10 +18,10 @@ public class LSVM_console_stefan {
 //	    int[] scaleCV = {100};
 	    
 	    double[] posTradeoffCV = {0.0,0.2};
-	    double[] negTradeoffCV = {0};
+	    double[] negTradeoffCV = {0, 0.001};
 	    
 	    //Variables we may change
-		int foldNum=2;
+		int foldNum=1;
 	    int minCCCPIter = 5;
 		int maxCCCPIter = 100;
 		int maxSGDEpochs = 100;
