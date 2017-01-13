@@ -5,7 +5,7 @@ public class LSVM_console_stefan {
 	
 		String dataSource= "big";//local or other things
 		String gazeType = "stefan";
-		String taskName = "top1_10_train_on_train_test_on_val/";
+		String taskName = "top1_10_train_on_train_test_on_val_10t/";
 		double[] lambdaCV = {1e-4};
 	    double[] epsilonCV = {0};
 	    int maxK=10;
@@ -22,7 +22,7 @@ public class LSVM_console_stefan {
 	    
 	    //Variables we may change
 		int foldNum=1;
-	    int minCCCPIter = 5;
+	    int minCCCPIter = 10;
 		int maxCCCPIter = 100;
 		int maxSGDEpochs = 100;
 		boolean stochastic = true;
