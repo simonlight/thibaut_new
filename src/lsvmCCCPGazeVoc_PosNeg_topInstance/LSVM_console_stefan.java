@@ -18,16 +18,16 @@ public class LSVM_console_stefan {
 //	    int[] scaleCV = {100};
 	    
 	    double[] posTradeoffCV = {0.0,0.2};
-	    double[] negTradeoffCV = {0, 0.001};
+	    double[] negTradeoffCV = {0.05, 0.1};
 	    
 	    //Variables we may change
 		int foldNum=1;
-	    int minCCCPIter = 10;
+	    int minCCCPIter = 5;
 		int maxCCCPIter = 100;
 		int maxSGDEpochs = 100;
 		boolean stochastic = true;
 		boolean saveClassifier = true;
-	    boolean loadClassifier = false;
+	    boolean loadClassifier = true;
 	    
 	    //Variables we do not change
 	    int optim = 2;
