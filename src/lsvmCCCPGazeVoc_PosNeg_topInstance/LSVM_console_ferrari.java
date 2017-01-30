@@ -5,20 +5,20 @@ public class LSVM_console_ferrari {
 	
 		String dataSource= "big";//local or other things
 		String gazeType = "ferrari";
-		String taskName = "top1_10_train_on_train_test_on_val//";
+		String taskName = "full_20categories/";
 		double[] lambdaCV = {1e-4};
 	    double[] epsilonCV = {0};
 	    int maxK=10;
 	    String[] classes = {args[0]};
 		int[] scaleCV = {Integer.valueOf(args[1])};
-	//	String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
+//		String[] classes = {"aeroplane" ,"cow" ,"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
 	//	String[] classes = {"dog", "cat", "motorbike", "boat" , "horse" , "sofa" ,"diningtable", "bicycle"};
-	//	int[] scaleCV = {90,80,70,60,50,40,30};
-//		int[] scaleCV = {50};
+//		int[] scaleCV = {100,90,80,70,60,50,40,30};
+//		int[] scaleCV = {70};
 //		String[] classes = {"bicycle"};
 	//    double[] tradeoffCV = {0, 0.5, 1};
-	    double[] posTradeoffCV = {0, 0.2};
-	    double[] negTradeoffCV = {0, 0.001};
+	    double[] posTradeoffCV = {0.0,0.2};
+	    double[] negTradeoffCV = {0.0};
 	    
 	    //Variables we may change
 		int foldNum=1;

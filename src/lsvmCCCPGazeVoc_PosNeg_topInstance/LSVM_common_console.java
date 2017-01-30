@@ -62,7 +62,7 @@ public class LSVM_common_console {
 			//generate K, we can set the maximum number of k
 	    	ArrayList<Integer> K = new ArrayList<Integer>();
 			for (int KElement=1; KElement<=Math.min(maxK,convertScale(scale));KElement++){
-				if (KElement==1 ||KElement==10)
+				if (KElement==1)
 				{
 					K.add(KElement);
 				}
@@ -74,9 +74,13 @@ public class LSVM_common_console {
 				listTrainPath=  sourceDir+"example_files/"+scale+"/"+className+"_full_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
 				listValPath=  sourceDir+"example_files/"+scale+"/"+className+"_val_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
 			}
+			if (gazeType.equals("ferrari")){
+				listTrainPath=  sourceDir+"example_files_full_20_categories/"+scale+"/"+className+"_trainval_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
+				listValPath=  sourceDir+"example_files/"+scale+"/"+className+"_test_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
+			}
 			else{
-				listTrainPath=  sourceDir+"example_files/"+scale+"/"+className+"_train_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
-				listValPath=  sourceDir+"example_files/"+scale+"/"+className+"_val_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
+				listTrainPath=  sourceDir+"example_files/"+scale+"/"+className+"_trainval_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
+				listValPath=  sourceDir+"example_files/"+scale+"/"+className+"_test_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
 
 			}
 //			String listTrainPath =  sourceDir+"example_files/"+scale+"/"+className+"_train_scale_"+scale+"_matconvnet_m_2048_layer_20.txt";
@@ -84,11 +88,15 @@ public class LSVM_common_console {
 
 	    	List<TrainingSample<LatentRepresentationTopK<BagImage,Integer>>> listTrain = BagReader.readBagImageLatentTopK(listTrainPath, numWords, true, true, null, true, 0, dataSource);
 	    	List<TrainingSample<LatentRepresentationTopK<BagImage,Integer>>> listVal = BagReader.readBagImageLatentTopK(listValPath, numWords, true, true, null, true, 0, dataSource);
+	    		
 
 	    	for(double epsilon : epsilonCV) {
 		    	for(double lambda : lambdaCV) {
 		    		for(double postradeoff : posTradeoffCV) {
 		    			for(double negtradeoff : negTradeoffCV) {
+		    				if (postradeoff ==0.0 && negtradeoff==0.001){
+		    					continue;
+		    				}
 		    				for(int k : K){
 				    			
 			    			int listTrainsize = listTrain.size();
@@ -140,7 +148,7 @@ public class LSVM_common_console {
 									"_"+postradeoff+"_"+negtradeoff+"_"+maxCCCPIter+"_"+minCCCPIter+"_"+maxSGDEpochs+
 									"_"+optim+"_"+numWords+"_"+k+"_"+i+".lsvm");
 							fileClassifier.getAbsoluteFile().getParentFile().mkdirs();
-							
+							System.out.println(fileClassifier); 
 							if (loadClassifier && fileClassifier.exists()){
 								ObjectInputStream ois;
 								System.out.println("\nread classifier " + fileClassifier.getAbsolutePath());
@@ -224,19 +232,21 @@ public class LSVM_common_console {
 							trainMetricFile.getAbsoluteFile().getParentFile().mkdirs();
 	
 							double ap_train = classifier.testAPRegion(exampleTrain, trainMetricFile);
+//							classifier.testScoreRegion(exampleTrain, trainMetricFile);
 		    				
 							//without init there may be a bug, but i forgot why...
 							classifier.init(exampleVal);
 							
 		    				classifier.optimizeLatent(exampleVal);
-							File valMetricFile=new File(metricFolder+"/metric_val_"+scale+"_"+postradeoff+"_"+negtradeoff+"_"+epsilon+"_"+lambda+"_"+className+"_"+k+"_"+i+".txt");
+							File valMetricFile=new File(metricFolder+"/metric_test_"+scale+"_"+postradeoff+"_"+negtradeoff+"_"+epsilon+"_"+lambda+"_"+className+"_"+k+"_"+i+".txt");
 							valMetricFile.getAbsoluteFile().getParentFile().mkdirs();
-							 	             
-							double ap_test = classifier.testAPRegion(exampleVal, valMetricFile);
+							 	            
+							classifier.testScoreRegion(exampleVal, valMetricFile);
+//							double ap_test = classifier.testAPRegion(exampleVal, valMetricFile);
 		    				
 		    				try {
 								BufferedWriter out = new BufferedWriter(new FileWriter(resultFilePath, true));
-								out.write("category:"+className+" lambda:"+lambda+" k:"+k+" scale:"+scale+" ptradeoff:"+postradeoff+" ntradeoff:"+negtradeoff+" index:"+i+" ap_test:"+ap_test+" ap_train:"+ap_train+"\n");
+//								out.write("category:"+className+" lambda:"+lambda+" k:"+k+" scale:"+scale+" ptradeoff:"+postradeoff+" ntradeoff:"+negtradeoff+" index:"+i+" ap_test:"+ap_test+" ap_train:"+ap_train+"\n");
 								out.flush();
 								out.close();
 								

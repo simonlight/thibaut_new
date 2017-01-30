@@ -135,7 +135,6 @@ public class BagReader {
 				feature[i] = l.get(i);
 			}
 
-			//System.out.println("PPMI - read feature: " + file.getAbsoluteFile() + "\tdim: " + feature.length);
 		}
 		else {
 			System.out.println("Features file " + file.getAbsolutePath() + " does not exist");
@@ -657,9 +656,6 @@ public class BagReader {
 			// Read the number of bags nbBags
 			String ligne=br.readLine();
 			int nbBags = Integer.parseInt(ligne);
-//			//test!!!!!!!!!!!!!
-//			nbBags=2;
-//			//
 			// Read nbBags bags
 			for(int i=0; i<nbBags; i++) {
 				System.out.print(".");

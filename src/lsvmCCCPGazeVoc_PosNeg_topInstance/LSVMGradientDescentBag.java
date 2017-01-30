@@ -82,9 +82,13 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 			if(ts.label==1){
 				String featurePath[] = ts.sample.x.getInstanceFile(h).split("/");
 				String ETLossFileName = featurePath[featurePath.length - 1];
-				double gaze_ratio = gazeRatioMap.get(className+"_"+ETLossFileName);
-	
-				return gaze_ratio;
+				if (gazeRatioMap.containsKey(className+"_"+ETLossFileName)){
+					double gaze_ratio = gazeRatioMap.get(className+"_"+ETLossFileName);
+					return gaze_ratio;
+				}
+				else{
+					return 1.;
+				}
 			}
 			else{
 				/*	only the region with high gaze ratio has a high probability of containing an object
@@ -137,7 +141,7 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
 		double gtRatio = getGazeRatio(ts,groundTruthGazeMap.get(ts.sample.x.getName()).get(convertScale(this.scale)-1) , gazeType);
 //		double gtRatio = getGazeRatio(ts,groundTruthGazeMap.get(ts.sample.x.getName()).get(0) , gazeType);
 		double minRatio = getGazeRatio(ts,groundTruthGazeMap.get(ts.sample.x.getName()).get(0) , gazeType);
-		return (thisRatio - minRatio) / gtRatio;
+		return (thisRatio - minRatio) / (gtRatio - minRatio+0.0000001);
 //		return 1 - (thisRatio / gtRatio);
 		}
 
@@ -337,6 +341,27 @@ public class LSVMGradientDescentBag extends LSVMGradientDescent<BagImage,Integer
         return ap;
 	}
 
+	public void testScoreRegion(List<TrainingSample<LatentRepresentationTopK<BagImage,Integer>>> l, File resFile) {
+		try {
+			BufferedWriter out = new BufferedWriter(new FileWriter(resFile));
+			for(int i=0; i<l.size(); i++) {
+				double score=0;
+				for (int cnt=0; cnt<this.K;cnt++){
+					score += valueOf(l.get(i).sample.x,l.get(i).sample.hlist.get(cnt))/this.K;
+				}
+				Integer yi = 0;
+				Integer yp = score > 0 ? 1 : -1;
+				out.write(Double.valueOf(score) + ","+Integer.valueOf(yp) +","+Integer.valueOf(yi) +","+ l.get(i).sample.hlist.toString()+","+"x"+","+l.get(i).sample.x.getName()+"\n");
+				out.flush();
+			}
+			out.close();
+	        	
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 
 
 }
