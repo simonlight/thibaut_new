@@ -18,7 +18,7 @@ public class LSVM_console_ferrari {
 //		String[] classes = {"bicycle"};
 	//    double[] tradeoffCV = {0, 0.5, 1};
 	    double[] posTradeoffCV = {0.0,0.2};
-	    double[] negTradeoffCV = {0.0};
+	    double[] negTradeoffCV = {0.0,0.01};
 	    
 	    //Variables we may change
 		int foldNum=1;
