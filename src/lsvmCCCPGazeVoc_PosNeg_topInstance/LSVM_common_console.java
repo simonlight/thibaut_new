@@ -62,7 +62,7 @@ public class LSVM_common_console {
 			//generate K, we can set the maximum number of k
 	    	ArrayList<Integer> K = new ArrayList<Integer>();
 			for (int KElement=1; KElement<=Math.min(maxK,convertScale(scale));KElement++){
-				if (KElement==1)
+				if (KElement==10)
 				{
 					K.add(KElement);
 				}
